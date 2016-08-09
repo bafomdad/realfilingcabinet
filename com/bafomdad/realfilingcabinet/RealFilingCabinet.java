@@ -35,7 +35,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.3.2")
+@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.3.3", dependencies="required-after:Forge@[10.13.4.1557,)")
 public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";

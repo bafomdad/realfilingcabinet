@@ -1,75 +1,96 @@
 package com.bafomdad.realfilingcabinet.crafting;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
-import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
 
-public class FolderStorageRecipe implements IRecipe {
+public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 
+	public static List inputs = new ArrayList();
+	
+	static
+	{
+		inputs.add(new ItemStack(RealFilingCabinet.itemEmptyFolder));
+	}
+	public FolderStorageRecipe() {
+		
+		super(new ItemStack(RealFilingCabinet.itemFolder, 1, 0), inputs);
+	}
+	
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
-
-		ItemStack foundFolder = null;
-		boolean ingredient = false;
 		
-		for (int i = 0; i < ic.getSizeInventory(); i++)
-		{
-			ItemStack stack = ic.getStackInSlot(i);
-			
-			if (stack != null)
-			{
-				if (stack.getItem() == RealFilingCabinet.itemEmptyFolder /*|| (stack.getItem() == RealFilingCabinet.itemFolder && ItemFolder.getFileSize(stack) == 0)*/)
-					foundFolder = stack;
-				else if ((stack.getItem() instanceof ItemBlock || stack.getItem() instanceof Item) && (stack.getItem() != RealFilingCabinet.itemFolder))
-					ingredient = true;
+		ArrayList list = new ArrayList(this.recipeItems);
+		
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				
+				ItemStack stack = ic.getStackInRowAndColumn(j, i);
+				if (stack != null)
+				{
+					if (allowableIngredient(stack))
+						list.add(stack);
+					
+					boolean flag = false;
+					Iterator iter = list.iterator();
+					
+					while (iter.hasNext())
+					{
+						ItemStack stack1 = (ItemStack)iter.next();
+						
+						if (stack.getItem() == stack1.getItem() && (stack1.getItemDamage() == 32767 || stack.getItemDamage() == stack1.getItemDamage()))
+						{
+							flag = true;
+							list.remove(stack1);
+							break;
+						}
+					}
+					if (!flag)
+						return false;
+				}
 			}
 		}
-		return foundFolder != null && ingredient;
+		return list.isEmpty();
 	}
 	
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting ic) {
 		
-		ItemStack folderStack = null;
+		int emptyFolder = -1;
+		int recipestack = -1;
 		
-		for (int i = 0; i < ic.getSizeInventory(); i++) 
-		{
+		for (int i = 0; i < ic.getSizeInventory(); i++) {
+			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != null && this.allowableIngredient(stack))
+			if (stack != null)
 			{
-				folderStack = stack;
-				break;
+				if (stack.getItem() == RealFilingCabinet.itemEmptyFolder)
+					emptyFolder = i;
+				if (allowableIngredient(stack))
+					recipestack = i;
 			}
 		}
-		if (folderStack != null)
+		if (emptyFolder >= 0 && recipestack >= 0)
 		{
-			ItemStack newFolder = new ItemStack(RealFilingCabinet.itemFolder, 1, 0);
-			int damage = folderStack.getItemDamage();
+			ItemStack stack1 = ic.getStackInSlot(recipestack);
+			int damage = stack1.getItemDamage();
 			
-			ItemFolder.setStack(newFolder, folderStack, damage);
+			ItemStack newFolder = new ItemStack(RealFilingCabinet.itemFolder);
+			ItemFolder.setStack(newFolder, stack1, damage);
 			return newFolder;
 		}
-		return null;
-	}
-
-	@Override
-	public int getRecipeSize() {
-
-		return 10;
-	}
-
-	@Override
-	public ItemStack getRecipeOutput() {
-
 		return null;
 	}
 	

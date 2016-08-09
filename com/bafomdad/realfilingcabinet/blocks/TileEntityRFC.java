@@ -540,7 +540,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				}
 				else
 				{
-					if (!stack.stackTagCompound.hasKey("RFC_slotindex"))
+					if (!stack.stackTagCompound.hasKey(ItemFolder.TAG_SLOTINDEX))
 						return;
 					
 					int xLoc = Utils.getInt(stack, "RFC_xLoc", -1);

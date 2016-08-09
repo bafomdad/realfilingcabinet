@@ -41,6 +41,7 @@ public class ItemFolder extends Item {
 	private static final String TAG_FILE_NAME = "fileName";
 	private static final String TAG_FILE_META = "fileMeta";
 	private static final String TAG_FILE_SIZE = "fileSize";
+	public static final String TAG_SLOTINDEX = "RFC_slotindex";
 	
 	public String[] folderTypes = new String[] { "folder", "enderfolder" };
 	public IIcon[] iconArray;
@@ -87,7 +88,7 @@ public class ItemFolder extends Item {
 					{
 						TileEntityRFC tile = getTileLoc(folder);
 						if (tile != null) {
-							StorageUtils.instance().syncToFolder(tile, folder, Utils.getInt(folder, "RFC_slotindex", 0));
+							StorageUtils.instance().syncToFolder(tile, folder, Utils.getInt(folder, TAG_SLOTINDEX, 0));
 							break;
 						}
 					}
@@ -125,7 +126,7 @@ public class ItemFolder extends Item {
     		list.add(count + " " + StatCollector.translateToLocal(stacky.getUnlocalizedName() + ".name"));
     	}
     	
-    	if (stack.getItemDamage() == 1 && stack.stackTagCompound.hasKey("RFC_slotindex"))
+    	if (stack.getItemDamage() == 1 && stack.stackTagCompound.hasKey(TAG_SLOTINDEX))
     	{
         	TileEntityRFC tile = getTileLoc(stack);
         	if (tile == null || !tile.isEnder)
@@ -141,7 +142,7 @@ public class ItemFolder extends Item {
     	
     	if (stack.getItemDamage() == 1 && getTileLoc(stack) != null)
     	{
-    		StorageUtils.instance().syncBackToTile(getTileLoc(stack), stack, Utils.getInt(stack, "RFC_slotindex", 0));
+    		StorageUtils.instance().syncBackToTile(getTileLoc(stack), stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
     	}
     	if (count == 0)
     		return null;
@@ -233,13 +234,13 @@ public class ItemFolder extends Item {
     public static ItemStack createEnderFolder(TileEntityRFC tile, EntityPlayer player, ItemStack stack) {
     	
     	NBTTagCompound playertag = player.getEntityData();
-    	if (!playertag.hasKey("RFC_slotindex"))
+    	if (!playertag.hasKey(TAG_SLOTINDEX))
     	{  		
-    		playertag.setInteger("RFC_slotindex", 0);
+    		playertag.setInteger(TAG_SLOTINDEX, 0);
     	}
     	ItemStack enderFolder = stack.copy();
     	enderFolder.setItemDamage(1);
-    	Utils.setInt(enderFolder, "RFC_slotindex", playertag.getInteger("RFC_slotindex"));
+    	Utils.setInt(enderFolder, TAG_SLOTINDEX, playertag.getInteger(TAG_SLOTINDEX));
     	setTileLoc(tile, enderFolder);
     	return enderFolder;
     }
@@ -285,13 +286,13 @@ public class ItemFolder extends Item {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean watdis) {
     	
-    	if (stack.getItemDamage() != 1 || !stack.getTagCompound().hasKey("RFC_slotindex"))
+    	if (stack.getItemDamage() != 1 || !stack.getTagCompound().hasKey(TAG_SLOTINDEX))
     		return;
-    	
+   	
     	TileEntityRFC tile = getTileLoc(stack);
     	if (tile != null && tile.isEnder)
     	{
-    		StorageUtils.instance().syncToFolder(tile, stack, Utils.getInt(stack, "RFC_slotindex", 0));
+    		StorageUtils.instance().syncToFolder(tile, stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
     	}
     	else
     	{

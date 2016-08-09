@@ -67,25 +67,25 @@ public class BlockRFC extends BlockContainer {
 					else
 					{
 						NBTTagCompound playertag = event.entityPlayer.getEntityData();
-						if (playertag.hasKey("RFC_slotindex"))
+						if (playertag.hasKey(ItemFolder.TAG_SLOTINDEX))
 						{
-							int index = playertag.getInteger("RFC_slotindex");
+							int index = playertag.getInteger(ItemFolder.TAG_SLOTINDEX);
 							ItemStack folder = ((TileEntityRFC)tile).getStackInSlot(index);
 							
 							if (folder == null) {
-								if (findNextFolder((TileEntityRFC)tile, playertag.getInteger("RFC_slotindex")) == -1)
+								if (findNextFolder((TileEntityRFC)tile, playertag.getInteger(ItemFolder.TAG_SLOTINDEX)) == -1)
 								{
 									folder = ((TileEntityRFC)tile).getStackInSlot(0);
-									playertag.setInteger("RFC_slotindex", 0);
+									playertag.setInteger(ItemFolder.TAG_SLOTINDEX, 0);
 									index = 0;
 								}
-								index = findNextFolder((TileEntityRFC)tile, playertag.getInteger("RFC_slotindex"));
+								index = findNextFolder((TileEntityRFC)tile, playertag.getInteger(ItemFolder.TAG_SLOTINDEX));
 								folder = ((TileEntityRFC)tile).getStackInSlot(index);
-								playertag.setInteger("RFC_slotindex", index);
+								playertag.setInteger(ItemFolder.TAG_SLOTINDEX, index);
 							}
 							ItemStack newFolder = ItemFolder.createEnderFolder((TileEntityRFC)tile, event.entityPlayer, folder);
 							event.entityPlayer.setCurrentItemOrArmor(0, newFolder);
-							playertag.setInteger("RFC_slotindex", index += 1);
+							playertag.setInteger(ItemFolder.TAG_SLOTINDEX, index += 1);
 						}
 						else
 						{
