@@ -1,13 +1,10 @@
 package com.bafomdad.realfilingcabinet.blocks;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -78,7 +75,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 					size = outputStack.stackSize - inventory[9].stackSize;
 					if (size > 0)
 					{
-						ItemFolder.remove(inventory[getMatchingFolder(outputStack)], size);
+						int index = getMatchingFolder(outputStack);
+						ItemFolder.remove(inventory[index], size);
+						StorageUtils.instance().syncToFolder(this, index);
 					}
 				}
 				else if (inventory[9] == null && outputStack != null) {
@@ -87,7 +86,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 						size = outputStack.stackSize;
 						if (size > 0)
 						{
-							ItemFolder.remove(inventory[getMatchingFolder(outputStack)], size);
+							int index = getMatchingFolder(outputStack);
+							ItemFolder.remove(inventory[index], size);
+							StorageUtils.instance().syncToFolder(this, index);
 						}
 					}
 				}
@@ -227,6 +228,11 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				if (inventory[9] == null && getFilter() != null && StorageUtils.instance().canFolderProvide(this, getFilter(), 1))
 					inventory[9] = setOutput();
 				
+//				if (inventory[9] != null && outputStack != null && !StorageUtils.instance().canFolderProvide(this, getFilter(), outputStack.stackSize))
+//				{
+//					System.out.println("stack get");
+//					inventory[9] = setOutput();
+//				}
 				else if (inventory[9] != null && getFilter() != null && !StorageUtils.instance().simpleMatch(inventory[9], getFilter()))
 					inventory[9] = setOutput();
 			}

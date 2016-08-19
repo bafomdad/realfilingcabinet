@@ -13,4 +13,6 @@ item.realfilingcabinet.upgrade_ender.name=Ender Upgrade
 
 # BLOCKS
 tile.realfilingcabinet.realfilingcabinet.name=Filing Cabinet
-tile.realfilingcabinet.filingfilter.name=Filing Cabinet Filter
+
+# INTEGRATION
+realfilingcabinet.waila.block=#%s: %s

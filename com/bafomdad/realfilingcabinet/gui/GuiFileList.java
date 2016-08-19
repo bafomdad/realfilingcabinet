@@ -8,8 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +22,6 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiFileList extends Gui {
@@ -40,8 +37,6 @@ public class GuiFileList extends Gui {
 	@SubscribeEvent
 	public void renderOverlay(RenderGameOverlayEvent.Post event) {
 		
-//		if (event.isCancelable())
-//			return;
 		Minecraft mc = Minecraft.getMinecraft();
 		Profiler profiler = mc.mcProfiler;
 		
@@ -54,20 +49,24 @@ public class GuiFileList extends Gui {
 			int height = scaled.getScaledHeight();
 
 			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-			MovingObjectPosition mop = player.rayTrace(5, 5);
-			Block block = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-			ItemStack magnifyingGlass = player.getCurrentEquippedItem();
-			if (block != null && block == RealFilingCabinet.blockRFC && (magnifyingGlass != null && magnifyingGlass.getItem() == RealFilingCabinet.itemMagnifyingGlass)) {
-				TileEntity tile = player.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-				if (tile != null && tile instanceof TileEntityRFC)
-				{
-					List<String> list = getFileList((TileEntityRFC)tile);
-					if (!list.isEmpty())
+			MovingObjectPosition mop = mc.objectMouseOver;
+			
+			if (mop != null) {
+				Block block = mc.theWorld.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+				ItemStack magnifyingGlass = player.getCurrentEquippedItem();
+				
+				if (block != null && block == RealFilingCabinet.blockRFC && (magnifyingGlass != null && magnifyingGlass.getItem() == RealFilingCabinet.itemMagnifyingGlass)) {
+					TileEntity tile = player.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+					if (tile != null && tile instanceof TileEntityRFC)
 					{
-						for (int i = 0; i < list.size(); i++)
+						List<String> list = getFileList((TileEntityRFC)tile);
+						if (!list.isEmpty())
 						{
-							GL11.glDisable(GL11.GL_LIGHTING);	
-							this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 0 + (i * 10), Integer.parseInt("FFFFFF", 16));
+							for (int i = 0; i < list.size(); i++)
+							{
+								GL11.glDisable(GL11.GL_LIGHTING);	
+								this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 0 + (i * 10), Integer.parseInt("FFFFFF", 16));
+							}
 						}
 					}
 				}

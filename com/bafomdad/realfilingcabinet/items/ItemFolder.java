@@ -6,6 +6,8 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.core.StorageUtils;
 import com.bafomdad.realfilingcabinet.core.Utils;
+import com.bafomdad.realfilingcabinet.network.RFCFolderMessage;
+import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +23,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerWorkbench;
@@ -72,25 +73,59 @@ public class ItemFolder extends Item {
 			}
 			return;
 		}
+		if (event.crafting.getItem() == RealFilingCabinet.itemEmptyFolder) 
+		{
+			for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++)
+			{
+				ItemStack stack = event.craftMatrix.getStackInSlot(slot);
+				if (stack == null)
+					continue;
+				if (stack.getItem() == this)
+				{
+					if (stack.getItemDamage() == 0)
+						event.craftMatrix.setInventorySlotContents(slot, null);
+				}
+			}
+			return;
+		}
+		else
+		{
+			ItemStack folder = null;
+			for (int j = 0; j < event.craftMatrix.getSizeInventory(); j++)
+			{
+				ItemStack stack = event.craftMatrix.getStackInSlot(j);
+				if (stack == null)
+					continue;
+				if (stack.getItem() == this && stack.getItemDamage() == 1)
+				{
+					folder = stack;
+				}
+			}
+			if (folder != null && !event.player.worldObj.isRemote) {
+				event.crafting.stackSize = StorageUtils.instance().syncRecipeOutput(folder, event.crafting);
+				StorageUtils.instance().syncRecipes(getTileLoc(folder), folder, event.crafting);
+			}
+		}
 	}
 	
-	@SubscribeEvent
+//	@SubscribeEvent
 	public void updateFolderInCraftingWindow(TickEvent.PlayerTickEvent event) {
 		
-		if (event.player.openContainer != null) {
-			Container cont = event.player.openContainer;
-			if (cont == event.player.inventoryContainer || cont instanceof ContainerWorkbench)
-			{
-				List listy = cont.getInventory();
-				for (int i = 0 ; i < listy.size(); i++) {
-					ItemStack folder = (ItemStack)listy.get(i);
-					if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder && folder.getItemDamage() == 1)
-					{
-						TileEntityRFC tile = getTileLoc(folder);
-						if (tile != null) {
-							StorageUtils.instance().syncToFolder(tile, folder, Utils.getInt(folder, TAG_SLOTINDEX, 0));
-							break;
-						}
+		if (event.player.openContainer == null)
+			return;
+		
+		Container cont = event.player.openContainer;
+		if (cont == event.player.inventoryContainer || cont instanceof ContainerWorkbench)
+		{
+			List listy = cont.getInventory();
+			for (int i = 0 ; i < listy.size(); i++) {
+				ItemStack folder = (ItemStack)listy.get(i);
+				if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder && folder.getItemDamage() == 1)
+				{
+					TileEntityRFC tile = getTileLoc(folder);
+					if (tile != null) {
+						StorageUtils.instance().syncToFolder(tile, folder, Utils.getInt(folder, TAG_SLOTINDEX, 0));
+						break;
 					}
 				}
 			}
@@ -129,7 +164,7 @@ public class ItemFolder extends Item {
     	if (stack.getItemDamage() == 1 && stack.stackTagCompound.hasKey(TAG_SLOTINDEX))
     	{
         	TileEntityRFC tile = getTileLoc(stack);
-        	if (tile == null || !tile.isEnder)
+        	if (tile == null)
         		list.add("Bound tile is null");
         	else if (tile != null && list.size() > 2)
         		list.remove(2);
@@ -138,15 +173,15 @@ public class ItemFolder extends Item {
     
     public ItemStack getContainerItem(ItemStack stack) {
     	
+//    	if (stack.getItemDamage() == 1)
+//    		return stack;
+    	
     	int count = getFileSize(stack);
     	
-    	if (stack.getItemDamage() == 1 && getTileLoc(stack) != null)
-    	{
-    		StorageUtils.instance().syncBackToTile(getTileLoc(stack), stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
-    	}
-    	if (count == 0)
-    		return null;
-
+//    	if (stack.getItemDamage() == 1 && getTileLoc(stack) != null)
+//    	{
+//    		StorageUtils.instance().syncBackToTile(getTileLoc(stack), stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
+//    	}
     	int extract = Math.min(64, count);
     	ItemStack copy = stack.copy();
     	remove(copy, extract);
@@ -273,7 +308,7 @@ public class ItemFolder extends Item {
     	MinecraftServer server = MinecraftServer.getServer();
     	for (WorldServer world : server.worldServers) {
     		for (Object obj : world.loadedTileEntityList) {
-    			if (obj instanceof TileEntityRFC)
+    			if (obj instanceof TileEntityRFC && ((TileEntityRFC)obj).isEnder)
     			{
     				if (world.provider.dimensionId == dim)
     					return (TileEntityRFC)world.getTileEntity(x, y, z);
@@ -290,7 +325,7 @@ public class ItemFolder extends Item {
     		return;
    	
     	TileEntityRFC tile = getTileLoc(stack);
-    	if (tile != null && tile.isEnder)
+    	if (tile != null)
     	{
     		StorageUtils.instance().syncToFolder(tile, stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
     	}

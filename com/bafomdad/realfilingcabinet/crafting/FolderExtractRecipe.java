@@ -91,8 +91,8 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 					ItemStack folderStack = ItemFolder.getStack(stack);
 					int meta = folderStack.getItemDamage();
 					
-					if (folderStack != null)
-						return new ItemStack(folderStack.getItem(), Math.min(64, count), meta);
+//					System.out.println("crafting stacksize: " + count);
+					return new ItemStack(folderStack.getItem(), Math.min(64, count), meta);
 				}
 			}
 		}

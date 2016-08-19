@@ -24,9 +24,13 @@ sourceSets
 		java { srcDirs = ["$projectDir/"] }
 		resources { ["$projectDir"] }
 	}
+	api
+	{
+		java { srcDirs = ["$projectDir/api"] }
+	}
 }
 
-version = "1.7.10-0.3.2"
+version = "1.7.10-0.3.7"
 group= "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 

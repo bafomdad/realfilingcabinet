@@ -9,13 +9,17 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.gui.FakeInventory;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
+import com.bafomdad.realfilingcabinet.network.RFCTileMessage;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -24,6 +28,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -287,6 +293,10 @@ public class StorageUtils {
 					{
 						boolean consume = true;
 						
+						ItemStack container = ItemFolder.getStack(folder).getItem().getContainerItem(ItemFolder.getStack(folder));
+						if (container != null && !shuntContainerItem(container, inv))
+							shuntContainerItemOutside(container, inv);
+						
 						if (consume) {
 							ItemFolder.remove(folder, 1);
 							if (ItemFolder.getFileSize(folder) == 0)
@@ -298,6 +308,31 @@ public class StorageUtils {
 			}
 		}
 		return false;
+	}
+	
+	private boolean shuntContainerItem(ItemStack container, IInventory inv) {
+		
+		for (int i = 0; i < inv.getSizeInventory() - 2; i++) {
+			ItemStack folder = inv.getStackInSlot(i);
+			if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder) {
+				if (ItemFolder.getStack(folder) != null && container.isItemEqual(ItemFolder.getStack(folder))) {
+					ItemFolder.add(folder, 1);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void shuntContainerItemOutside(ItemStack container, IInventory inv) {
+		
+		if (inv instanceof TileEntityRFC)
+		{
+			TileEntityRFC tile = (TileEntityRFC)inv;
+			
+			EntityItem ei = new EntityItem(tile.getWorldObj(), tile.xCoord, tile.yCoord + 1, tile.zCoord, container);
+			tile.getWorldObj().spawnEntityInWorld(ei);
+		}
 	}
 
 	public ItemStack[] getRecipeItems(IRecipe recipe) {
@@ -392,7 +427,54 @@ public class StorageUtils {
 		int folderSize = ItemFolder.getFileSize(folder);
 		
 		if (folderSize != ItemFolder.getFileSize(stack))
+		{
 			ItemFolder.setFileSize(stack, folderSize);
+		}
+	}
+	
+	public void syncToFolder(TileEntityRFC tile, int index) {
+		
+		ItemStack folder = tile.getStackInSlot(index);
+		if (folder.getItem() != RealFilingCabinet.itemFolder)
+			return;
+		
+		int x = tile.xCoord;
+		int y = tile.yCoord;
+		int z = tile.zCoord;
+		
+		int currAmount = ItemFolder.getFileSize(folder);
+		
+		RFCPacketHandler.INSTANCE.sendToServer(new RFCTileMessage(x, y, z, currAmount, index));
+	}
+	
+	public void syncBackToTile(World world, ItemStack folder, int amount) {
+		
+		if (folder.getItem() != RealFilingCabinet.itemFolder)
+			return;
+		
+		int x = Utils.getInt(folder, "RFC_xLoc", -1);
+		int y = Utils.getInt(folder, "RFC_yLoc", -1);
+		int z = Utils.getInt(folder, "RFC_zLoc", -1);
+		
+		int index = Utils.getInt(folder, ItemFolder.TAG_SLOTINDEX, 0);
+		
+		TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(x, y, z);
+		if (tile != null)
+		{
+			ItemStack tileStack = tile.getStackInSlot(index);
+			if (tileStack != null)
+			{
+				ItemFolder.remove(tileStack, amount);
+//				updateTileOutput(tile, folder, index);
+			}
+		}
+	}
+	
+	public int syncRecipeOutput(ItemStack folder, ItemStack output) {
+		
+		int size = ItemFolder.getFileSize(folder);
+		
+		return output.stackSize = Math.min(64, size);
 	}
 	
 	public void syncBackToTile(TileEntityRFC tile, ItemStack stack, int index) {
@@ -403,11 +485,11 @@ public class StorageUtils {
 		if (folderSize != ItemFolder.getFileSize(folder))
 		{
 			ItemFolder.setFileSize(folder, folderSize);
-			updateTileOutput(tile, folder, index);
+//			updateTileOutput(tile, folder, index);
 		}
 	}
 	
-	public void updateTileOutput(TileEntityRFC tile, ItemStack stack, int index) {
+	private void updateTileOutput(TileEntityRFC tile, int index) {
 		
 		ItemStack folder = tile.getStackInSlot(index);
 		int folderSize = ItemFolder.getFileSize(folder);
@@ -425,5 +507,11 @@ public class StorageUtils {
 			ItemStack newStack = new ItemStack(ItemFolder.getStack(folder).getItem(), folderSize, ItemFolder.getStack(folder).getItemDamage());
 			tile.setInventorySlotContents(9, newStack);
 		}
+	}
+	
+	public void syncRecipes(TileEntityRFC tile, ItemStack folder, ItemStack stack) {
+		
+		decreaseFolderSize(tile, stack, stack.stackSize);
+		updateTileOutput(tile, Utils.getInt(folder, ItemFolder.TAG_SLOTINDEX, 0));
 	}
 }

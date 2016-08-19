@@ -1,5 +1,7 @@
 package com.bafomdad.realfilingcabinet;
 
+import org.apache.logging.log4j.Level;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -20,22 +22,26 @@ import com.bafomdad.realfilingcabinet.crafting.FolderMergeRecipe;
 import com.bafomdad.realfilingcabinet.crafting.FolderStorageRecipe;
 import com.bafomdad.realfilingcabinet.crafting.FolderTapeRecipe;
 import com.bafomdad.realfilingcabinet.gui.GuiFileList;
+import com.bafomdad.realfilingcabinet.integration.AppliedEnergisticsRFC;
+import com.bafomdad.realfilingcabinet.integration.AspectsRFC;
+import com.bafomdad.realfilingcabinet.integration.WailaRFC;
 import com.bafomdad.realfilingcabinet.items.ItemEmptyFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemUpgrades;
 import com.bafomdad.realfilingcabinet.items.ItemWhiteoutTape;
+import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.proxies.CommonProxy;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.3.3", dependencies="required-after:Forge@[10.13.4.1557,)")
+@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.3.7", dependencies="after:waila;required-after:Forge@[10.13.4.1557,)")
 public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
@@ -55,6 +61,7 @@ public class RealFilingCabinet {
 	public void preInit(FMLPreInitializationEvent event) {
 
 		proxy.init();
+		RFCPacketHandler.init();
 		
 		itemFolder = new ItemFolder().setUnlocalizedName(MOD_ID + "." + "folder");
 		GameRegistry.registerItem(itemFolder, "ItemFilingFolder");
@@ -94,6 +101,16 @@ public class RealFilingCabinet {
 		GameRegistry.addRecipe(new FolderMergeRecipe());
 		GameRegistry.addRecipe(new FolderTapeRecipe());
 		GameRegistry.addRecipe(new FolderStorageRecipe());
+		
+		RecipeSorter.register("FolderExtractRecipe", FolderExtractRecipe.class, Category.SHAPELESS, "");
+		RecipeSorter.register("FolderMergeRecipe", FolderMergeRecipe.class, Category.SHAPELESS, "");
+		RecipeSorter.register("FolderTapeRecipe", FolderTapeRecipe.class, Category.SHAPELESS, "");
+		RecipeSorter.register("FolderStorageRecipe", FolderStorageRecipe.class, Category.SHAPELESS, "");
+		
+		if (Loader.isModLoaded("Thaumcraft"))
+			AspectsRFC.register();
+		if (Loader.isModLoaded("Waila"))
+			WailaRFC.register();
 	}
 	
 	@Mod.EventHandler

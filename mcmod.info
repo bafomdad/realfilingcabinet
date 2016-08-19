@@ -3,7 +3,7 @@
   "modid": "realfilingcabinet",
   "name": "Real Filing Cabinet",
   "description": "Filing cabinets! That is all.",
-  "version": "0.3.3",
+  "version": "0.3.7",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",

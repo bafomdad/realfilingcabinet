@@ -9,11 +9,6 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 
 public class UpgradeHandler {
-	
-	public static String TAG_AUTOCRAFT = "RFC_autocraftUpgrade";
-	public static String TAG_ENDER = "RFC_enderUpgrade";
-//  TODO
-//	public static String TAG_REPAIR = "RFC_repairUpgrade";
 
 	public static void handleUpgrade(TileEntityRFC tile, ItemStack stack, EntityPlayer player) {
 		
