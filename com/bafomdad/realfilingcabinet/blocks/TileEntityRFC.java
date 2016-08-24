@@ -17,6 +17,7 @@ import com.bafomdad.realfilingcabinet.core.StorageUtils;
 import com.bafomdad.realfilingcabinet.core.UpgradeHandler;
 import com.bafomdad.realfilingcabinet.core.Utils;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.storage.OreDictUtils;
 
 public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory, IFilingCabinet {
 	
@@ -32,7 +33,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 	public static final float offsetSpeed = 0.1F;
 	
 	// Custom NBT Tags
-	public boolean isOpen = false, isCreative = false, isAutoCraft = false, isEnder = false;
+	public boolean isOpen = false, isCreative = false, isAutoCraft = false, isEnder = false, isOreDict = false;
 
 	public TileEntityRFC() {
 		
@@ -62,6 +63,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 			if (this.isItemValidForSlot(8, inventory[8])) {
 				ItemStack folder = getStackInSlot(inStack);
 				ItemFolder.add(folder, inventory[8].stackSize);
+				StorageUtils.instance().syncToFolder(this, inStack);
 				inventory[8] = null;
 			}
 		}
@@ -96,21 +98,30 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 			}
 			if (this.isAutoCraft) {
 				
+				int size = 0;
 				if (inventory[9] != null && outputStack != null)
 				{
-					sizeStack += 1;
-					if (sizeStack == StorageUtils.instance().getOutputSize()) {
-						sizeStack = 0;
-						StorageUtils.instance().doCraft(getFilter(), this);
+					size = outputStack.stackSize - inventory[9].stackSize;
+					if (size > 0)
+					{
+						sizeStack += size;
+						if (sizeStack >= StorageUtils.instance().getOutputSize()) {
+							sizeStack = 0;
+							StorageUtils.instance().doCraft(getFilter(), this);
+						}
 					}
 				}
 				else if (inventory[9] == null && outputStack != null) {
 					if (getFilter() != null && StorageUtils.instance().simpleMatch(getFilter(), outputStack))
 					{
-						sizeStack += 1;
-						if (sizeStack == StorageUtils.instance().getOutputSize()) {
-							sizeStack = 0;
-							StorageUtils.instance().doCraft(getFilter(), this);
+						size = outputStack.stackSize;
+						if (size > 0)
+						{
+							sizeStack += size;
+							if (sizeStack >= StorageUtils.instance().getOutputSize()) {
+								sizeStack = 0;
+								StorageUtils.instance().doCraft(getFilter(), this);
+							}
 						}
 					}
 				}
@@ -144,6 +155,17 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder)
 				{
 					if (ItemFolder.getStack(folder) != null) {
+						if (isOreDict)
+						{
+							OreDictUtils.recreateOreDictionary(stack);
+							if (OreDictUtils.hasOreDict())
+							{
+								if (OreDictUtils.areItemsEqual(stack, ItemFolder.getStack(folder)))
+								{
+									return i;
+								}
+							}
+						}
 						if (stack.getItem() == ItemFolder.getStack(folder).getItem() && stack.getItemDamage() == ItemFolder.getFileMeta(folder))
 						{
 							return i;
@@ -228,11 +250,6 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				if (inventory[9] == null && getFilter() != null && StorageUtils.instance().canFolderProvide(this, getFilter(), 1))
 					inventory[9] = setOutput();
 				
-//				if (inventory[9] != null && outputStack != null && !StorageUtils.instance().canFolderProvide(this, getFilter(), outputStack.stackSize))
-//				{
-//					System.out.println("stack get");
-//					inventory[9] = setOutput();
-//				}
 				else if (inventory[9] != null && getFilter() != null && !StorageUtils.instance().simpleMatch(inventory[9], getFilter()))
 					inventory[9] = setOutput();
 			}
@@ -268,7 +285,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				{
 					ItemStack craftingOutput = new ItemStack(displayedStack.getItem(), 1, displayedStack.getItemDamage());
 					
-					if (sizeStack == StorageUtils.instance().getOutputSize()) {
+					if (sizeStack >= StorageUtils.instance().getOutputSize()) {
 						sizeStack = 0;
 						StorageUtils.instance().doCraft(displayedStack, this);
 					}
@@ -335,6 +352,18 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 				ItemStack folder = inventory[i];
 				if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder && folder.getItemDamage() == 0) {
 					if (ItemFolder.getStack(folder) != null) {
+						if (isOreDict)
+						{
+							OreDictUtils.recreateOreDictionary(stack);
+							if (OreDictUtils.hasOreDict())
+							{
+								if (OreDictUtils.areItemsEqual(stack, ItemFolder.getStack(folder)))
+								{
+									inStack = i;
+									return true;
+								}
+							}
+						}
 						if (stack.getItem() == ItemFolder.getStack(folder).getItem() && stack.getItemDamage() == ItemFolder.getFileMeta(folder))
 						{
 							inStack = i;
@@ -387,6 +416,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 		nbt.setBoolean("isCreative", this.isCreative);
 		nbt.setBoolean("isAutoCraft", this.isAutoCraft);
 		nbt.setBoolean("isEnder", this.isEnder);
+		nbt.setBoolean("isOreDict", this.isOreDict);
 		if (sizeStack > 0)
 			nbt.setInteger("RFC_size", this.sizeStack);
 	}
@@ -408,6 +438,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
 		this.isCreative = nbt.getBoolean("isCreative");
 		this.isAutoCraft = nbt.getBoolean("isAutoCraft");
 		this.isEnder = nbt.getBoolean("isEnder");
+		this.isOreDict = nbt.getBoolean("isOreDict");
 		this.sizeStack = nbt.getInteger("RFC_size");
 	}
 	
@@ -446,6 +477,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ISidedInventory,
     @Override
 	public void leftClick(EntityPlayer player) {
 	
+		if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == RealFilingCabinet.itemMagnifyingGlass) {
+			UpgradeHandler.boinkOutUpgrade(this, player);
+			return;
+		}
     	if (getFilter() == null)
     		return;
     	

@@ -1,7 +1,5 @@
 package com.bafomdad.realfilingcabinet;
 
-import org.apache.logging.log4j.Level;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -31,8 +29,8 @@ import com.bafomdad.realfilingcabinet.items.ItemUpgrades;
 import com.bafomdad.realfilingcabinet.items.ItemWhiteoutTape;
 import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.proxies.CommonProxy;
+import com.bafomdad.realfilingcabinet.storage.OreDictUtils.OreDictRegistry;
 
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -41,7 +39,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.3.7", dependencies="after:waila;required-after:Forge@[10.13.4.1557,)")
+@Mod(modid = "realfilingcabinet", name="Real Filing Cabinet", version="0.4.0", dependencies="after:waila;required-after:Forge@[10.13.4.1557,)")
 public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
@@ -49,6 +47,8 @@ public class RealFilingCabinet {
 	public static CommonProxy proxy;
 	@Mod.Instance(MOD_ID)
 	public static RealFilingCabinet instance;
+	
+	public static ConfigRFC config;
 	
 	public static Item itemFolder;
 	public static Item itemEmptyFolder;
@@ -60,6 +60,9 @@ public class RealFilingCabinet {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 
+		config = new ConfigRFC();
+		config.loadConfig(event);
+		
 		proxy.init();
 		RFCPacketHandler.init();
 		
@@ -87,15 +90,23 @@ public class RealFilingCabinet {
 	public void init(FMLInitializationEvent event) {
 		
 		proxy.registerRenderers();
+		OreDictRegistry.instance().init();
 		
-		GameRegistry.addRecipe(new ItemStack(itemFolder, 4, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.paper });
+		GameRegistry.addRecipe(new ItemStack(itemEmptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.paper });
 		GameRegistry.addShapedRecipe(new ItemStack(blockRFC), new Object[] { "III", "ICI", "III", 'I', Blocks.iron_bars, 'C', Blocks.chest });
 		GameRegistry.addShapedRecipe(new ItemStack(blockRFC), new Object[] { "III", "ICI", "III", 'I', Blocks.iron_bars, 'C', Blocks.trapped_chest });
 		GameRegistry.addRecipe(new ItemStack(itemWhiteoutTape), new Object[] { " P ", "PSP", "BP ", 'P', Items.paper, 'S', Items.slime_ball, 'B', new ItemStack(Items.dye, 1, 15) });
 		GameRegistry.addShapelessRecipe(new ItemStack(itemMagnifyingGlass), new Object[] { Items.stick, Blocks.glass_pane });
-		GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.log, 'C', Blocks.crafting_table, 'F', blockRFC });
-		GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.log2, 'C', Blocks.crafting_table, 'F', blockRFC });
-		GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 2), new Object[] { "OEO", "EFE", "OEO", 'O', Blocks.obsidian, 'E', Items.ender_eye, 'F', blockRFC });
+		
+		if (!config.craftingUpgrade)
+		{
+			GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.log, 'C', Blocks.crafting_table, 'F', blockRFC });
+			GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.log2, 'C', Blocks.crafting_table, 'F', blockRFC });
+		}
+		if (!config.enderUpgrade)
+			GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 2), new Object[] { "OEO", "EFE", "OEO", 'O', Blocks.obsidian, 'E', Items.ender_eye, 'F', blockRFC });
+		if (!config.oreDictUpgrade)
+			GameRegistry.addRecipe(new ItemStack(itemUpgrades, 1, 3), new Object[] { "GOG", "SFB", "GJG", 'G', Blocks.glass, 'O', new ItemStack(Blocks.planks, 1, 0), 'S', new ItemStack(Blocks.planks, 1, 1), 'B', new ItemStack(Blocks.planks, 1, 2), 'J', new ItemStack(Blocks.planks, 1, 3), 'F', blockRFC });
 		
 		GameRegistry.addRecipe(new FolderExtractRecipe());
 		GameRegistry.addRecipe(new FolderMergeRecipe());
@@ -111,11 +122,18 @@ public class RealFilingCabinet {
 			AspectsRFC.register();
 		if (Loader.isModLoaded("Waila"))
 			WailaRFC.register();
+		if (Loader.isModLoaded("appliedenergistics2"))
+			try {
+				AppliedEnergisticsRFC.register();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 	}
 	
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		
+		AppliedEnergisticsRFC.postInit();
 		MinecraftForge.EVENT_BUS.register(new GuiFileList(Minecraft.getMinecraft()));
 	}
 }

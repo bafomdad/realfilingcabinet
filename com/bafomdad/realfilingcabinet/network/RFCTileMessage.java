@@ -71,9 +71,7 @@ public class RFCTileMessage implements IMessage {
 					if (obj != null && obj instanceof EntityPlayerMP) 
 					{
 						EntityPlayerMP player = (EntityPlayerMP)obj;
-						if (player.inventory.hasItem(RealFilingCabinet.itemFolder))
-							this.processInventory(player, message.posX, message.posY, message.posZ, message.amount, message.index);
-							
+						this.processInventory(player, message.posX, message.posY, message.posZ, message.amount, message.index);	
 					}
 				}
 			}

@@ -10,9 +10,7 @@ item.realfilingcabinet.magnifyingglass.name=Magnifying Glass
 item.realfilingcabinet.upgrade_creative.name=Creative Upgrade
 item.realfilingcabinet.upgrade_crafting.name=Crafting Upgrade
 item.realfilingcabinet.upgrade_ender.name=Ender Upgrade
+item.realfilingcabinet.upgrade_oredict.name=OreDict Upgrade
 
 # BLOCKS
 tile.realfilingcabinet.realfilingcabinet.name=Filing Cabinet
-
-# INTEGRATION
-realfilingcabinet.waila.block=#%s: %s

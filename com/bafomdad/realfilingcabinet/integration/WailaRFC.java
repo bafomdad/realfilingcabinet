@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -48,13 +49,16 @@ public class WailaRFC {
 		@Override
 		public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 
+			if (accessor.getPlayer().getCurrentEquippedItem() != null && accessor.getPlayer().getCurrentEquippedItem().getItem() == RealFilingCabinet.itemMagnifyingGlass)
+				return currenttip;
+			
 			TileEntityRFC tile = (TileEntityRFC)accessor.getTileEntity();
 			for (int i = 0; i < tile.getSizeInventory() - 2; i++) {
 				
 				String name = "";
 				
 				ItemStack folder = tile.getStackInSlot(i);
-				if (folder != null)
+				if (folder != null && ItemFolder.getStack(folder) != null)
 				{
 					String stackName = ItemFolder.getStack(folder).getDisplayName();
 					int storedSize = ItemFolder.getFileSize(folder);

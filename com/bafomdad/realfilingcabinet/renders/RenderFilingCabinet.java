@@ -100,6 +100,10 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer {
 			{
 				GL11.glColor3f(0.65F, 0.3F, 0.65F);
 			}
+			if (te.isOreDict)
+			{
+				GL11.glColor3f(0.3F, 0.3F, 0.3F);
+			}
 		}
 		if (te.isAutoCraft)
 			bindTexture(craftingcabinet);

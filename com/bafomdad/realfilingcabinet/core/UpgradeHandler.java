@@ -40,6 +40,16 @@ public class UpgradeHandler {
 			if (!player.capabilities.isCreativeMode)
 				stack.stackSize--;
 		}
+		if (stack.getItemDamage() == 3)
+		{
+			if (tile.isOreDict)
+				return;
+			
+			tile.isOreDict = true;
+			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+			if (!player.capabilities.isCreativeMode)
+				stack.stackSize--;
+		}
 	}
 	
 	public static void dropUpgrade(TileEntityRFC tile) {
@@ -53,6 +63,45 @@ public class UpgradeHandler {
 		{
 			ItemStack stack = new ItemStack(RealFilingCabinet.itemUpgrades, 1, 2);
 			tile.getWorldObj().spawnEntityInWorld(new EntityItem(tile.getWorldObj(), tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, stack));
+		}
+		if (tile.isOreDict)
+		{
+			ItemStack stack = new ItemStack(RealFilingCabinet.itemUpgrades, 1, 3);
+			tile.getWorldObj().spawnEntityInWorld(new EntityItem(tile.getWorldObj(), tile.xCoord + 0.5, tile.yCoord + 0.5, tile.zCoord + 0.5, stack));
+		}
+	}
+	
+	public static void boinkOutUpgrade(TileEntityRFC tile, EntityPlayer player) {
+		
+		if (!player.canPlayerEdit(tile.xCoord, tile.yCoord, tile.zCoord, -1, player.getCurrentEquippedItem()))
+			return;
+		
+		if (tile.isAutoCraft)
+		{
+			tile.isAutoCraft = false;
+			ItemStack stack = new ItemStack(RealFilingCabinet.itemUpgrades, 1, 1);
+			if (!player.inventory.addItemStackToInventory(stack))
+				player.dropItem(stack.getItem(), 1);
+			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+			return;
+		}
+		if (tile.isEnder)
+		{
+			tile.isEnder = false;
+			ItemStack stack = new ItemStack(RealFilingCabinet.itemUpgrades, 1, 2);
+			if (!player.inventory.addItemStackToInventory(stack))
+				player.dropItem(stack.getItem(), 1);
+			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+			return;
+		}
+		if (tile.isOreDict)
+		{
+			tile.isOreDict = false;
+			ItemStack stack = new ItemStack(RealFilingCabinet.itemUpgrades, 1, 3);
+			if (!player.inventory.addItemStackToInventory(stack))
+				player.dropItem(stack.getItem(), 1);
+			tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+			return;
 		}
 	}
 }

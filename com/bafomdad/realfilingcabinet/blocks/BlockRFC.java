@@ -201,11 +201,16 @@ public class BlockRFC extends BlockContainer {
 					stack.setTagCompound(tag);
 					world.spawnEntityInWorld(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, stack));
 				}
-				if (((TileEntityRFC)te).isAutoCraft || ((TileEntityRFC)te).isEnder) {
+				if (hasUpgrades((TileEntityRFC)te)) {
 					UpgradeHandler.dropUpgrade((TileEntityRFC)te);
 				}
 			}
 		}
+	}
+	
+	private boolean hasUpgrades(TileEntityRFC tile) {
+		
+		return tile.isEnder || tile.isAutoCraft || tile.isOreDict;
 	}
 	
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {

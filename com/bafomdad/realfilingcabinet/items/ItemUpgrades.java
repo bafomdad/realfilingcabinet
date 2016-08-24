@@ -14,7 +14,7 @@ import net.minecraft.util.IIcon;
 
 public class ItemUpgrades extends Item {
 
-	public String[] upgradeTypes = new String[] { "upgrade_creative", "upgrade_crafting", "upgrade_ender" };
+	public String[] upgradeTypes = new String[] { "upgrade_creative", "upgrade_crafting", "upgrade_ender", "upgrade_oredict" };
 	public IIcon[] iconArray;
 	
 	public ItemUpgrades() {

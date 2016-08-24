@@ -108,30 +108,6 @@ public class ItemFolder extends Item {
 		}
 	}
 	
-//	@SubscribeEvent
-	public void updateFolderInCraftingWindow(TickEvent.PlayerTickEvent event) {
-		
-		if (event.player.openContainer == null)
-			return;
-		
-		Container cont = event.player.openContainer;
-		if (cont == event.player.inventoryContainer || cont instanceof ContainerWorkbench)
-		{
-			List listy = cont.getInventory();
-			for (int i = 0 ; i < listy.size(); i++) {
-				ItemStack folder = (ItemStack)listy.get(i);
-				if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder && folder.getItemDamage() == 1)
-				{
-					TileEntityRFC tile = getTileLoc(folder);
-					if (tile != null) {
-						StorageUtils.instance().syncToFolder(tile, folder, Utils.getInt(folder, TAG_SLOTINDEX, 0));
-						break;
-					}
-				}
-			}
-		}
-	}
-	
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {
 		
@@ -158,7 +134,8 @@ public class ItemFolder extends Item {
     	if (stacky != null)
     	{
     		int count = getFileSize(stack);
-    		list.add(count + " " + StatCollector.translateToLocal(stacky.getUnlocalizedName() + ".name"));
+//    		list.add(count + " " + StatCollector.translateToLocal(stacky.getUnlocalizedName() + ".name"));
+    		list.add(count + " " + stacky.getDisplayName());
     	}
     	
     	if (stack.getItemDamage() == 1 && stack.stackTagCompound.hasKey(TAG_SLOTINDEX))
@@ -173,15 +150,8 @@ public class ItemFolder extends Item {
     
     public ItemStack getContainerItem(ItemStack stack) {
     	
-//    	if (stack.getItemDamage() == 1)
-//    		return stack;
-    	
     	int count = getFileSize(stack);
     	
-//    	if (stack.getItemDamage() == 1 && getTileLoc(stack) != null)
-//    	{
-//    		StorageUtils.instance().syncBackToTile(getTileLoc(stack), stack, Utils.getInt(stack, TAG_SLOTINDEX, 0));
-//    	}
     	int extract = Math.min(64, count);
     	ItemStack copy = stack.copy();
     	remove(copy, extract);

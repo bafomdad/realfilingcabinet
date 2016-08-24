@@ -18,6 +18,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 
 import org.lwjgl.opengl.GL11;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -40,7 +41,7 @@ public class GuiFileList extends Gui {
 		Minecraft mc = Minecraft.getMinecraft();
 		Profiler profiler = mc.mcProfiler;
 		
-		if (event.type == ElementType.ALL)
+		if (event.type == ElementType.ALL && ConfigRFC.magnifyingGlassGui)
 		{
 			profiler.startSection("RFC-hud");
 			
@@ -87,7 +88,8 @@ public class GuiFileList extends Gui {
 				if (folderStack != null)
 				{
 					int count = ItemFolder.getFileSize(folder);
-					list.add(count + " " + StatCollector.translateToLocal(folderStack.getUnlocalizedName() + ".name"));
+//					list.add(count + " " + StatCollector.translateToLocal(folderStack.getUnlocalizedName() + ".name"));
+					list.add(count + " " + folderStack.getDisplayName());
 				}
 			}
 		}

@@ -47,10 +47,11 @@ public class ItemBlockRFC extends ItemBlock {
     		ItemStack folder = ItemStack.loadItemStackFromNBT(itemTag);
     		if (folder != null && folder.getItem() == RealFilingCabinet.itemFolder)
     		{
-    			String name = StatCollector.translateToLocal(ItemFolder.getStack(folder).getUnlocalizedName() + ".name");
+//    			String name = StatCollector.translateToLocal(ItemFolder.getStack(folder).getUnlocalizedName() + ".name");
+    			String name = ItemFolder.getStack(folder).getDisplayName();
     			int quantity = ItemFolder.getFileSize(folder);
     			
-    			list.add(quantity + "x " + name);
+    			list.add(quantity + " " + name);
     		}
 		}
 	}
