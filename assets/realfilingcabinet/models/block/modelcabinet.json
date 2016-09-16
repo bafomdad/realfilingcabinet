@@ -1,0 +1,7 @@
+{
+	"parent": "realfilingcabinet:block/shapes/filingcabinet",
+	"textures": {
+		"material": "realfilingcabinet:blocks/front",
+		"side": "realfilingcabinet:blocks/side"
+	}
+}

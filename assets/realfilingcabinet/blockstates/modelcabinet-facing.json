@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "facing=west,variant=default": { "model": "realfilingcabinet:modelcabinet", "y": 90 },
+        "facing=south,variant=default": { "model": "realfilingcabinet:modelcabinet" },
+        "facing=east,variant=default": { "model": "realfilingcabinet:modelcabinet", "y": 270 },
+        "facing=north,variant=default": { "model": "realfilingcabinet:modelcabinet", "y": 180 },
+		"facing=west,variant=autocraft": { "model": "realfilingcabinet:modelcabinet_autocraft", "y": 90 },
+        "facing=south,variant=autocraft": { "model": "realfilingcabinet:modelcabinet_autocraft" },
+        "facing=east,variant=autocraft": { "model": "realfilingcabinet:modelcabinet_autocraft", "y": 270 },
+        "facing=north,variant=autocraft": { "model": "realfilingcabinet:modelcabinet_autocraft", "y": 180 },
+		"facing=west,variant=ender": { "model": "realfilingcabinet:modelcabinet_ender", "y": 90 },
+        "facing=south,variant=ender": { "model": "realfilingcabinet:modelcabinet_ender" },
+        "facing=east,variant=ender": { "model": "realfilingcabinet:modelcabinet_ender", "y": 270 },
+        "facing=north,variant=ender": { "model": "realfilingcabinet:modelcabinet_ender", "y": 180 }
+    }
+}

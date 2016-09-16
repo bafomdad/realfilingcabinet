@@ -1,0 +1,17 @@
+# CREATIVE TAB
+itemGroup.realfilingcabinet.tabRFC.name=Real Filing Cabinet
+
+# ITEMS
+item.realfilingcabinet.folder_normal.name=Filing Folder
+item.realfilingcabinet.folder_ender.name=Ender Folder
+item.realfilingcabinet.emptyfolder.name=Empty Folder
+item.realfilingcabinet.whiteouttape.name=White Out Tape
+item.realfilingcabinet.magnifyingglass.name=Magnifying Glass
+item.realfilingcabinet.upgrade_creative.name=Creative Upgrade
+item.realfilingcabinet.upgrade_crafting.name=Crafting Upgrade
+item.realfilingcabinet.upgrade_ender.name=Ender Upgrade
+item.realfilingcabinet.upgrade_oredict.name=OreDict Upgrade
+item.realfilingcabinet.filter.name=Filing Cabinet Filter
+
+# BLOCKS
+tile.realfilingcabinet.filingcabinet.name=Filing Cabinet

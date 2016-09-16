@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "realfilingcabinet:filingcabinet",
+    "textures": {
+      "front": "realfilingcabinet:blocks/filingcabinet"
+    }
+  },
+	"variants": {
+		"normal": [{}],
+		"inventory": [{}],
+		"facing": {
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {},
+			"up": {},
+			"down": {}
+		}
+	}
+}

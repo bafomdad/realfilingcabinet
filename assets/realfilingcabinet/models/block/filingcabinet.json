@@ -1,0 +1,11 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"down": "realfilingcabinet:blocks/filingcabinet",
+		"up": "realfilingcabinet:blocks/filingcabinet",
+		"east": "realfilingcabinet:blocks/filingcabinet",
+		"west": "realfilingcabinet:blocks/filingcabinet",
+		"north": "realfilingcabinet:blocks/filingcabinet",
+		"south": "realfilingcabinet:blocks/filingcabinet"
+	}
+}
