@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
@@ -99,17 +100,23 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		
-		if (tile.isCabinetLocked())
-			return stack;
-		
-		if (getTrueStackInSlot(slot) != null)
-		{
-			if (ItemStack.areItemsEqual(stack, getStackFromFolder(slot))) {
-				ItemFolder.add(getTrueStackInSlot(slot), stack.stackSize);
-				return null;
-			}
-		}
-		return stack;
+        if (stack == null || stack.stackSize == 0)
+            return null;
+
+        validateSlotIndex(slot);
+
+        if (ItemStack.areItemsEqual(stack, getStackFromFolder(slot)))
+        {
+//        	System.out.println(ItemStack.areItemsEqual(stack, getStackFromFolder(slot)) + " / " + simulate);
+        	if (!simulate)
+        		ItemFolder.add(stacks[slot], stack.stackSize);
+        	else
+        		return null;
+        }
+        else if (!ItemStack.areItemsEqual(stack, getStackFromFolder(slot)))
+        	return stack;
+        
+        return null;
 	}
 	
 	@Override
@@ -135,7 +142,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	@Override
 	public void onContentsChanged(int slot) {
 		
-//		System.out.println("changed");
+		System.out.println("changed");
 	}
 
 	@Override
@@ -172,10 +179,6 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 		
 		validateSlotIndex(slot);
 		
-		if (slot == 9 || slot == 8)
-		{
-//			markDirty();
-		}
 		ItemStack stackFolder = getStackFromFolder(slot);
 		if (stackFolder != null)
 		{
@@ -265,7 +268,8 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 
-		return (slot == 8 && StorageUtils.simpleFolderMatch(tile, stack) != -1);
+		return ItemStack.areItemsEqual(stack, getStackFromFolder(slot));
+//		return (slot == 8 && StorageUtils.simpleFolderMatch(tile, stack) != -1);
 	}
 
 	@Override

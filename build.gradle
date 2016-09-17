@@ -1,21 +1,17 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceSets
 {
@@ -30,12 +26,14 @@ sourceSets
 //	}
 }
 
-version = "1.10.2-0.4.5"
+version = "1.10.2-0.4.6"
 group= "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
 minecraft {
     version = "1.10.2-12.18.1.2053"
+	
+	mappings = "snapshot_20160518"
 }
 processResources
 {
