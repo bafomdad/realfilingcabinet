@@ -16,7 +16,7 @@ public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
 	public static final String MOD_NAME = "Real Filing Cabinet";
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "0.4.5";
 	
 	@SidedProxy(clientSide="com.bafomdad.realfilingcabinet.proxies.ClientProxy", serverSide="com.bafomdad.realfilingcabinet.proxies.ServerProxy")
 	public static CommonProxy proxy;

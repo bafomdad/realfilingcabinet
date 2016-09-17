@@ -220,8 +220,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
 			UpgradeHelper.removeUpgrade(player, tileRFC);
-//			IBlockState newState = getNewBlockState(tileRFC);
-//			tileRFC.getWorld().setBlockState(tileRFC.getPos(), newState);
 			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 			return;
 		}
@@ -288,7 +286,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 				return;
 			}
-			if (stack.getItem() instanceof IFolder)
+			if (stack.getItem() instanceof IFolder && tileRFC.isOpen)
 			{
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
@@ -326,8 +324,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (stack.getItem() instanceof IUpgrades) {
 				
 				UpgradeHelper.setUpgrade(player, tileRFC, stack);
-//				IBlockState newState = getNewBlockState(tileRFC);
-//				tileRFC.getWorld().setBlockState(tileRFC.getPos(), newState);
 				tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 				return;
 			}
@@ -348,7 +344,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 			tileRFC.markBlockForUpdate();
 		}
-		if (player.isSneaking() && stack == null)
+		if (player.isSneaking() && stack == null && tileRFC.isOpen)
 		{
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 			{

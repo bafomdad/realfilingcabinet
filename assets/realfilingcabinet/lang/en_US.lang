@@ -12,8 +12,8 @@ item.realfilingcabinet.upgrade_crafting.name=Crafting Upgrade
 item.realfilingcabinet.upgrade_ender.name=Ender Upgrade
 item.realfilingcabinet.upgrade_oredict.name=OreDict Upgrade
 item.realfilingcabinet.filter.name=Filing Cabinet Filter
-item.realfilingcabinet.rfckey_master.name=Master Key (WIP)
-item.realfilingcabinet.rfckey_copy.name=Key Copy (WIP)
+item.realfilingcabinet.rfckey_master.name=Master Key
+item.realfilingcabinet.rfckey_copy.name=Key Copy
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet

@@ -91,8 +91,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
 			int slot = itemTag.getByte("Slot");
 			if (slot >= 0 && slot < inv.getSizeInventory()) {
-				ItemStack stack = inv.getTrueStackInSlot(slot);
-				stack = ItemStack.loadItemStackFromNBT(itemTag);
+				inv.getStacks()[slot] = ItemStack.loadItemStackFromNBT(itemTag);
 			}
 		}
 	}

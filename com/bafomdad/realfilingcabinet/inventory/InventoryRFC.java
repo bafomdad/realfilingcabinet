@@ -99,6 +99,9 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		
+		if (tile.isCabinetLocked())
+			return stack;
+		
 		if (getTrueStackInSlot(slot) != null)
 		{
 			if (ItemStack.areItemsEqual(stack, getStackFromFolder(slot))) {
@@ -113,18 +116,26 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		
 		ItemStack stackFolder = getStackFromFolder(slot);
+		if (stackFolder == null || tile.isCabinetLocked())
+			return null;
+		
 		long count = ItemFolder.getFileSize(getTrueStackInSlot(slot));
+		if (count == 0)
+			return null;
+		
 		long extract = Math.min(stackFolder.getMaxStackSize(), count);
 		amount = Math.min((int)extract, amount);
 		
-		ItemFolder.remove(getTrueStackInSlot(slot), amount);
+		if (!simulate)
+			ItemFolder.remove(getTrueStackInSlot(slot), amount);
+		
 		return new ItemStack(stackFolder.getItem(), amount, stackFolder.getItemDamage());
 	}
 	
 	@Override
 	public void onContentsChanged(int slot) {
 		
-		System.out.println("changed");
+//		System.out.println("changed");
 	}
 
 	@Override
@@ -310,5 +321,10 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 			}
 		}
 		return null;
+	}
+	
+	public ItemStack[] getStacks() {
+		
+		return stacks;
 	}
 }
