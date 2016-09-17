@@ -2,8 +2,12 @@ package com.bafomdad.realfilingcabinet.integration;
 
 import java.util.List;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -15,11 +19,6 @@ import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
-
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
 
 public class WailaRFC {
 	
@@ -65,6 +64,19 @@ public class WailaRFC {
 				if (!name.isEmpty())
 					currenttip.add(name);
 			}
+			String owner = "";
+			TileEntityRFC tileRFC = (TileEntityRFC)accessor.getTileEntity();
+			if (tileRFC.getOwner() != null)
+			{
+				EntityPlayer onlinePlayer = accessor.getPlayer().worldObj.getPlayerEntityByUUID(tileRFC.getOwner());
+				if (onlinePlayer != null)
+					owner = "Locked, owned by: " + onlinePlayer.getName();
+				else
+					owner = "Locked";
+			}
+			if (!owner.isEmpty())
+				currenttip.add(owner);
+			
 			return currenttip;
 		}
 

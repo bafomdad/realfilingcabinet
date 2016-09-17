@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,13 +17,17 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
-public class TileEntityRFC extends TileFilingCabinet implements ITickable {
+public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet {
 
-	public InventoryRFC inv = new InventoryRFC(this, 10);
+	private InventoryRFC inv = new InventoryRFC(this, 10);
+	private UUID owner;
 	
 	// MISC variables
 	private long lastClickTime;
@@ -48,8 +51,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable {
 				offset = -0.75F;
 		} else {
 			offset += offsetSpeed;
-			if (offset >= 0.0F)
-				offset = 0.0F;
+			if (offset >= 0.05F)
+				offset = 0.05F;
 		}
 	}
 	
@@ -64,6 +67,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable {
 		
 		tag.setTag("inventory", inv.serializeNBT());
 		tag.setBoolean("isOpen", this.isOpen);
+		
+		if (owner != null)
+			tag.setString("Own", owner.toString());
 	}
 	
 	@Override
@@ -71,6 +77,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable {
 		
 		inv.deserializeNBT(tag.getCompoundTag("inventory"));
 		this.isOpen = tag.getBoolean("isOpen");
+		
+		this.owner = null;
+		if (tag.hasKey("Own"))
+			owner = UUID.fromString(tag.getString("Own"));
 	}
 	
 	public void readInv(NBTTagCompound nbt) {
@@ -157,5 +167,48 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable {
 			return (T) inv;
 		
 		return super.getCapability(cap, side);
+	}
+
+	@Override
+	public UUID getOwner() {
+
+		return owner;
+	}
+
+	@Override
+	public boolean setOwner(UUID owner) {
+
+		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner)))
+		{
+			this.owner = owner;
+			
+			if (worldObj != null && !worldObj.isRemote) {
+				
+				markDirty();
+				this.markBlockForUpdate();
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isCabinetLocked() {
+
+		return getOwner() != null;
+	}
+	
+	public boolean hasKeyCopy(EntityPlayer player, UUID uuid) {
+		
+		for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+			ItemStack keyCopy = player.inventory.mainInventory[i];
+			if (keyCopy == null)
+				continue;
+			if (keyCopy.getItem() == RFCItems.keys && keyCopy.getItemDamage() == 1) {
+				if (keyCopy.hasTagCompound() && keyCopy.getTagCompound().hasKey(StringLibs.RFC_COPY)) {
+					return uuid.equals(UUID.fromString(NBTUtils.getString(keyCopy, StringLibs.RFC_COPY, "")));
+				}
+			}
+		}
+		return false;
 	}
 }

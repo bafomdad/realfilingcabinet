@@ -26,6 +26,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,6 +41,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemKeys;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
@@ -206,6 +208,15 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		
+		if (tileRFC.isCabinetLocked()) {
+			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			{
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				{
+					return;
+				}
+			}
+		}
 		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
 			UpgradeHelper.removeUpgrade(player, tileRFC);
@@ -242,12 +253,41 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		
+		if (tileRFC.isCabinetLocked()) {
+			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			{
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				{
+					return;
+				}
+			}
+		}
 		if (tileRFC.calcLastClick(player))
 		{
 			StorageUtils.addAllStacksManually(tileRFC, player);
 		}
 		if (!player.isSneaking() && stack != null)
 		{
+			if (stack.getItem() instanceof ItemKeys)
+			{
+				if (!tileRFC.isCabinetLocked()) {
+					if (stack.getItemDamage() == 0)
+						tileRFC.setOwner(player.getUniqueID());
+				}
+				else {
+					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 0) {
+						tileRFC.setOwner(null);
+						return;
+					}
+					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
+						if (stack.hasTagCompound() && !stack.getTagCompound().hasKey(StringLibs.RFC_COPY)) {
+							NBTUtils.setString(stack, StringLibs.RFC_COPY, player.getUniqueID().toString());
+							NBTUtils.setString(stack, StringLibs.RFC_FALLBACK, player.getDisplayNameString());
+						}
+					}
+				}
+				return;
+			}
 			if (stack.getItem() instanceof IFolder)
 			{
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
@@ -329,21 +369,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		}
 	}
 	
-//	private IBlockState getNewBlockState(TileEntityRFC tile) {
-//		
-//		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-//		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_ENDER) != null)
-//			return state.withProperty(RFC_VARIANT, FilingCabinetVariant.ENDER);
-//		
-//		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
-//			return state.withProperty(RFC_VARIANT, FilingCabinetVariant.AUTOCRAFT);
-//		
-//		if (!UpgradeHelper.hasUpgrade(tile))
-//			return state.withProperty(RFC_VARIANT, FilingCabinetVariant.DEFAULT);
-//		
-//		return state;
-//	}
-	
 	@Override
 	public void entityCollisionInteraction(World world, BlockPos pos, IBlockState state, Entity entity) {}
 	
@@ -378,9 +403,14 @@ public class BlockRFC extends Block implements IFilingCabinet {
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 	
-//	@Override
-//	public IProperty[] getIgnoredProperties() {
-//		
-//		return new IProperty[] { RFC_VARIANT };
-//	}
+	@Override
+    public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos) {
+		
+		TileEntityRFC tileRFC = (TileEntityRFC)world.getTileEntity(pos);
+		if (tileRFC != null && tileRFC.isCabinetLocked()) {
+			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+				return -1.0F;
+		}
+		return ForgeHooks.blockStrength(state, player, world, pos);
+	}
 }

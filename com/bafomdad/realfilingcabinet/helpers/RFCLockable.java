@@ -1,23 +1,25 @@
 package com.bafomdad.realfilingcabinet.helpers;
 
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.LockCode;
 
-public class RFCLockable {
+public class RFCLockable extends TileFilingCabinet {
 
 	private LockCode code = LockCode.EMPTY_CODE;
 	
-	public void readFromNBT(NBTTagCompound tag) {
+	@Override
+	public void readCustomNBT(NBTTagCompound tag) {
 		
 		code = LockCode.fromNBT(tag);
 	}
 	
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+	@Override
+	public void writeCustomNBT(NBTTagCompound tag) {
 		
 		if (code != null)
 			code.toNBT(tag);
-		
-		return tag;
 	}
 	
 	public boolean isLocked() {

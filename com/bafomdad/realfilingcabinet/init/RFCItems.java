@@ -19,6 +19,7 @@ public class RFCItems {
 	public static ItemWhiteoutTape whiteoutTape;
 	public static ItemUpgrades upgrades;
 	public static ItemFilter filter;
+	public static ItemKeys keys;
 	
 	public static void init() {
 		
@@ -28,6 +29,7 @@ public class RFCItems {
 		whiteoutTape = new ItemWhiteoutTape();
 		upgrades = new ItemUpgrades();
 		filter = new ItemFilter();
+		keys = new ItemKeys();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -40,6 +42,9 @@ public class RFCItems {
 		
 		ModelLoader.setCustomModelResourceLocation(folder, 0, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[0], "inventory"));
 		ModelLoader.setCustomModelResourceLocation(folder, 1, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[1], "inventory"));
+		
+		ModelLoader.setCustomModelResourceLocation(keys, 0, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[0], "inventory"));
+		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));
 		
 		for (int i = 0; i < upgrades.upgradeTypes.length; ++i)
 			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + upgrades.upgradeTypes[i], "inventory"));

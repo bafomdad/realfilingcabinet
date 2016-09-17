@@ -33,7 +33,6 @@ public class RealFilingCabinet {
 		config = new ConfigRFC();
 		config.loadconfig(event);
 		logger = event.getModLog();
-//		MinecraftForge.EVENT_BUS.register(proxy);
 		proxy.preInit(event);
 		proxy.initAllModels();
 	}

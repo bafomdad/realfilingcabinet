@@ -1,22 +1,19 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.items.ItemStackHandler;
+
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IInventoryRFC;
 import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 	
@@ -166,7 +163,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventoryRFC {
 		
 		if (slot == 9 || slot == 8)
 		{
-			markDirty();
+//			markDirty();
 		}
 		ItemStack stackFolder = getStackFromFolder(slot);
 		if (stackFolder != null)

@@ -9,22 +9,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RFCRecipes {
 
 	public static void init() {
 		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
-		GameRegistry.addShapedRecipe(new ItemStack(RFCBlocks.blockRFC), new Object[] { "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', Blocks.CHEST });
-//		GameRegistry.addShapedRecipe(new ItemStack(RFCBlocks.blockRFC), new Object[] { "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', Blocks.TRAPPED_CHEST });
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
 		GameRegistry.addRecipe(new ItemStack(RFCItems.whiteoutTape), new Object[] { " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', Items.SLIME_BALL, 'B', new ItemStack(Items.DYE, 1, 15) });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.magnifyingGlass), new Object[] { "G  ", " S ", "   ", 'S', Items.STICK, 'G', Blocks.GLASS_PANE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.filter), new Object[] { "RRR", " R ", " R ", 'R', new ItemStack(Items.DYE, 1, 1) });
 		
+//		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 0), new Object[] { "  N", " N ", "I  ", 'N', Items.GOLD_NUGGET, 'I', Items.GOLD_INGOT });
+//		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 1), new Object[] { "  C", " C ", "B  ", 'C', Items.CLAY_BALL, 'B', Items.BRICK });
+		
 		if (ConfigRFC.craftingUpgrade)
 		{
-			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.LOG, 'C', Blocks.CRAFTING_TABLE, 'F', RFCBlocks.blockRFC });
-			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 1), new Object[] { "LCL", "CFC", "LCL", 'L',  Blocks.LOG2, 'C', Blocks.CRAFTING_TABLE, 'F', RFCBlocks.blockRFC });
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.upgrades, 1, 1), "LCL", "CFC", "LCL", 'L', "logWood", 'C', "workbench", 'F', RFCBlocks.blockRFC ));
 		}
 		if (ConfigRFC.enderUpgrade)
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 2), new Object[] { "OEO", "EFE", "OEO", 'O', Blocks.OBSIDIAN, 'E', Items.ENDER_EYE, 'F', RFCBlocks.blockRFC });

@@ -68,7 +68,7 @@ public class RFCTileMessage implements IMessage {
 			{
 				ItemStack folder = tile.getInventory().getTrueStackInSlot(message.index);
 				if (folder != null) {
-					System.out.println("Amount: " + message.amount);
+//					System.out.println("Amount: " + message.amount);
 					ItemFolder.remove(folder, message.amount);
 					ItemFolder.extractSize = 0;
 				}
