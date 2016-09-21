@@ -126,7 +126,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		}
 	}
 	
-	@SubscribeEvent
+/*	@SubscribeEvent
 	public void mouseWheelEvent(GuiScreenEvent.MouseInputEvent.Pre event) {
 		
 		int wheel = Mouse.getEventDWheel();
@@ -150,5 +150,6 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 				}
 			}
 		}
-	}
+	} 
+	*/
 }

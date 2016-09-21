@@ -21,6 +21,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.FakeInventory;
+import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class AutocraftingUtils {
@@ -104,6 +105,9 @@ public class AutocraftingUtils {
 		
 		for (int i = 0; i < inv.getSizeInventory() - 2; i++) {
 			ItemStack folder = inv.getStackInSlot(i);
+			if (inv instanceof InventoryRFC)
+				folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
+			
 			if (folder != null && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) != null && stack.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
 					if (ItemFolder.getFileSize(folder) > 0)
@@ -112,8 +116,9 @@ public class AutocraftingUtils {
 						
 						ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
 						if (container != null && !(inv instanceof FakeInventory)) {
-							if (!shuntContainerItem(container, inv))
-								shuntContainerItemOutside(container, inv);
+							if (!shuntContainerItem(container, (InventoryRFC)inv)) {
+								shuntContainerItemOutside(container, (InventoryRFC)inv);
+							}
 						}
 						
 						if (consume) {
@@ -131,8 +136,8 @@ public class AutocraftingUtils {
 	
 	private static boolean shuntContainerItem(ItemStack container, IInventory inv) {
 		
-		for (int i = 0; i < inv.getSizeInventory() - 2; i++) {
-			ItemStack folder = inv.getStackInSlot(i);
+		for (int i = 0; i < inv.getSizeInventory(); i++) {
+			ItemStack folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) != null && container.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
 					ItemFolder.add(folder, 1);
@@ -145,7 +150,7 @@ public class AutocraftingUtils {
 	
 	private static void shuntContainerItemOutside(ItemStack container, IInventory inv) {
 		
-		TileEntityRFC tile = (TileEntityRFC)inv;
+		TileEntityRFC tile = ((InventoryRFC)inv).getTile();
 		
 		EntityItem ei = new EntityItem(tile.getWorld(), tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5, container);
 		tile.getWorld().spawnEntityInWorld(ei);
@@ -190,6 +195,7 @@ public class AutocraftingUtils {
 				}
 			}
 			return items;
+			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {

@@ -17,7 +17,7 @@ public class RFCRecipes {
 		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
-		GameRegistry.addRecipe(new ItemStack(RFCItems.whiteoutTape), new Object[] { " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', Items.SLIME_BALL, 'B', new ItemStack(Items.DYE, 1, 15) });
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.whiteoutTape), " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', "slimeball", 'B', new ItemStack(Items.DYE, 1, 15) ));
 		GameRegistry.addRecipe(new ItemStack(RFCItems.magnifyingGlass), new Object[] { "G  ", " S ", "   ", 'S', Items.STICK, 'G', Blocks.GLASS_PANE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.filter), new Object[] { "RRR", " R ", " R ", 'R', new ItemStack(Items.DYE, 1, 1) });
 		
@@ -32,6 +32,9 @@ public class RFCRecipes {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 2), new Object[] { "OEO", "EFE", "OEO", 'O', Blocks.OBSIDIAN, 'E', Items.ENDER_EYE, 'F', RFCBlocks.blockRFC });
 		if (ConfigRFC.oreDictUpgrade)
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 3), new Object[] { "GOG", "SFB", "GJG", 'G', Blocks.GLASS, 'O', new ItemStack(Blocks.PLANKS, 1, 0), 'S', new ItemStack(Blocks.PLANKS, 1, 1), 'B', new ItemStack(Blocks.PLANKS, 1, 2), 'J', new ItemStack(Blocks.PLANKS, 1, 3), 'F', RFCBlocks.blockRFC });
+		
+		if (ConfigRFC.nametagRecipe)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.NAME_TAG), " PP", " BP", "S  ", 'P', Items.PAPER, 'B', "slimeball", 'S', Items.STRING ));
 		
 		GameRegistry.addRecipe(new FolderExtractRecipe());
 		GameRegistry.addRecipe(new FolderStorageRecipe());

@@ -30,6 +30,7 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 	private static final ResourceLocation filingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
 	private static final ResourceLocation endercabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/endercabinet.png");
 	private static final ResourceLocation craftingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/craftingcabinet.png");
+	private static final ResourceLocation oredictcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/oredictcabinet.png");
 	
 	public OldRenderFilingCabinet() {
 		
@@ -45,16 +46,16 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 	private void renderFilingCabinet(TileEntityRFC te, double x, double y, double z) {
 
 		float f = 0.0625F;
-
-		IBlockState state = te.getWorld().getBlockState(te.getPos());
-		int angle = state.getValue(BlockHorizontal.FACING).getIndex();
-		
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
-		GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 		
 		if (te != null && te.getWorld() != null)
 		{
+			IBlockState state = te.getWorld().getBlockState(te.getPos());
+			int angle = state.getValue(BlockHorizontal.FACING).getIndex();
+			
+			GlStateManager.pushMatrix();
+			GlStateManager.translate((float)x, (float)y, (float)z);
+			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+			
 			switch (angle)
 			{
 				case 5: GlStateManager.rotate(270, 0, 1, 0); break;
@@ -70,7 +71,7 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 				
 				for (int i = 0; i < te.getInventory().getSizeInventory() - 2; i++) {
-					if (te.getInventory().getStackInSlot(i) != null)
+					if (te.getInventory().getTrueStackInSlot(i) != null)
 					{	
 						GlStateManager.translate(0.0F, -0.0025F, 0.1F);
 						
@@ -86,20 +87,18 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 			{
 				GlStateManager.color(0.65F, 0.3F, 0.65F);
 			}
+			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_CRAFT) != null)
+				bindTexture(craftingcabinet);
+			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_ENDER) != null)
+				bindTexture(endercabinet);
 			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_OREDICT) != null)
-			{
-				GlStateManager.color(0.3F, 0.3F, 0.3F);
-			}
+				bindTexture(oredictcabinet);
+			if (!UpgradeHelper.hasUpgrade(te))
+				bindTexture(filingcabinet);
+			model.render(te, f);
+			
+			GlStateManager.popMatrix();
 		}
-		if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_CRAFT) != null)
-			bindTexture(craftingcabinet);
-		if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_ENDER) != null)
-			bindTexture(endercabinet);
-		if (!UpgradeHelper.hasUpgrade(te))
-			bindTexture(filingcabinet);
-		model.render(te, f);
-		
-		GlStateManager.popMatrix();
 	}
 	
 	private void renderFolders(ItemStack stack) {

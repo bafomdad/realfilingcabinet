@@ -8,7 +8,8 @@ public enum FilingCabinetVariant implements IStringSerializable {
 	
 	DEFAULT(0),
 	AUTOCRAFT(1),
-	ENDER(2);
+	ENDER(2),
+	OREDICT(3);
 	
 	private static final FilingCabinetVariant[] TYPE_LOOKUP = new FilingCabinetVariant[values().length];
 	private final int meta;

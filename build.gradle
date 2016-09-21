@@ -18,7 +18,7 @@ sourceSets
 	main
 	{
 		java { srcDirs = ["$projectDir/"] }
-		resources { ["$projectDir"] }
+		resources { ["$projectDir/"] }
 	}
 //	api
 //	{
@@ -26,14 +26,17 @@ sourceSets
 //	}
 }
 
-version = "1.10.2-0.4.6"
-group= "com.bafomdad.realfilingcabinet"
+version = "1.10.2-0.4.8"
+group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
 minecraft {
     version = "1.10.2-12.18.1.2053"
-	
-	mappings = "snapshot_20160518"
+	mappings = "snapshot_20160519"
+	makeObfSourceJar = false
+}
+dependencies {
+
 }
 processResources
 {

@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,6 +17,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
@@ -26,7 +28,7 @@ import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet {
 
-	private InventoryRFC inv = new InventoryRFC(this, 10);
+	private InventoryRFC inv = new InventoryRFC(this, 8);
 	private UUID owner;
 	
 	// MISC variables
@@ -133,6 +135,20 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		return bool;
 	}
 	
+	public boolean hasItemFrame() {
+		
+		AxisAlignedBB aabb = new AxisAlignedBB(pos.add(0, 1, 0), pos.add(1, 2, 1));
+		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
+		for (EntityItemFrame frame : frames) {
+			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
+			IBlockState state = worldObj.getBlockState(getPos());
+			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
+			
+			return frame != null && orientation == rfcOrientation;
+		}
+		return false;
+	}
+	
 	public ItemStack getFilter() {
 		
 		AxisAlignedBB aabb = new AxisAlignedBB(pos.add(0, 1, 0), pos.add(1, 2, 1));
@@ -162,9 +178,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
 		
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T) inv;
-		
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return (T) (IInventory)inv;
+		}
 		return super.getCapability(cap, side);
 	}
 

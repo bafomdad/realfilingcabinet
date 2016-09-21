@@ -155,7 +155,7 @@ public class EnderUtils {
 		}
 		else
 		{
-			for (int i = 0; i < tile.getInventory().getFolderInventory(); i++) {
+			for (int i = 0; i < tile.getInventory().getSizeInventory(); i++) {
 				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 				if (folder != null)
 				{
@@ -170,7 +170,7 @@ public class EnderUtils {
 	private static int findNextFolder(TileEntityRFC tile, int slot) {
 		
 		int index = -1;
-		for (int i = slot; i < tile.getInventory().getFolderInventory(); i++) {
+		for (int i = slot; i < tile.getInventory().getSizeInventory(); i++) {
 			ItemStack stack = tile.getInventory().getStackInSlot(i);
 			if (stack != null) {
 				index = i;

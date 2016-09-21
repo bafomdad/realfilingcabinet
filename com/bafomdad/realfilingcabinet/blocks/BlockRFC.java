@@ -42,6 +42,7 @@ import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
+import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
@@ -308,7 +309,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
-					for (int i = 0; i < tileRFC.getInventory().getFolderInventory(); i++)
+					for (int i = 0; i < tileRFC.getInventory().getSizeInventory(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
 						if (tileStack == null)
@@ -322,7 +323,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 			}
 			if (stack.getItem() instanceof IUpgrades) {
-				
 				UpgradeHelper.setUpgrade(player, tileRFC, stack);
 				tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 				return;
@@ -345,13 +345,13 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			tileRFC.markBlockForUpdate();
 		}
 		if (player.isSneaking() && stack == null && tileRFC.isOpen)
-		{
+		{		
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 			{
 				EnderUtils.extractEnderFolder(tileRFC, player);
 				return;
 			}
-			for (int i = tileRFC.getInventory().getFolderInventory(); i >= 0; i--)
+			for (int i = tileRFC.getInventory().getSizeInventory() - 1; i >= 0; i--)
 			{
 				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
 				if (folder != null)

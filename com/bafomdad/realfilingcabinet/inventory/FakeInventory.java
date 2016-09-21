@@ -82,11 +82,11 @@ public class FakeInventory implements IInventory {
 		return true;
 	}
 	
-	public void copyFrom(IInventory inventory) {
+	public void copyFrom(InventoryRFC inventory) {
 		
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if (i < getSizeInventory()) {
-				ItemStack stack = inventory.getStackInSlot(i);
+				ItemStack stack = inventory.getTrueStackInSlot(i);
 				if (stack != null)
 					setInventorySlotContents(i, stack.copy());
 				else setInventorySlotContents(i, null);

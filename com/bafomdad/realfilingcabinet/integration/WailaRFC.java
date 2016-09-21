@@ -50,7 +50,7 @@ public class WailaRFC {
 		public List<String> getWailaBody(ItemStack stack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 
 			InventoryRFC inv = ((TileEntityRFC)accessor.getTileEntity()).getInventory();
-			for (int i = 0; i < inv.getFolderInventory(); i++) {
+			for (int i = 0; i < inv.getSizeInventory(); i++) {
 				
 				String name = "";
 				ItemStack folder = inv.getTrueStackInSlot(i);
