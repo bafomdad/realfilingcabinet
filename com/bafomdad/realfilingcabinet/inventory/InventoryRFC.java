@@ -6,10 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.LogRFC;
-import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.common.IFolder;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -46,11 +45,15 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 
         validateSlotIndex(slot);
 
-        if (ItemStack.areItemsEqual(stack, getStackFromFolder(slot)))
+//      if (ItemStack.areItemsEqual(stack, this.getStackFromFolder(slot)))
+        if (StorageUtils.simpleFolderMatch(tile, stack) != -1)
         {
+        	slot = StorageUtils.simpleFolderMatch(tile, stack);
         	if (!simulate) {
         		ItemFolder.add(stacks[slot], stack.stackSize);
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
+        		
+            	return null;
         	}
         	return null;
         }
@@ -62,7 +65,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 		
 		LogRFC.debug("Extraction slot: " + slot + " / Extraction amount: " + amount + " / " + simulate);
 		
-		ItemStack stackFolder = getStackFromFolder(slot);
+		ItemStack stackFolder = this.getStackFromFolder(slot);
 		if (stackFolder == null || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
 			return null;
 		
@@ -74,7 +77,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 			int i = StorageUtils.simpleFolderMatch(tile, tile.getFilter());
 			if (i != -1 && slot == i)
 			{
-				stackFolder = getStackFromFolder(i);
+				stackFolder = this.getStackFromFolder(i);
 				long filterCount = ItemFolder.getFileSize(getTrueStackInSlot(i));
 				if (filterCount == 0)
 					return null;
@@ -101,7 +104,6 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 			ItemFolder.remove(getTrueStackInSlot(slot), amount);
     		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 		}
-		
 		return new ItemStack(stackFolder.getItem(), amount, stackFolder.getItemDamage());
 	}
 	
@@ -138,8 +140,10 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 			
 			long extract = Math.min(stackFolder.getMaxStackSize(), count);
 			stackFolder.stackSize = (int)extract;
+			
+			return stackFolder;
 		}
-		return stackFolder;
+		return null;
 	}
 
 	@Override
@@ -218,8 +222,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 
-		return ItemStack.areItemsEqual(stack, getStackFromFolder(slot));
-//		return (slot == 8 && StorageUtils.simpleFolderMatch(tile, stack) != -1);
+		return ItemStack.areItemsEqual(stack, this.getStackFromFolder(slot));
 	}
 
 	@Override

@@ -18,7 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.helper.ResourceUpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -27,10 +28,10 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 
 	final ModelFilingCabinet model;
 
-	private static final ResourceLocation filingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
-	private static final ResourceLocation endercabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/endercabinet.png");
-	private static final ResourceLocation craftingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/craftingcabinet.png");
-	private static final ResourceLocation oredictcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/oredictcabinet.png");
+//	private static final ResourceLocation filingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
+//	private static final ResourceLocation endercabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/endercabinet.png");
+//	private static final ResourceLocation craftingcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/craftingcabinet.png");
+//	private static final ResourceLocation oredictcabinet = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/oredictcabinet.png");
 	
 	public OldRenderFilingCabinet() {
 		
@@ -87,14 +88,19 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 			{
 				GlStateManager.color(0.65F, 0.3F, 0.65F);
 			}
-			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_CRAFT) != null)
-				bindTexture(craftingcabinet);
-			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_ENDER) != null)
-				bindTexture(endercabinet);
-			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_OREDICT) != null)
-				bindTexture(oredictcabinet);
-			if (!UpgradeHelper.hasUpgrade(te))
-				bindTexture(filingcabinet);
+//			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_CRAFT) != null)
+//				bindTexture(craftingcabinet);
+//			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_ENDER) != null)
+//				bindTexture(endercabinet);
+//			if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_OREDICT) != null)
+//				bindTexture(oredictcabinet);
+//			if (!UpgradeHelper.hasUpgrade(te))
+//				bindTexture(filingcabinet);
+			if (UpgradeHelper.hasUpgrade(te))
+				bindTexture(ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.getTileData().getString(StringLibs.RFC_UPGRADE))));
+			else
+				bindTexture(ResourceUpgradeHelper.getDefault())
+				;
 			model.render(te, f);
 			
 			GlStateManager.popMatrix();

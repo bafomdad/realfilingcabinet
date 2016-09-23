@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
-import com.bafomdad.realfilingcabinet.api.IUpgrades;
+import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;

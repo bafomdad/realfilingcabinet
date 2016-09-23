@@ -33,10 +33,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
-import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.api.IUpgrades;
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
+import com.bafomdad.realfilingcabinet.api.common.IFolder;
+import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -220,8 +220,9 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		}
 		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
-			UpgradeHelper.removeUpgrade(player, tileRFC);
-			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
+			if (!tileRFC.getWorld().isRemote)
+				UpgradeHelper.removeUpgrade(player, tileRFC);
+			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tileRFC.getWorld(), tileRFC.getPos());
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
@@ -324,7 +325,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 			if (stack.getItem() instanceof IUpgrades) {
 				UpgradeHelper.setUpgrade(player, tileRFC, stack);
-				tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
+				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tileRFC.getWorld(), tileRFC.getPos());
 				return;
 			}
 			else

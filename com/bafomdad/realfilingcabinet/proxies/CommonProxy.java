@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.events.EventHandlerServer;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.*;
@@ -40,7 +40,7 @@ public class CommonProxy {
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 2), StringLibs.TAG_ENDER);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 3), StringLibs.TAG_OREDICT);
 		
-//		GameRegistry.registerWorldGenerator(new TutorialGenerator(), 1);
+		GameRegistry.registerWorldGenerator(new TutorialGenerator(), 1);
 	}
 	
 	public void postInit(FMLPostInitializationEvent event) {

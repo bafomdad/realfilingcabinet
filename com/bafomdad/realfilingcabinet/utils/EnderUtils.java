@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -28,13 +28,13 @@ public class EnderUtils {
 			ItemFolder.setFileSize(stack, folderSize);
 	}
 	
-	public static void syncToFolder(TileEntityRFC tile, int dim, int index, int extractedAmount) {
+	public static void syncToFolder(TileEntityRFC tile, int dim, int index, int amount, boolean subtract) {
 		
 		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
 		if (folder.getItem() != RFCItems.folder)
 			return;
 		
-		RFCPacketHandler.INSTANCE.sendToServer(new RFCTileMessage(tile.getPos(), dim, extractedAmount, index));
+		RFCPacketHandler.INSTANCE.sendToServer(new RFCTileMessage(tile.getPos(), dim, amount, index, subtract));
 	}
 	
 	public static int syncRecipeOutput(ItemStack folder, ItemStack output) {
@@ -118,11 +118,17 @@ public class EnderUtils {
 	public static TileEntityRFC findLoadedTileEntityInWorld(BlockPos pos, int dim) {
 		
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		for (WorldServer world : server.worldServers){
+		if (server == null)
+			return null;
+		
+		if (pos.getY() == -1)
+			return null;
+		
+		for (WorldServer world : server.worldServers) {
 			for (Object obj : world.loadedTileEntityList) {
 				if (obj instanceof TileEntityRFC)
 				{
-					if (world.provider.getDimension() == dim && UpgradeHelper.getUpgrade((TileEntityRFC)obj, StringLibs.TAG_ENDER) != null)
+					if (world.provider.getDimension() == dim && pos.equals(((TileEntityRFC)obj).getPos()) && UpgradeHelper.getUpgrade((TileEntityRFC)obj, StringLibs.TAG_ENDER) != null)
 						return (TileEntityRFC)world.getTileEntity(pos);
 				}
 			}

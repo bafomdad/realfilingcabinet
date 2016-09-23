@@ -120,7 +120,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		{
 			if (foldy != null)
 			{
-				EnderUtils.syncToFolder(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize);
+				EnderUtils.syncToFolder(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
 			}
 			canSync = false;
 		}

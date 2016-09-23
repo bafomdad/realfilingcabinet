@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.api.common.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
@@ -44,27 +44,11 @@ public class ItemFolder extends Item implements IFolder {
 		setMaxDamage(0);
 		setMaxStackSize(1);
 		GameRegistry.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		
 		return getUnlocalizedName() + "_" + folderTypes[stack.getItemDamage()];
-	}
-	
-	@SubscribeEvent
-	public void onMergeFolders(PlayerEvent.ItemCraftedEvent event) {
-		
-		if (event.crafting.getItem() == this)
-		{
-			for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
-				ItemStack stack = event.craftMatrix.getStackInSlot(slot);
-				if (stack == null)
-					continue;
-				if (stack.getItem() == this && stack.getItemDamage() == 0)
-					event.craftMatrix.setInventorySlotContents(slot, null);
-			}
-		}
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
@@ -177,13 +161,21 @@ public class ItemFolder extends Item implements IFolder {
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {
-			ItemStack stackToPlace = new ItemStack(((ItemStack)getObject(stack)).getItem());
-			stackToPlace.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
-			
-			if (stackToPlace.stackSize == 0) {
-				remove(stack, 1);
-				return EnumActionResult.SUCCESS;
+		if (getObject(stack) != null && ((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {
+			long count = ItemFolder.getFileSize(stack);
+			if (count > 0)
+			{
+				ItemStack stackToPlace = new ItemStack(((ItemStack)getObject(stack)).getItem(), 1, ((ItemStack)getObject(stack)).getItemDamage());
+				stackToPlace.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+				
+				if (stackToPlace.stackSize == 0) {
+					if (stack.getItemDamage() == 1 && !world.isRemote)
+						EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+					else
+						remove(stack, 1);
+					
+					return EnumActionResult.SUCCESS;
+				}
 			}
 		}
 		return EnumActionResult.PASS;

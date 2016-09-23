@@ -19,7 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
+import com.bafomdad.realfilingcabinet.api.common.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -179,7 +179,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
 		
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return (T) (IInventory)inv;
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);
 		}
 		return super.getCapability(cap, side);
 	}

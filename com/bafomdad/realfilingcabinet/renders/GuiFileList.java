@@ -6,7 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
-import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.api.common.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;

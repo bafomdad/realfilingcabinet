@@ -1,0 +1,127 @@
+package com.bafomdad.realfilingcabinet.events;
+
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
+
+public class EventHandlerServer {
+
+	@SubscribeEvent
+	public void itemFrameInteract(EntityInteract event) {
+		
+		if (event.getEntityPlayer() != null && (event.getTarget() != null && event.getTarget() instanceof EntityItemFrame)) {
+			EntityItemFrame frame = (EntityItemFrame)event.getTarget();
+			if (frame.getDisplayedItem() != null && frame.getDisplayedItem().getItem() == RFCItems.filter)
+			{
+				int rotation = frame.getRotation() + 1;
+				if (rotation > 7)
+					rotation = 0;
+				
+				TileEntity tile = frame.worldObj.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
+				if (tile != null && tile instanceof TileEntityRFC) {
+					TileEntityRFC tileRFC = (TileEntityRFC)tile;
+					ItemStack stack = tileRFC.getInventory().getStackFromFolder(rotation);
+					if (stack != null)
+						frame.getDisplayedItem().setStackDisplayName(stack.getDisplayName());
+					else if (stack == null && frame.getDisplayedItem().hasDisplayName())
+						frame.getDisplayedItem().clearCustomName();
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void rightClickWithShield(PlayerInteractEvent.RightClickBlock event) {
+		
+		if (event.getSide() == Side.CLIENT)
+			return;
+		
+		ItemStack mainhand = event.getEntityPlayer().getHeldItemMainhand();
+		ItemStack offhand = event.getEntityPlayer().getHeldItemOffhand();
+		
+		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
+		{
+			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
+			if (mainhand != null || !tileRFC.isOpen)
+				return;
+			
+			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
+			{
+				EnderUtils.extractEnderFolder(tileRFC, event.getEntityPlayer());
+				return;
+			}
+			for (int i = tileRFC.getInventory().getSizeInventory() - 1; i >= 0; i--)
+			{
+				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
+				if (folder != null)
+				{
+					tileRFC.getInventory().setInventorySlotContents(i, null);
+					event.getEntityPlayer().setHeldItem(EnumHand.MAIN_HAND, folder);
+					tileRFC.markBlockForUpdate();
+					break;
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onMergeFolders(PlayerEvent.ItemCraftedEvent event) {
+		
+		if (event.crafting.getItem() == RFCItems.folder)
+		{
+			for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
+				ItemStack stack = event.craftMatrix.getStackInSlot(slot);
+				if (stack == null)
+					continue;
+				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == 0)
+					event.craftMatrix.setInventorySlotContents(slot, null);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onPickupItems(EntityItemPickupEvent event) {
+		
+		ItemStack estack = event.getItem().getEntityItem();
+		
+		if (estack.stackSize > 0)
+		{
+			for (int i = 0; i < event.getEntityPlayer().inventory.getSizeInventory(); i++) {
+				if (i == event.getEntityPlayer().inventory.currentItem)
+					continue;
+				
+				ItemStack folder = event.getEntityPlayer().inventory.getStackInSlot(i);
+				if (folder != null && folder.getItem() == RFCItems.folder) {
+					ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
+					if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
+					{
+						if (folder.getItemDamage() == 1)
+							EnderUtils.syncToFolder(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+						else
+							ItemFolder.add(folder, estack.stackSize);
+						event.setCanceled(true);
+						event.getItem().setDead();
+					}
+				}
+			}
+		}
+	}
+}

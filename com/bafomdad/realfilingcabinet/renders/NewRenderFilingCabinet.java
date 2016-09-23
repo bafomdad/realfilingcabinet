@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import org.lwjgl.opengl.GL11;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;

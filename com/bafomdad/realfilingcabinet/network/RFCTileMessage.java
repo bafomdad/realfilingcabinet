@@ -20,10 +20,11 @@ public class RFCTileMessage implements IMessage {
 	private int y;
 	private int z;
 	private int amount, index, dim;
+	private boolean subtract;
 	
 	public RFCTileMessage() {}
 	
-	public RFCTileMessage(BlockPos tileLoc, int tDim, int amount, int index) {
+	public RFCTileMessage(BlockPos tileLoc, int tDim, int amount, int index, boolean subtract) {
 		
 		this.tileLoc = tileLoc;
 		this.dim = tDim;
@@ -32,6 +33,7 @@ public class RFCTileMessage implements IMessage {
 		this.z = tileLoc.getZ();
 		this.amount = amount;
 		this.index = index;
+		this.subtract = subtract;
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class RFCTileMessage implements IMessage {
 		dim = ByteBufUtils.readVarInt(buf, 2);
 		amount = ByteBufUtils.readVarInt(buf, 3);
 		index = ByteBufUtils.readVarInt(buf, 2);
+		subtract = buf.readBoolean();
 	}
 
 	@Override
@@ -56,6 +59,8 @@ public class RFCTileMessage implements IMessage {
 		ByteBufUtils.writeVarInt(buf, dim, 2);
 		ByteBufUtils.writeVarInt(buf, amount, 3);
 		ByteBufUtils.writeVarInt(buf, index, 2);
+		
+		buf.writeBoolean(subtract);
 	}
 	
 	public static class Handler implements IMessageHandler<RFCTileMessage, IMessage> {
@@ -68,8 +73,11 @@ public class RFCTileMessage implements IMessage {
 			{
 				ItemStack folder = tile.getInventory().getTrueStackInSlot(message.index);
 				if (folder != null) {
-//					System.out.println("Amount: " + message.amount);
-					ItemFolder.remove(folder, message.amount);
+					if (message.subtract)
+						ItemFolder.remove(folder, message.amount);
+					else
+						ItemFolder.add(folder, message.amount);
+					
 					ItemFolder.extractSize = 0;
 				}
 			}
