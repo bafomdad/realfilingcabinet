@@ -11,6 +11,8 @@ public class VanillaPacketDispatcher {
 		
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		tile.getWorld().notifyBlockUpdate(tile.getPos(), state, state, 8);
+		if (tile.getWorld().isRemote)
+			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 	}
 	
 	public static void dispatchTEToNearbyPlayers(World world, BlockPos pos) {

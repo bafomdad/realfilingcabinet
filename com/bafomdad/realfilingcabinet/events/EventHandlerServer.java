@@ -20,6 +20,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class EventHandlerServer {
@@ -120,6 +121,31 @@ public class EventHandlerServer {
 						event.setCanceled(true);
 						event.getItem().setDead();
 					}
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void enderFolderTick(TickEvent.PlayerTickEvent event) {
+		
+		if (event.side == Side.CLIENT)
+			return;
+		
+		for (int i = 0; i < event.player.inventory.mainInventory.length; i++) {
+			ItemStack enderFolder = event.player.inventory.getStackInSlot(i);
+			if (enderFolder == null)
+				continue;
+			
+			if (enderFolder.getItem() == RFCItems.folder && enderFolder.getItemDamage() == 1)
+			{
+				if (!enderFolder.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
+					return;
+				
+				TileEntityRFC tile = EnderUtils.getTileLoc(enderFolder);
+				if (tile != null) {
+					EnderUtils.syncToFolder(tile, enderFolder, NBTUtils.getInt(enderFolder, StringLibs.RFC_SLOTINDEX, 0));
+					break;
 				}
 			}
 		}

@@ -60,14 +60,14 @@ public class ItemFolder extends Item implements IFolder {
 			long count = getFileSize(stack);
 			list.add(TextHelper.format(count) + " " + stacky.getDisplayName());
 		}
-		if (stack.getItemDamage() == 1 && stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
-		{
-			TileEntityRFC tile = EnderUtils.getTileLoc(stack);
-			if (tile == null)
-				list.add("Bound tile is null");
-			else if (tile != null && list.size() > 2)
-				list.remove(2);
-		}
+//		if (stack.getItemDamage() == 1 && stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
+//		{
+//			TileEntityRFC tile = EnderUtils.getTileLoc(stack);
+//			if (tile == null)
+//				list.add("Bound tile is null");
+//			else if (tile != null && list.size() > 2)
+//				list.remove(2);
+//		}
 	}
 	
 	public ItemStack getContainerItem(ItemStack stack) {
@@ -169,11 +169,13 @@ public class ItemFolder extends Item implements IFolder {
 				stackToPlace.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
 				
 				if (stackToPlace.stackSize == 0) {
-					if (stack.getItemDamage() == 1 && !world.isRemote)
-						EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
-					else
-						remove(stack, 1);
-					
+					if (!player.capabilities.isCreativeMode)
+					{
+						if (stack.getItemDamage() == 1 && !world.isRemote)
+							EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+						else
+							remove(stack, 1);
+					}		
 					return EnumActionResult.SUCCESS;
 				}
 			}
@@ -181,18 +183,18 @@ public class ItemFolder extends Item implements IFolder {
 		return EnumActionResult.PASS;
 	}
 	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean watdis) {
-		
-		if (stack.getItemDamage() != 1 && !stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
-			return;
-		
-		TileEntityRFC tile = EnderUtils.getTileLoc(stack);
-		if (tile != null)
-			EnderUtils.syncToFolder(tile, stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
-		else
-			setFileSize(stack, 0);
-	}
+//	@Override
+//	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean watdis) {
+//		
+//		if (stack.getItemDamage() != 1 && !stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
+//			return;
+//		
+//		TileEntityRFC tile = EnderUtils.getTileLoc(stack);
+//		if (tile != null)
+//			EnderUtils.syncToFolder(tile, stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
+//		else
+//			setFileSize(stack, 0);
+//	}
 
 	@Override
 	public void willThisWork() {
