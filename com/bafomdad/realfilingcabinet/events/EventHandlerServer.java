@@ -69,12 +69,12 @@ public class EventHandlerServer {
 				EnderUtils.extractEnderFolder(tileRFC, event.getEntityPlayer());
 				return;
 			}
-			for (int i = tileRFC.getInventory().getSizeInventory() - 1; i >= 0; i--)
+			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
 			{
 				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
 				if (folder != null)
 				{
-					tileRFC.getInventory().setInventorySlotContents(i, null);
+					tileRFC.getInventory().setStackInSlot(i, null);
 					event.getEntityPlayer().setHeldItem(EnumHand.MAIN_HAND, folder);
 					tileRFC.markBlockForUpdate();
 					break;

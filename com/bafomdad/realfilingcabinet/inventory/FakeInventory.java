@@ -4,25 +4,28 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class FakeInventory implements IInventory {
+public class FakeInventory extends ItemStackHandler implements IInventory {
 	
-	protected String inventoryTitle;
 	protected int slotsCount;
 	protected ItemStack[] inventoryContents;
-	protected boolean isInvNameLocalized;
 	
-	public FakeInventory(String name, boolean isInvNameLocalized, int size) {
+	public FakeInventory(int size) {
 		
-		this.isInvNameLocalized = isInvNameLocalized;
 		slotsCount = size;
-		inventoryTitle = name;
 		inventoryContents = new ItemStack[size];
 	}
 
 	@Override
 	public int getSizeInventory() {
 
+		return slotsCount;
+	}
+	
+	@Override
+	public int getSlots() {
+		
 		return slotsCount;
 	}
 
@@ -84,7 +87,7 @@ public class FakeInventory implements IInventory {
 	
 	public void copyFrom(InventoryRFC inventory) {
 		
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+		for (int i = 0; i < inventory.getSlots(); i++) {
 			if (i < getSizeInventory()) {
 				ItemStack stack = inventory.getTrueStackInSlot(i);
 				if (stack != null)

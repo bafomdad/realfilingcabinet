@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -54,28 +55,24 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	protected static final AxisAlignedBB BASE_AABB = new AxisAlignedBB(0.0D + f, 0.0D, 0.0D + f, 1.0D - f, 1.0D - f, 1.0D - f);
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
-//	public static final PropertyEnum<FilingCabinetVariant> RFC_VARIANT = PropertyEnum.create("variant", FilingCabinetVariant.class);
-	
 	public BlockRFC() {
 		
 		super(Material.IRON);
 		setRegistryName("modelcabinet");
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".filingcabinet");
-		setHardness(1.5F);
-		setResistance(20.0F);
+		setHardness(5.0F);
+		setResistance(1000.0F);
 		setCreativeTab(TabRFC.instance);
 		GameRegistry.register(this);
 		GameRegistry.register(new ItemBlockRFC(this), getRegistryName());
 		GameRegistry.registerTileEntity(TileEntityRFC.class, "tileFilingCabinet");
 		
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-//		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(RFC_VARIANT, FilingCabinetVariant.DEFAULT));
 	}
 	
 	@Override
 	protected BlockStateContainer createBlockState() {
 		
-//		return new BlockStateContainer(this, FACING, RFC_VARIANT);
 		return new BlockStateContainer(this, FACING);
 	}
 	
@@ -135,43 +132,19 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 	}
 	
-//	@Override
-//	public IBlockState getStateFromMeta(int meta) {
-//		
-//		IBlockState state = this.getDefaultState().withProperty(RFC_VARIANT, FilingCabinetVariant.byMetadata((meta & 3) % 4));
-//		
-//		switch (meta)
-//		{
-//			case 0: state.withProperty(FACING, EnumFacing.SOUTH); System.out.println("south"); break;
-//			case 1: state.withProperty(FACING, EnumFacing.WEST); System.out.println("west"); break;
-//			case 3: state.withProperty(FACING, EnumFacing.EAST); System.out.println("east"); break;
-//			default: state.withProperty(FACING, EnumFacing.NORTH); System.out.println("north");
-//		}
-//		System.out.println(state.getValue(FACING) + " / " + state.getValue(RFC_VARIANT));
-//		return state;
-//	}
-	
-//	@Override
-//	public int getMetaFromState(IBlockState state) {
-//		
-//		int i = 0;
-//		i = i | state.getValue(RFC_VARIANT).getMetadata();
-//		
-//		switch (state.getValue(FACING).getHorizontalIndex())
-//		{
-//			case 0: i = 0; break;
-//			case 1: i = 1; break;
-//			case 3: i = 3; break;
-//			default: i = 2; break;
-//		}
-//		return i;
-//	}
-	
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		
 		return state.getValue(FACING).getHorizontalIndex();
 	}
+	
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+    	
+    	if (player.capabilities.isCreativeMode && !world.isRemote) {
+    		this.harvestBlock(world, player, pos, state, world.getTileEntity(pos), player.getActiveItemStack());
+    	}
+    	return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
 	
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack) {
 		
@@ -310,12 +283,12 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
-					for (int i = 0; i < tileRFC.getInventory().getSizeInventory(); i++)
+					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
 						if (tileStack == null)
 						{
-							tileRFC.getInventory().setInventorySlotContents(i, stack);
+							tileRFC.getInventory().setStackInSlot(i, stack);
 							player.setHeldItem(EnumHand.MAIN_HAND, null);
 							tileRFC.markBlockForUpdate();
 							break;
@@ -352,12 +325,12 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				EnderUtils.extractEnderFolder(tileRFC, player);
 				return;
 			}
-			for (int i = tileRFC.getInventory().getSizeInventory() - 1; i >= 0; i--)
+			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
 			{
 				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
 				if (folder != null)
 				{
-					tileRFC.getInventory().setInventorySlotContents(i, null);
+					tileRFC.getInventory().setStackInSlot(i, null);
 					player.setHeldItem(EnumHand.MAIN_HAND, folder);
 					tileRFC.markBlockForUpdate();
 					break;

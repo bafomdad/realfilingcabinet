@@ -115,7 +115,7 @@ public class NewRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 		{
 			GlStateManager.pushMatrix();
 			
-			for (int i = 0; i < te.getInventory().getSizeInventory(); i++) {
+			for (int i = 0; i < te.getInventory().getSlots(); i++) {
 				if (te.getInventory().getTrueStackInSlot(i) != null)
 				{
 					GlStateManager.translate(0.0F, -0.0025F, 0.1F);

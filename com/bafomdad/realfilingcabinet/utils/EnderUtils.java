@@ -62,11 +62,11 @@ public class EnderUtils {
 		{
 			if (folderSize == 0)
 			{
-				tile.getInventory().setInventorySlotContents(9, null);
+				tile.getInventory().setStackInSlot(9, null);
 				return;
 			}
 			ItemStack newStack = new ItemStack(((ItemStack)ItemFolder.getObject(folder)).getItem(), (int)folderSize, ((ItemStack)ItemFolder.getObject(folder)).getItemDamage());
-			tile.getInventory().setInventorySlotContents(9, newStack);
+			tile.getInventory().setStackInSlot(9, newStack);
 		}
 	}
 	
@@ -161,7 +161,7 @@ public class EnderUtils {
 		}
 		else
 		{
-			for (int i = 0; i < tile.getInventory().getSizeInventory(); i++) {
+			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 				if (folder != null)
 				{
@@ -176,7 +176,7 @@ public class EnderUtils {
 	private static int findNextFolder(TileEntityRFC tile, int slot) {
 		
 		int index = -1;
-		for (int i = slot; i < tile.getInventory().getSizeInventory(); i++) {
+		for (int i = slot; i < tile.getInventory().getSlots(); i++) {
 			ItemStack stack = tile.getInventory().getStackInSlot(i);
 			if (stack != null) {
 				index = i;

@@ -71,7 +71,7 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 				GlStateManager.translate(-0.4F, 0.3F, te.renderOffset + 0.5F);
 				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 				
-				for (int i = 0; i < te.getInventory().getSizeInventory() - 2; i++) {
+				for (int i = 0; i < te.getInventory().getSlots(); i++) {
 					if (te.getInventory().getTrueStackInSlot(i) != null)
 					{	
 						GlStateManager.translate(0.0F, -0.0025F, 0.1F);
@@ -99,8 +99,7 @@ public class OldRenderFilingCabinet extends TileEntitySpecialRenderer<TileEntity
 			if (UpgradeHelper.hasUpgrade(te))
 				bindTexture(ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.getTileData().getString(StringLibs.RFC_UPGRADE))));
 			else
-				bindTexture(ResourceUpgradeHelper.getDefault())
-				;
+				bindTexture(ResourceUpgradeHelper.getDefault());
 			model.render(te, f);
 			
 			GlStateManager.popMatrix();

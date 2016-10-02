@@ -83,7 +83,7 @@ public class GuiFileList extends Gui {
 	private List getFileList(InventoryRFC inv) {
 		
 		List<String> list = new ArrayList();
-		for (int i = 0; i < inv.getSizeInventory(); i++)
+		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack folder = inv.getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() instanceof IFolder)

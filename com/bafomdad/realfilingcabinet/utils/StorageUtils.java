@@ -18,7 +18,7 @@ public class StorageUtils {
 		if (stack == null)
 			return -1;
 		
-		for (int i = 0; i < tile.getInventory().getSizeInventory(); i++) {
+		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
 			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
 			{
@@ -41,7 +41,7 @@ public class StorageUtils {
 		if (tile.getWorld().isRemote)
 			return;
 		
-		for (int i = 0; i < tile.getInventory().getSizeInventory(); i++) {
+		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
 			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
 			{
@@ -76,7 +76,7 @@ public class StorageUtils {
 			ItemStack loopinv = player.inventory.getStackInSlot(i);
 			if (loopinv != null && (loopinv.getItem() != RFCItems.emptyFolder || loopinv.getItem() != RFCItems.folder))
 			{
-				for (int j = 0; j < tile.getInventory().getSizeInventory(); j++) {
+				for (int j = 0; j < tile.getInventory().getSlots(); j++) {
 					ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
 					if (ItemStack.areItemsEqual(folderstack, loopinv))
 					{
@@ -99,7 +99,7 @@ public class StorageUtils {
 		
 		ItemStack stack = tile.getFilter();
 		if (stack != null) {
-			for (int i = 0; i < tile.getInventory().getSizeInventory(); i++) {
+			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
 				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
 				{

@@ -13,6 +13,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -44,7 +46,7 @@ public class AutocraftingUtils {
 	
 	private static IInventory getFakeInv(TileEntityRFC tile) {
 		
-		FakeInventory tempInv = new FakeInventory("temp", false, tile.getInventory().getSizeInventory() - 2);
+		FakeInventory tempInv = new FakeInventory(tile.getInventory().getSlots());
 		tempInv.copyFrom(tile.getInventory());
 		return tempInv;
 	}
@@ -59,15 +61,16 @@ public class AutocraftingUtils {
 		if (input == null)
 			return false;
 		
-		return consumeRecipeIngredients(input, getFakeInv(tile));
+//		return consumeRecipeIngredients(input, new ItemStackHandler(tile.getInventory().getStacks().clone()));
+		return consumeRecipeIngredients(input, (IItemHandler)getFakeInv(tile));
 	}
 	
-	public static void doCraft(ItemStack input, IInventory inv) {
+	public static void doCraft(ItemStack input, IItemHandler inv) {
 		
 		consumeRecipeIngredients(input, inv);
 	}
 	
-	public static boolean consumeRecipeIngredients(ItemStack input, IInventory inv) {
+	public static boolean consumeRecipeIngredients(ItemStack input, IItemHandler inv) {
 		
 		IRecipe recipe = getRecipeFor(input);
 		if (recipe != null) 
@@ -101,9 +104,9 @@ public class AutocraftingUtils {
 		return true;
 	}
 	
-	public static boolean consumeFromInventory(ItemStack stack, IInventory inv) {
+	public static boolean consumeFromInventory(ItemStack stack, IItemHandler inv) {
 		
-		for (int i = 0; i < inv.getSizeInventory() - 2; i++) {
+		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getStackInSlot(i);
 			if (inv instanceof InventoryRFC)
 				folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
@@ -115,18 +118,17 @@ public class AutocraftingUtils {
 						boolean consume = true;
 						
 						ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
-						if (container != null && !(inv instanceof FakeInventory)) {
-							if (!shuntContainerItem(container, (InventoryRFC)inv)) {
-								shuntContainerItemOutside(container, (InventoryRFC)inv);
+						if (container != null && (inv instanceof InventoryRFC)) {
+							if (!shuntContainerItem(container, inv)) {
+								shuntContainerItemOutside(container, inv);
 							}
 						}
-						
 						if (consume) {
 							ItemFolder.remove(folder, 1);
-							if (ItemFolder.getFileSize(folder) == 0)
+							if (ItemFolder.getFileSize(folder) < 0)
 								consume = false;
 						}
-						return true;
+						return consume;
 					}
 				}
 			}
@@ -134,9 +136,9 @@ public class AutocraftingUtils {
 		return false;
 	}
 	
-	private static boolean shuntContainerItem(ItemStack container, IInventory inv) {
+	private static boolean shuntContainerItem(ItemStack container, IItemHandler inv) {
 		
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
+		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) != null && container.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
@@ -148,7 +150,7 @@ public class AutocraftingUtils {
 		return false;
 	}
 	
-	private static void shuntContainerItemOutside(ItemStack container, IInventory inv) {
+	private static void shuntContainerItemOutside(ItemStack container, IItemHandler inv) {
 		
 		TileEntityRFC tile = ((InventoryRFC)inv).getTile();
 		

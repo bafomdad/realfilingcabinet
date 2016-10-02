@@ -17,7 +17,7 @@ import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
-public class InventoryRFC extends ItemStackHandler implements IInventory {
+public class InventoryRFC extends ItemStackHandler {
 	
 	final TileEntityRFC tile;
 
@@ -27,10 +27,11 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 		setSize(size);
 	}
 	
-	@Override
-	public void markDirty() {
+	public void copyInv(InventoryRFC inv) {
 		
-		tile.markDirty();
+		for (int i = 0; i < inv.stacks.length; i++) {
+			stacks[i] = inv.getTrueStackInSlot(i);
+		}
 	}
 	
 	@Override
@@ -117,12 +118,6 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 		if (tile != null)
 			tile.markDirty();
 	}
-
-	@Override
-	public int getSizeInventory() {
-
-		return stacks.length;
-	}
 	
 	public ItemStack getTrueStackInSlot(int slot) {
 		
@@ -149,121 +144,6 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 		}
 		return stackFolder;
 	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int size) {
-
-		ItemStack displayedStack;
-		
-		if (tile.getFilter() != null)
-		{
-			displayedStack = tile.getFilter();
-			
-			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) == null)
-			{
-				if (StorageUtils.simpleFolderMatch(tile, displayedStack) != -1)
-				{
-					int index = StorageUtils.simpleFolderMatch(tile, displayedStack);
-					long count = ItemFolder.getFileSize(getTrueStackInSlot(index));
-					long extract = Math.min(displayedStack.getMaxStackSize(), count);
-					
-					if (!UpgradeHelper.isCreative(tile))
-					{
-						ItemFolder.remove(getTrueStackInSlot(index), size);
-					}
-					return new ItemStack(displayedStack.getItem(), Math.min((int)extract, size), displayedStack.getItemDamage());
-				}
-			}
-			else
-			{
-				if (AutocraftingUtils.canCraft(displayedStack, tile))
-				{
-					ItemStack craftingOutput = new ItemStack(displayedStack.getItem(), 1, displayedStack.getItemDamage());
-					if (tile.sizeStack >= AutocraftingUtils.getOutputSize()) {
-						tile.sizeStack = 0;
-						AutocraftingUtils.doCraft(displayedStack, this);
-					} else {
-						tile.sizeStack += 1;
-						return craftingOutput;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int slot) {
-
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-
-		stacks[slot] = stack;
-		this.markDirty();
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-
-		return !(tile.getWorld().getTileEntity(tile.getPos()) instanceof TileEntityRFC) ? false : player.getDistanceSq(tile.getPos()) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-
-		return ItemStack.areItemsEqual(stack, this.getStackFromFolder(slot));
-	}
-
-	@Override
-	public int getField(int id) {
-
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount() {
-
-		return 0;
-	}
-
-	@Override
-	public void clear() {}
-
-	@Override
-	public String getName() {
-
-		return "realfilingcabinet.storage";
-	}
-
-	@Override
-	public boolean hasCustomName() {
-
-		return true;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-
-		return null;
-	}
 	
 	public ItemStack getStackFromFolder(int slot) {
 		
@@ -272,7 +152,7 @@ public class InventoryRFC extends ItemStackHandler implements IInventory {
 		{
 			ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
 			if (stack != null) {
-				return stack;
+				return stack.copy();
 			}
 		}
 		return null;

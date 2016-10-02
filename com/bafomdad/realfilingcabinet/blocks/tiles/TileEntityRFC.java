@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,7 +16,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import com.bafomdad.realfilingcabinet.api.common.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
@@ -92,7 +90,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		{
 			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
 			int slot = itemTag.getByte("Slot");
-			if (slot >= 0 && slot < inv.getSizeInventory()) {
+			if (slot >= 0 && slot < inv.getSlots()) {
 				inv.getStacks()[slot] = ItemStack.loadItemStackFromNBT(itemTag);
 			}
 		}
@@ -102,7 +100,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		boolean write = false;
 		NBTTagList invList = new NBTTagList();
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
+		for (int i = 0; i < inv.getSlots(); i++) {
 			if (inv.getTrueStackInSlot(i) != null)
 			{
 				if (toItem)
