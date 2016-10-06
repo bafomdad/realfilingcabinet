@@ -114,10 +114,13 @@ public class EventHandlerServer {
 					ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
 					if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
 					{
-						if (folder.getItemDamage() == 1)
-							EnderUtils.syncToFolder(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+						if (folder.getItemDamage() == 1) {
+//							EnderUtils.syncToFolder(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+							EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+						}
 						else
 							ItemFolder.add(folder, estack.stackSize);
+						
 						event.setCanceled(true);
 						event.getItem().setDead();
 					}
@@ -147,6 +150,8 @@ public class EventHandlerServer {
 					EnderUtils.syncToFolder(tile, enderFolder, NBTUtils.getInt(enderFolder, StringLibs.RFC_SLOTINDEX, 0));
 					break;
 				}
+				else if (tile == null || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_ENDER) == null)
+					ItemFolder.setFileSize(enderFolder, 0);
 			}
 		}
 	}

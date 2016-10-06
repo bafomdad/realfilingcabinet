@@ -8,25 +8,24 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class FakeInventory extends ItemStackHandler implements IInventory {
 	
-	protected int slotsCount;
 	protected ItemStack[] inventoryContents;
 	
 	public FakeInventory(int size) {
 		
-		slotsCount = size;
 		inventoryContents = new ItemStack[size];
+		this.stacks = inventoryContents;
 	}
 
 	@Override
 	public int getSizeInventory() {
 
-		return slotsCount;
+		return inventoryContents.length;
 	}
 	
 	@Override
 	public int getSlots() {
 		
-		return slotsCount;
+		return inventoryContents.length;
 	}
 
 	@Override

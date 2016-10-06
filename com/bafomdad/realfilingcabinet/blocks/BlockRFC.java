@@ -7,16 +7,14 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -39,11 +37,9 @@ import com.bafomdad.realfilingcabinet.api.common.IFolder;
 import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
 import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
-import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
@@ -193,9 +189,10 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		}
 		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
-			if (!tileRFC.getWorld().isRemote)
+			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
-			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tileRFC.getWorld(), tileRFC.getPos());
+			}
+			//TODO: update cabinet model texture when on a server
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
@@ -253,7 +250,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 						return;
 					}
 					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
-						if (stack.hasTagCompound() && !stack.getTagCompound().hasKey(StringLibs.RFC_COPY)) {
+						if (!stack.hasTagCompound() || (stack.hasTagCompound() && !stack.getTagCompound().hasKey(StringLibs.RFC_COPY))) {
 							NBTUtils.setString(stack, StringLibs.RFC_COPY, player.getUniqueID().toString());
 							NBTUtils.setString(stack, StringLibs.RFC_FALLBACK, player.getDisplayNameString());
 						}
@@ -297,8 +294,10 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 			}
 			if (stack.getItem() instanceof IUpgrades) {
-				UpgradeHelper.setUpgrade(player, tileRFC, stack);
-				VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tileRFC.getWorld(), tileRFC.getPos());
+				if (!tileRFC.getWorld().isRemote) {
+					UpgradeHelper.setUpgrade(player, tileRFC, stack);
+				}
+				//TODO: update cabinet model texture when on a server
 				return;
 			}
 			else

@@ -14,8 +14,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
-import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
-import com.bafomdad.realfilingcabinet.network.RFCTileMessage;
+import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 
 public class EnderUtils {
 
@@ -28,46 +27,21 @@ public class EnderUtils {
 			ItemFolder.setFileSize(stack, folderSize);
 	}
 	
-	public static void syncToFolder(TileEntityRFC tile, int dim, int index, int amount, boolean subtract) {
+	public static void syncToTile(TileEntityRFC tile, int dim, int index, int amount, boolean subtract) {
+		
+		if (tile == null || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_ENDER) == null)
+			return;
 		
 		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
 		if (folder.getItem() != RFCItems.folder)
 			return;
 		
-		RFCPacketHandler.INSTANCE.sendToServer(new RFCTileMessage(tile.getPos(), dim, amount, index, subtract));
-	}
-	
-	public static int syncRecipeOutput(ItemStack folder, ItemStack output) {
+		if (!subtract)
+			ItemFolder.add(folder, amount);
+		else
+			ItemFolder.remove(folder, amount);
 		
-		long size = ItemFolder.getFileSize(folder);
-		long extract = Math.min(output.getMaxStackSize(), size);
-		
-		return output.stackSize = (int)extract;
-	}
-	
-	public static void syncRecipes(TileEntityRFC tile, ItemStack folder, ItemStack stack) {
-		
-		updateTileOutput(tile, NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0));
-	}
-	
-	private static void updateTileOutput(TileEntityRFC tile, int index) {
-		
-		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
-		long folderSize = ItemFolder.getFileSize(folder);
-		
-		if (folderSize > 64)
-			return;
-		
-		else 
-		{
-			if (folderSize == 0)
-			{
-				tile.getInventory().setStackInSlot(9, null);
-				return;
-			}
-			ItemStack newStack = new ItemStack(((ItemStack)ItemFolder.getObject(folder)).getItem(), (int)folderSize, ((ItemStack)ItemFolder.getObject(folder)).getItemDamage());
-			tile.getInventory().setStackInSlot(9, newStack);
-		}
+		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile);
 	}
 	
 	public static ItemStack createEnderFolder(TileEntityRFC tile, EntityPlayer player, ItemStack stack) {

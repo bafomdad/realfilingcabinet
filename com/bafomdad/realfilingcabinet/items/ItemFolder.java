@@ -172,7 +172,8 @@ public class ItemFolder extends Item implements IFolder {
 					if (!player.capabilities.isCreativeMode)
 					{
 						if (stack.getItemDamage() == 1 && !world.isRemote)
-							EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+//							EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+							EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
 						else
 							remove(stack, 1);
 					}		

@@ -25,6 +25,7 @@ import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.FakeInventory;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 
 public class AutocraftingUtils {
 	
@@ -61,7 +62,6 @@ public class AutocraftingUtils {
 		if (input == null)
 			return false;
 		
-//		return consumeRecipeIngredients(input, new ItemStackHandler(tile.getInventory().getStacks().clone()));
 		return consumeRecipeIngredients(input, (IItemHandler)getFakeInv(tile));
 	}
 	
@@ -101,6 +101,8 @@ public class AutocraftingUtils {
 			}
 			outputSize = recipe.getRecipeOutput().stackSize;
 		}
+		if (inv instanceof InventoryRFC)
+			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(((InventoryRFC)inv).getTile());
 		return true;
 	}
 	

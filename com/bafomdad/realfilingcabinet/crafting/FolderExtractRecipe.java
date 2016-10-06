@@ -120,36 +120,10 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		{
 			if (foldy != null)
 			{
-				EnderUtils.syncToFolder(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
+//				EnderUtils.syncToFolder(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
+				EnderUtils.syncToTile(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
 			}
 			canSync = false;
 		}
 	}
-	
-/*	@SubscribeEvent
-	public void mouseWheelEvent(GuiScreenEvent.MouseInputEvent.Pre event) {
-		
-		int wheel = Mouse.getEventDWheel();
-		GuiScreen gui = event.getGui();
-		
-		if (gui instanceof GuiContainer)
-		{
-			if (wheel != 0)
-			{
-				Slot slot = ((GuiContainer)gui).getSlotUnderMouse();
-				if (slot != null && slot.inventory instanceof InventoryCraftResult)
-				{
-					ItemStack stack = slot.getStack();
-					if (stack != null)
-					{
-						if (wheel > 0 && (stack.stackSize += 8) <= 64)
-							stack.stackSize += 8;
-						if (wheel < 0 && (stack.stackSize -= 8) >= 8)
-							stack.stackSize -= 8;
-					}
-				}
-			}
-		}
-	} 
-	*/
 }

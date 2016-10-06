@@ -53,6 +53,6 @@ public class TutorialGenerator implements IWorldGenerator {
 		template.addBlocksToWorld(world, newPos, settings);
 		RFCWorldInfo.getInstance().setStructureGenerated(true);
 		
-		LogRFC.debug("Structure generated at: " + pos.toString() + " in world: " + world.getSaveHandler().getWorldDirectory().getName());
+		LogRFC.debug("Structure generated at: " + newPos.toString() + " in world: " + world.getSaveHandler().getWorldDirectory().getName());
 	}
 }

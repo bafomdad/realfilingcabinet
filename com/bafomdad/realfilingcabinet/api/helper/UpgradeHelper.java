@@ -1,7 +1,6 @@
 package com.bafomdad.realfilingcabinet.api.helper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,8 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 
 public class UpgradeHelper {
 	
@@ -120,7 +117,7 @@ public class UpgradeHelper {
 	 */
 	public static void removeUpgrade(EntityPlayer player, TileEntity tile) {
 		
-		if ((!hasUpgrade(tile) && !isCreative(tile))/* || tile.getWorld().isRemote*/)
+		if ((!hasUpgrade(tile) && !isCreative(tile)))
 			return;
 
 		ItemStack creative = creativeTest(tile);
@@ -129,7 +126,6 @@ public class UpgradeHelper {
 			tile.getTileData().setBoolean(StringLibs.TAG_CREATIVE, false);
 			if (!player.inventory.addItemStackToInventory(creative))
 				player.dropItem(creative.getItem(), 1);
-//			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 			tile.markDirty();
 			return;
 		}
@@ -140,7 +136,6 @@ public class UpgradeHelper {
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
 			if (!player.inventory.addItemStackToInventory(newStack))
 				player.dropItem(newStack.getItem(), 1);
-//			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos(), tile.getPos());
 			tile.markDirty();
 		}
 	}

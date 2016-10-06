@@ -1,5 +1,7 @@
 package com.bafomdad.realfilingcabinet.blocks.tiles;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -43,9 +45,7 @@ public class TileFilingCabinet extends TileEntity {
 		if (packet != null && packet.getNbtCompound() != null)
 			readCustomNBT(packet.getNbtCompound());
 		
-		if (getWorld().isRemote) {
-			markBlockForRenderUpdate();
-		}
+		markBlockForRenderUpdate();
 	}
 	
 	public void markBlockForUpdate() {

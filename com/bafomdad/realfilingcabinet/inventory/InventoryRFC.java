@@ -1,10 +1,6 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
@@ -14,7 +10,6 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
-import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class InventoryRFC extends ItemStackHandler {

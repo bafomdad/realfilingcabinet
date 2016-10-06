@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.bafomdad.realfilingcabinet.api.RFCApi;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.*;
-import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.world.TutorialGenerator;
 
 public class CommonProxy {
@@ -18,7 +17,7 @@ public class CommonProxy {
 		
 		RFCBlocks.init();
 		RFCItems.init();
-		RFCPacketHandler.init();
+//		RFCPacketHandler.init();
 	}
 	
 	public void init(FMLInitializationEvent event) {

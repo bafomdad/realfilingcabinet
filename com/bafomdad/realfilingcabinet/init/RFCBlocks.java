@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.renders.OldRenderFilingCabinet;
+import com.bafomdad.realfilingcabinet.renders.RenderFilingCabinet;
 
 public class RFCBlocks {
 
@@ -24,6 +24,6 @@ public class RFCBlocks {
 	public static void initModels() {
 
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockRFC), 0, new ModelResourceLocation(blockRFC.getRegistryName(), "inventory"));
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRFC.class, new OldRenderFilingCabinet());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRFC.class, new RenderFilingCabinet());
 	}
 }

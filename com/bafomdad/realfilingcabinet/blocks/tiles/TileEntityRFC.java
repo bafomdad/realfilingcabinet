@@ -61,7 +61,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		return writeToNBT(new NBTTagCompound());
     }
-	
+
 	@Override
 	public void writeCustomNBT(NBTTagCompound tag) {
 		

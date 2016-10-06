@@ -17,7 +17,7 @@ public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
 	public static final String MOD_NAME = "Real Filing Cabinet";
-	public static final String VERSION = "0.5.5";
+	public static final String VERSION = "0.5.9";
 	
 	@SidedProxy(clientSide="com.bafomdad.realfilingcabinet.proxies.ClientProxy", serverSide="com.bafomdad.realfilingcabinet.proxies.ServerProxy")
 	public static CommonProxy proxy;
@@ -34,6 +34,7 @@ public class RealFilingCabinet {
 		config = new ConfigRFC();
 		config.loadconfig(event);
 		logger = event.getModLog();
+		
 		proxy.preInit(event);
 		proxy.initAllModels();
 	}
