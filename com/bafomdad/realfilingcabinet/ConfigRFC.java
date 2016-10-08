@@ -27,7 +27,7 @@ public class ConfigRFC {
 		oreDictUpgrade = config.get("recipes", "enableOreDictUpgradeRecipe", true).getBoolean();
 		nametagRecipe = config.get("recipes", "enableNametagRecipe", true).getBoolean();
 		
-		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want WAILA/TheOneProbe to handle the overlay instead.").getBoolean();
+		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want WAILA to handle the overlay instead.").getBoolean();
 		
 		debugLogger = config.get("debug", "enableDebugLogger", false, "Will output stuff to console for debugging purposes").getBoolean();
 		

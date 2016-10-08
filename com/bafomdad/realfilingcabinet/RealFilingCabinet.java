@@ -34,7 +34,7 @@ public class RealFilingCabinet {
 		config = new ConfigRFC();
 		config.loadconfig(event);
 		logger = event.getModLog();
-
+		
 		proxy.preInit(event);
 		proxy.initAllModels();
 	}
