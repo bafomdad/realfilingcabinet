@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -171,9 +172,11 @@ public class ItemFolder extends Item implements IFolder {
 				if (stackToPlace.stackSize == 0) {
 					if (!player.capabilities.isCreativeMode)
 					{
-						if (stack.getItemDamage() == 1 && !world.isRemote)
-//							EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+						if (stack.getItemDamage() == 1 && !world.isRemote) {
 							EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
+							if (player instanceof FakePlayer)
+								ItemFolder.remove(stack, 1);
+						}
 						else
 							remove(stack, 1);
 					}		
@@ -183,19 +186,6 @@ public class ItemFolder extends Item implements IFolder {
 		}
 		return EnumActionResult.PASS;
 	}
-	
-//	@Override
-//	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean watdis) {
-//		
-//		if (stack.getItemDamage() != 1 && !stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
-//			return;
-//		
-//		TileEntityRFC tile = EnderUtils.getTileLoc(stack);
-//		if (tile != null)
-//			EnderUtils.syncToFolder(tile, stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
-//		else
-//			setFileSize(stack, 0);
-//	}
 
 	@Override
 	public void willThisWork() {
