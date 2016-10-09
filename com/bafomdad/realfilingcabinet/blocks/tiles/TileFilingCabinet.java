@@ -59,9 +59,9 @@ public class TileFilingCabinet extends TileEntity {
 		worldObj.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
-//	@Override
-//    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-//    	
-//    	return false;
-//    }
+	@Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+    	
+    	return false;
+    }
 }
