@@ -7,6 +7,7 @@ import java.util.List;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -91,7 +92,7 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 			ItemFolder.setObject(newFolder, stack1);
 			return newFolder;
 		}
-		return null;
+		return new ItemStack(RFCItems.emptyFolder);
 	}
 	
 	private boolean allowableIngredient(ItemStack stack) {

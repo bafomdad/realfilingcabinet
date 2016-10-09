@@ -23,7 +23,7 @@ public class EnderUtils {
 		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
 		long folderSize = ItemFolder.getFileSize(folder);
 		
-		if (folderSize != ItemFolder.getFileSize(stack))
+		if (folderSize != ItemFolder.getFileSize(stack) && StorageUtils.simpleMatch((ItemStack)ItemFolder.getObject(folder), (ItemStack)ItemFolder.getObject(stack)))
 			ItemFolder.setFileSize(stack, folderSize);
 	}
 	

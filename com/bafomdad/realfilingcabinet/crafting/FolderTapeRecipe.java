@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -81,6 +82,8 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 		}
 		if (folder >= 0 && tape >= 0)
 		{
+			StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), true);
+			
 			ItemStack stack2 = ic.getStackInSlot(folder);
 			if (ItemFolder.getObject(stack2) != null && ItemFolder.getFileSize(stack2) == 0)
 				return new ItemStack(RFCItems.emptyFolder, 1, 0);

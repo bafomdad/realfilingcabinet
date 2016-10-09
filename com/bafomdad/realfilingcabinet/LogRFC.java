@@ -15,7 +15,12 @@ public final class LogRFC {
 	
 	public static void info(String msg) {
 		
-		LOGGER.info(msg);
+		LOGGER.info(RealFilingCabinet.MOD_NAME + ": " + msg);
+	}
+	
+	public static void error(String msg) {
+		
+		LOGGER.error(RealFilingCabinet.MOD_NAME + ": " + msg);
 	}
 	
 	private LogRFC() {

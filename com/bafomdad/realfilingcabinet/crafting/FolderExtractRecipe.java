@@ -25,6 +25,7 @@ import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 	
@@ -95,6 +96,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 			
 			if (stack.getItem() == RFCItems.folder && ItemFolder.getObject(stack) != null)
 			{
+				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
 				long count = ItemFolder.getFileSize(stack);
 				if (count > 0)
 				{
@@ -120,7 +122,6 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		{
 			if (foldy != null)
 			{
-//				EnderUtils.syncToFolder(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
 				EnderUtils.syncToTile(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
 			}
 			canSync = false;

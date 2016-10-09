@@ -61,12 +61,12 @@ public class ItemFolder extends Item implements IFolder {
 			long count = getFileSize(stack);
 			list.add(TextHelper.format(count) + " " + stacky.getDisplayName());
 		}
-//		if (stack.getItemDamage() == 1 && stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
+//		if (stack.getItemDamage() == 1 && stack.getTagCompound().hasKey(StringLibs.RFC_TOOLTIP1))
 //		{
-//			TileEntityRFC tile = EnderUtils.getTileLoc(stack);
-//			if (tile == null)
+//			boolean flag = stack.getTagCompound().getBoolean(StringLibs.RFC_TOOLTIP1);
+//			if (flag)
 //				list.add("Bound tile is null");
-//			else if (tile != null && list.size() > 2)
+//			else if (!flag && list.size() > 2)
 //				list.remove(2);
 //		}
 	}
@@ -76,8 +76,9 @@ public class ItemFolder extends Item implements IFolder {
 		long count = getFileSize(stack);
 		long extract = Math.min(((ItemStack)getObject(stack)).getMaxStackSize(), count);
 		
-		if (extract == 0)
+		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true)) {
 			return null;
+		}
 		
 		ItemStack copy = stack.copy();
 		remove(copy, extract);

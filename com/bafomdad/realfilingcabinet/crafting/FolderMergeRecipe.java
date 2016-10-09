@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -90,6 +91,9 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 				long mergeCount = ItemFolder.getFileSize(stack2);
 				if (mergeCount > 0)
 				{
+					StorageUtils.checkTapeNBT(stack1, true);
+					StorageUtils.checkTapeNBT(stack2, true);
+					
 					ItemStack newFolder = stack1.copy();
 					ItemFolder.add(newFolder, mergeCount);
 					return newFolder;

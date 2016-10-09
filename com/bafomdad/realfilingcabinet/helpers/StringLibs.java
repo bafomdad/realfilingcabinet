@@ -13,9 +13,13 @@ public class StringLibs {
 	public static String RFC_SLOTINDEX = "RFC_slotindex";
 	public static String RFC_TILEPOS = "RFC_tilepos";
 	public static String RFC_DIM = "RFC_dim";
+	public static String RFC_TOOLTIP1 = "RFC_enderfoldertooltip";
 	
 	// UUID
 	public static String RFC_OWNER = "Own";
 	public static String RFC_COPY = "OwnCopy";
 	public static String RFC_FALLBACK = "RFC_playername";
+	
+	// MISC
+	public static String RFC_TAPED = "RFC_whiteoutTaped";
 }

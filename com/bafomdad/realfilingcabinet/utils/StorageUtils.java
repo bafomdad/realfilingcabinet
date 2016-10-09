@@ -163,4 +163,12 @@ public class StorageUtils {
 		if (player instanceof EntityPlayerMP)
 			((EntityPlayerMP)player).sendContainerToPlayer(player.inventoryContainer);
 	}
+	
+	public static void checkTapeNBT(ItemStack stack, boolean setTaped) {
+		
+		if (stack.getItemDamage() == 1)
+			return;
+		
+		NBTUtils.setBoolean(stack, StringLibs.RFC_TAPED, setTaped);
+	}
 }
