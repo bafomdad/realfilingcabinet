@@ -75,7 +75,6 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 			{
 				GlStateManager.color(0.65F, 0.3F, 0.65F);
 			}
-			Minecraft mc = Minecraft.getMinecraft();
 			if (UpgradeHelper.hasUpgrade(te))
 				bindTexture(ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.getTileData().getString(StringLibs.RFC_UPGRADE))));
 			else

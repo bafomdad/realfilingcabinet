@@ -61,14 +61,6 @@ public class ItemFolder extends Item implements IFolder {
 			long count = getFileSize(stack);
 			list.add(TextHelper.format(count) + " " + stacky.getDisplayName());
 		}
-//		if (stack.getItemDamage() == 1 && stack.getTagCompound().hasKey(StringLibs.RFC_TOOLTIP1))
-//		{
-//			boolean flag = stack.getTagCompound().getBoolean(StringLibs.RFC_TOOLTIP1);
-//			if (flag)
-//				list.add("Bound tile is null");
-//			else if (!flag && list.size() > 2)
-//				list.remove(2);
-//		}
 	}
 	
 	public ItemStack getContainerItem(ItemStack stack) {
@@ -165,6 +157,9 @@ public class ItemFolder extends Item implements IFolder {
 		
 		if (getObject(stack) != null && ((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {
 			long count = ItemFolder.getFileSize(stack);
+			if (stack.getItemDamage() == 1 && !EnderUtils.preValidateEnderFolder(stack))
+				count = 0;
+			
 			if (count > 0)
 			{
 				ItemStack stackToPlace = new ItemStack(((ItemStack)getObject(stack)).getItem(), 1, ((ItemStack)getObject(stack)).getItemDamage());

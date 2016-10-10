@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -22,6 +23,7 @@ import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet {
@@ -35,6 +37,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	
 	// NBT variables
 	public int sizeStack = 0;
+	private int rfcHash = -1;
 	
 	// Rendering variables
 	public float offset, renderOffset;
@@ -70,6 +73,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		if (owner != null)
 			tag.setString("Own", owner.toString());
+		if (rfcHash != -1)
+			tag.setInteger(StringLibs.RFC_HASH, rfcHash);
 	}
 	
 	@Override
@@ -81,6 +86,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		this.owner = null;
 		if (tag.hasKey("Own"))
 			owner = UUID.fromString(tag.getString("Own"));
+		if (tag.hasKey(StringLibs.RFC_HASH))
+			rfcHash = tag.getInteger(StringLibs.RFC_HASH);
 	}
 	
 	public void readInv(NBTTagCompound nbt) {
@@ -223,5 +230,15 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			}
 		}
 		return false;
+	}
+	
+	public void setHash(TileEntity tile) {
+		
+		this.rfcHash = EnderUtils.createHash(this);
+	}
+	
+	public int getHash(TileEntityRFC tile) {
+		
+		return this.rfcHash;
 	}
 }

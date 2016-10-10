@@ -14,6 +14,7 @@ public class StringLibs {
 	public static String RFC_TILEPOS = "RFC_tilepos";
 	public static String RFC_DIM = "RFC_dim";
 	public static String RFC_TOOLTIP1 = "RFC_enderfoldertooltip";
+	public static String RFC_HASH = "RFC_enderhash";
 	
 	// UUID
 	public static String RFC_OWNER = "Own";

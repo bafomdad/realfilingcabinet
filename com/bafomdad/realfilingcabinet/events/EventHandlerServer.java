@@ -83,21 +83,6 @@ public class EventHandlerServer {
 		}
 	}
 	
-//	@SubscribeEvent
-	public void onMergeFolders(PlayerEvent.ItemCraftedEvent event) {
-		
-		if (event.crafting.getItem() == RFCItems.folder)
-		{
-			for (int slot = 0; slot < event.craftMatrix.getSizeInventory(); slot++) {
-				ItemStack stack = event.craftMatrix.getStackInSlot(slot);
-				if (stack == null)
-					continue;
-				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == 0)
-					event.craftMatrix.setInventorySlotContents(slot, null);
-			}
-		}
-	}
-	
 	@SubscribeEvent
 	public void onPickupItems(EntityItemPickupEvent event) {
 		
@@ -122,6 +107,7 @@ public class EventHandlerServer {
 						
 						event.setCanceled(true);
 						event.getItem().setDead();
+						break;
 					}
 				}
 			}

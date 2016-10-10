@@ -23,8 +23,12 @@ public class EnderUtils {
 		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
 		long folderSize = ItemFolder.getFileSize(folder);
 		
-		if (folderSize != ItemFolder.getFileSize(stack) && StorageUtils.simpleMatch((ItemStack)ItemFolder.getObject(folder), (ItemStack)ItemFolder.getObject(stack)))
+		if (folderSize != ItemFolder.getFileSize(stack) && hashMatches(stack, tile)) {
 			ItemFolder.setFileSize(stack, folderSize);
+			return;
+		}
+		else if (!hashMatches(stack, tile))
+			ItemFolder.setFileSize(stack, 0);
 	}
 	
 	public static void syncToTile(TileEntityRFC tile, int dim, int index, int amount, boolean subtract) {
@@ -53,6 +57,7 @@ public class EnderUtils {
 		ItemStack enderFolder = stack.copy();
 		enderFolder.setItemDamage(1);
 		NBTUtils.setInt(enderFolder, StringLibs.RFC_SLOTINDEX, playerTag.getInteger(StringLibs.RFC_SLOTINDEX));
+		NBTUtils.setInt(enderFolder, StringLibs.RFC_HASH, tile.getHash(tile));
 		setTileLoc(tile, enderFolder);
 		
 		return enderFolder;
@@ -158,5 +163,32 @@ public class EnderUtils {
 			}
 		}
 		return index;
+	}
+	
+	public static int createHash(TileEntityRFC tile) {
+		
+		String tilepos = Long.toString(tile.getPos().toLong());
+		String worldtime = Long.toString(tile.getWorld().getTotalWorldTime());
+		
+		String str = new String(tilepos + worldtime);
+		
+		return str.hashCode();
+	}
+	
+	private static boolean hashMatches(ItemStack stack, TileEntityRFC tile) {
+		
+		return NBTUtils.getInt(stack, StringLibs.RFC_HASH, -1) == tile.getHash(tile);
+	}
+	
+	public static boolean preValidateEnderFolder(ItemStack stack) {
+		
+		TileEntityRFC tile = getTileLoc(stack);
+		if (tile == null)
+			return false;
+		
+		if (tile != null && !hashMatches(stack, tile))
+			return false;
+		
+		return true;
 	}
 }

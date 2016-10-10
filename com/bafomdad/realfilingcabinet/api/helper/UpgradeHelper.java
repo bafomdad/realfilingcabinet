@@ -12,8 +12,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 
 public class UpgradeHelper {
 	
@@ -106,6 +108,8 @@ public class UpgradeHelper {
 			tileTag.setString(StringLibs.RFC_UPGRADE, key);
 			if (!player.capabilities.isCreativeMode)
 				upgrade.stackSize--;
+			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == 2 && tile instanceof TileEntityRFC)
+				((TileEntityRFC)tile).setHash(tile);
 			tile.markDirty();
 		}
 	}

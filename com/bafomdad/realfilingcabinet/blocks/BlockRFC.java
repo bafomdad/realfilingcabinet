@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,6 +36,7 @@ import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.common.IFolder;
 import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
+import com.bafomdad.realfilingcabinet.api.helper.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -152,6 +154,8 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (tile.getTileData().hasKey(StringLibs.RFC_UPGRADE))
 			{
 				ItemStack upgrade = UpgradeHelper.stackTest(tile);
+				if (upgrade != null && upgrade.stackSize == 0)
+					upgrade.stackSize = 1;
 				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
 			}
 			if (!tag.hasNoTags())
@@ -262,21 +266,22 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			{
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
-					if (!stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
-						return;
-					
-					NBTTagCompound tagPos = NBTUtils.getCompound(stack, StringLibs.RFC_TILEPOS, true);
-					if (tagPos != null)
-					{
-						int xLoc = tagPos.getInteger("X");
-						int yLoc = tagPos.getInteger("Y");
-						int zLoc = tagPos.getInteger("Z");
-						
-						int dim = NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0);
-						BlockPos pos = new BlockPos(xLoc, yLoc, zLoc);
-						if (pos.equals(tileRFC.getPos()) && dim == tileRFC.getWorld().provider.getDimension())
-							player.setHeldItem(EnumHand.MAIN_HAND, null);
-					}
+					player.setHeldItem(EnumHand.MAIN_HAND, null);
+//					if (!stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
+//						return;
+//					
+//					NBTTagCompound tagPos = NBTUtils.getCompound(stack, StringLibs.RFC_TILEPOS, true);
+//					if (tagPos != null)
+//					{
+//						int xLoc = tagPos.getInteger("X");
+//						int yLoc = tagPos.getInteger("Y");
+//						int zLoc = tagPos.getInteger("Z");
+//						
+//						int dim = NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0);
+//						BlockPos pos = new BlockPos(xLoc, yLoc, zLoc);
+//						if (pos.equals(tileRFC.getPos()) && dim == tileRFC.getWorld().provider.getDimension())
+//							player.setHeldItem(EnumHand.MAIN_HAND, null);
+//					}
 				}
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
