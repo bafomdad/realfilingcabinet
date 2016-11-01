@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.api.helper;
+package com.bafomdad.realfilingcabinet.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
+import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
+import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 
@@ -84,6 +84,9 @@ public class UpgradeHelper {
 		
 		if (tile.getWorld().isRemote || !(upgrade.getItem() instanceof IUpgrades))
 			return;
+		
+		if (!((IUpgrades)upgrade.getItem()).canApply(tile, upgrade))
+			return;
 
 		NBTTagCompound tileTag = tile.getTileData();
 		String key = stringTest(upgrade);
@@ -142,6 +145,8 @@ public class UpgradeHelper {
 				player.dropItem(newStack.getItem(), 1);
 			tile.markDirty();
 		}
+		else
+			tile.getTileData().removeTag(StringLibs.RFC_UPGRADE);
 	}
 	
 	private static String stringTest(ItemStack upgrade) {

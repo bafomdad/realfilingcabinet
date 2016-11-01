@@ -5,9 +5,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
-import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -41,6 +41,9 @@ public class StorageUtils {
 		if (tile.getWorld().isRemote)
 			return;
 		
+		if (stack.hasTagCompound())
+			return;
+		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
 			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
@@ -55,6 +58,12 @@ public class StorageUtils {
 						break;
 					}
 				}
+			}
+			if ((tile.getInventory().getTrueStackInSlot(i) != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 2) && DurabilityUtils.matchDurability(tile, stack))
+			{
+				player.setHeldItem(EnumHand.MAIN_HAND, null);
+				tile.markBlockForUpdate();
+				break;
 			}
 			if (loopinv != null && simpleMatch(loopinv, stack))
 			{
@@ -76,8 +85,17 @@ public class StorageUtils {
 			ItemStack loopinv = player.inventory.getStackInSlot(i);
 			if (loopinv != null && (loopinv.getItem() != RFCItems.emptyFolder || loopinv.getItem() != RFCItems.folder))
 			{
+				if (loopinv.hasTagCompound())
+					continue;
+				
 				for (int j = 0; j < tile.getInventory().getSlots(); j++) {
 					ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
+					if (tile.getInventory().getTrueStackInSlot(j) != null && tile.getInventory().getTrueStackInSlot(j).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
+					{
+						player.inventory.setInventorySlotContents(i, null);
+						consume = true;
+						break;
+					}
 					if (ItemStack.areItemsEqual(folderstack, loopinv))
 					{
 						ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.stackSize);

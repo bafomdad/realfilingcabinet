@@ -4,19 +4,20 @@ import java.util.List;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
-import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
+import com.bafomdad.realfilingcabinet.api.IUpgrades;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemUpgrades extends Item implements IUpgrades {
 	
-	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict" };
+	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob" };
 
 	public ItemUpgrades() {
 		
@@ -51,4 +52,10 @@ public class ItemUpgrades extends Item implements IUpgrades {
 			default: return EnumRarity.COMMON;
 		}
     }
+
+	@Override
+	public boolean canApply(TileEntity tile, ItemStack upgrade) {
+
+		return true;
+	}
 }

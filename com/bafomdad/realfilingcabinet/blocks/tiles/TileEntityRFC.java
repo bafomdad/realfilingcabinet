@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -18,7 +20,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-import com.bafomdad.realfilingcabinet.api.common.ILockableCabinet;
+import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -64,6 +66,15 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		return writeToNBT(new NBTTagCompound());
     }
+	
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		
+		NBTTagCompound nbtTag = new NBTTagCompound();
+		this.writeCustomNBT(nbtTag);
+		return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
+	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound tag) {

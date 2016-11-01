@@ -114,23 +114,26 @@ public class AutocraftingUtils {
 				folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
 			
 			if (folder != null && folder.getItem() == RFCItems.folder) {
-				if (ItemFolder.getObject(folder) != null && stack.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
-					if (ItemFolder.getFileSize(folder) > 0)
-					{
-						boolean consume = true;
-						
-						ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
-						if (container != null && (inv instanceof InventoryRFC)) {
-							if (!shuntContainerItem(container, inv)) {
-								shuntContainerItemOutside(container, inv);
+				if (ItemFolder.getObject(folder) instanceof ItemStack)
+				{
+					if (ItemFolder.getObject(folder) != null && stack.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
+						if (ItemFolder.getFileSize(folder) > 0)
+						{
+							boolean consume = true;
+							
+							ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
+							if (container != null && (inv instanceof InventoryRFC)) {
+								if (!shuntContainerItem(container, inv)) {
+									shuntContainerItemOutside(container, inv);
+								}
 							}
+							if (consume) {
+								ItemFolder.remove(folder, 1);
+								if (ItemFolder.getFileSize(folder) < 0)
+									consume = false;
+							}
+							return consume;
 						}
-						if (consume) {
-							ItemFolder.remove(folder, 1);
-							if (ItemFolder.getFileSize(folder) < 0)
-								consume = false;
-						}
-						return consume;
 					}
 				}
 			}

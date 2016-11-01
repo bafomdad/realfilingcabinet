@@ -35,18 +35,20 @@ public class RFCItems {
 	@SideOnly(Side.CLIENT)
 	public static void initModels() {
 		
-		ModelLoader.setCustomModelResourceLocation(emptyFolder, 0, new ModelResourceLocation(emptyFolder.getRegistryName(), "inventory"));
+		for (int i = 0; i < emptyFolder.folderType.length; ++i)
+			ModelLoader.setCustomModelResourceLocation(emptyFolder, i, new ModelResourceLocation(emptyFolder.getRegistryName() + "_" + emptyFolder.folderType[i], "inventory"));
+		
+		for (int i = 0; i < folder.folderTypes.length; ++i)
+			ModelLoader.setCustomModelResourceLocation(folder, i, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[i], "inventory"));
+		
+		for (int i = 0; i < upgrades.upgradeTypes.length; ++i)
+			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + upgrades.upgradeTypes[i], "inventory"));
+		
 		ModelLoader.setCustomModelResourceLocation(magnifyingGlass, 0, new ModelResourceLocation(magnifyingGlass.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(whiteoutTape, 0, new ModelResourceLocation(whiteoutTape.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(filter, 0, new ModelResourceLocation(filter.getRegistryName(), "inventory"));
 		
-		ModelLoader.setCustomModelResourceLocation(folder, 0, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[0], "inventory"));
-		ModelLoader.setCustomModelResourceLocation(folder, 1, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[1], "inventory"));
-		
 		ModelLoader.setCustomModelResourceLocation(keys, 0, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[0], "inventory"));
 		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));
-		
-		for (int i = 0; i < upgrades.upgradeTypes.length; ++i)
-			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + upgrades.upgradeTypes[i], "inventory"));
 	}
 }

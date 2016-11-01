@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 
-import com.bafomdad.realfilingcabinet.api.helper.ResourceUpgradeHelper;
-import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 
 public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC> {
@@ -59,14 +59,15 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 				
 				for (int i = 0; i < te.getInventory().getSlots(); i++) {
-					if (te.getInventory().getTrueStackInSlot(i) != null)
+					ItemStack renderFolder = te.getInventory().getTrueStackInSlot(i);
+					if (renderFolder != null)
 					{	
 						GlStateManager.translate(0.0F, -0.0025F, 0.1F);
 						
 						if (UpgradeHelper.getUpgrade(te, StringLibs.TAG_ENDER) != null)
 							this.renderFolders(new ItemStack(RFCItems.folder, 1, 1));
 						else
-							this.renderFolders(new ItemStack(RFCItems.folder, 1, 0));
+							this.renderFolders(renderFolder);
 					}
 				}
 				GlStateManager.popMatrix();

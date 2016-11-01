@@ -2,10 +2,10 @@ package com.bafomdad.realfilingcabinet.integration;
 
 import javax.annotation.Nullable;
 
-import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -66,12 +66,30 @@ public class TopRFC {
 			
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
 			if (folder != null) {
-				String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
-				long storedSize = ItemFolder.getFileSize(folder);
-				
-				String name = stackName + " - " + storedSize;
-				
-				info.horizontal().text(name);
+				if (ItemFolder.getObject(folder) instanceof ItemStack)
+				{
+					String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+					long storedSize = ItemFolder.getFileSize(folder);
+					
+					String name = stackName + " - " + storedSize;
+					if (folder.getItemDamage() == 2)
+					{
+						int storedRem = ItemFolder.getRemSize(folder);
+						int maxDamage = ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage();
+						name = stackName + " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]"; 
+					}
+					info.horizontal().text(name);
+				}
+				else if (ItemFolder.getObject(folder) instanceof String)
+				{
+					String mobName = (String)ItemFolder.getObject(folder);
+					if (!mobName.isEmpty())
+					{
+						long storedSize = ItemFolder.getFileSize(folder);
+						String name = mobName + " - " + storedSize;
+						info.horizontal().text(name);
+					}
+				}
 			}
 		}
 		

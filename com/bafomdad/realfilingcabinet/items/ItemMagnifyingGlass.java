@@ -2,7 +2,10 @@ package com.bafomdad.realfilingcabinet.items;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
+import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -26,20 +29,16 @@ public class ItemMagnifyingGlass extends Item {
 		GameRegistry.register(this);
 	}
 	
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         
-    	TileEntity tile = world.getTileEntity(pos);
-    	if (player.isSneaking() && (tile != null && tile instanceof IInventory))
+    	Block block = world.getBlockState(pos).getBlock();
+    	if (player.isSneaking() && block == RFCBlocks.blockRFC)
     	{
-    		IInventory tileInv = (IInventory)tile;
-    		for (int i = 0; i < tileInv.getSizeInventory(); i++) {
-    			ItemStack loopinv = tileInv.getStackInSlot(i);
-    			if (loopinv != null && !world.isRemote)
-    			{
-    				System.out.println("Slot #" + i + ": " + loopinv.getDisplayName() + " " + loopinv.stackSize + "x");
-    			}
+    		if (!world.isRemote)
+    		{
+        		world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()));
+        		return EnumActionResult.SUCCESS;
     		}
-    		return EnumActionResult.SUCCESS;
     	}
     	return EnumActionResult.PASS;
     }

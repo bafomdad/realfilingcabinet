@@ -8,6 +8,8 @@ public class StringLibs {
 	public static String TAG_ENDER = "TAG_enderUpgrade";
 	public static String TAG_CRAFT = "TAG_craftingUpgrade";
 	public static String TAG_OREDICT = "TAG_oredictUpgrade";
+	public static String TAG_MOB = "TAG_mobUpgrade";
+	public static String TAG_DURABILITY = "TAG_durabilityUpgrade";
 	
 	// ENDER FOLDER
 	public static String RFC_SLOTINDEX = "RFC_slotindex";

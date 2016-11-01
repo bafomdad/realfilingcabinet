@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.api.common;
+package com.bafomdad.realfilingcabinet.api;
 
 import java.util.UUID;
 

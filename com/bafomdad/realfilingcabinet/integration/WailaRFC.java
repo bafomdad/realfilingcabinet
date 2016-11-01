@@ -61,6 +61,13 @@ public class WailaRFC {
 					
 					name = stackName + " - " + storedSize;
 				}
+				else if (ItemFolder.getObject(folder) instanceof String)
+				{
+					String entityName = ItemFolder.getFileName(folder);
+					long storedSize = ItemFolder.getFileSize(folder);
+					
+					name = entityName + " - " + storedSize;
+				}
 				if (!name.isEmpty())
 					currenttip.add(name);
 			}

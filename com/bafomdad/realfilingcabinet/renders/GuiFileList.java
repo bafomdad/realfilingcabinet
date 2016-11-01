@@ -6,7 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
-import com.bafomdad.realfilingcabinet.api.common.IFolder;
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
@@ -64,7 +64,7 @@ public class GuiFileList extends Gui {
 					TileEntity tile = player.worldObj.getTileEntity(mop.getBlockPos());
 					if (tile != null && tile instanceof TileEntityRFC)
 					{
-						List<String> list = getFileList(((TileEntityRFC)tile).getInventory());
+						List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
 						if (!list.isEmpty())
 						{
 							for (int i = 0; i < list.size(); i++)
@@ -80,7 +80,7 @@ public class GuiFileList extends Gui {
 		}
 	}
 	
-	private List getFileList(InventoryRFC inv) {
+	private List getFileList(InventoryRFC inv, boolean crouching) {
 		
 		List<String> list = new ArrayList();
 		for (int i = 0; i < inv.getSlots(); i++)
@@ -88,11 +88,37 @@ public class GuiFileList extends Gui {
 			ItemStack folder = inv.getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() instanceof IFolder)
 			{
-				ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
-				if (stack != null)
+				if (ItemFolder.getObject(folder) instanceof ItemStack)
 				{
-					long count = ItemFolder.getFileSize(folder);
-					list.add(TextHelper.format(count) + " " + stack.getDisplayName());
+					ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
+					if (stack != null)
+					{
+						long count = ItemFolder.getFileSize(folder);
+						if (folder.getItemDamage() == 2) {
+							if (!crouching)
+								list.add(TextHelper.format(count) + " " + stack.getDisplayName() + " [" + ItemFolder.getRemSize(folder) + " / " + stack.getMaxDamage() + "]");
+							else
+								list.add(count + " " + stack.getDisplayName() + " [" + ItemFolder.getRemSize(folder) + " / " + stack.getMaxDamage() + "]");
+						}
+						else {
+							if (!crouching)
+								list.add(TextHelper.format(count) + " " + stack.getDisplayName());
+							else
+								list.add(count + " " + stack.getDisplayName());
+						}
+					}
+				}
+				else if (ItemFolder.getObject(folder) instanceof String)
+				{
+					String str = (String)ItemFolder.getObject(folder);
+					if (!str.isEmpty())
+					{
+						long count = ItemFolder.getFileSize(folder);
+						if (!crouching)
+							list.add(TextHelper.format(count) + " " + str);
+						else
+							list.add(count + " " + str);
+					}
 				}
 			}
 		}

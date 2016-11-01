@@ -4,37 +4,34 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.bafomdad.realfilingcabinet.init.RFCBlocks;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.items.ItemFolder;
-import com.bafomdad.realfilingcabinet.utils.StorageUtils;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+
+import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
+import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 
-	public static List inputs = new ArrayList();
+	private List<ItemStack> inputs;
 	
-	static
-	{
-		inputs.add(new ItemStack(RFCItems.emptyFolder));
-	}
-	public FolderStorageRecipe() {
+	public FolderStorageRecipe(ItemStack output, List<ItemStack> inputs) {
 		
-		super(new ItemStack(RFCItems.folder, 1, 0), inputs);
+		super(output, inputs);
+		this.inputs = inputs;
 	}
 	
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList list = new ArrayList(this.recipeItems);
+		ArrayList list = new ArrayList(this.inputs);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -78,30 +75,65 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 			ItemStack stack = ic.getStackInSlot(i);
 			if (stack != null)
 			{
-				if (stack.getItem() == RFCItems.emptyFolder)
+				if (stack.getItem() instanceof IEmptyFolder)
 					emptyFolder = i;
-				if (allowableIngredient(stack))
+				else
 					recipestack = i;
 			}
 		}
 		if (emptyFolder >= 0 && recipestack >= 0)
 		{
 			ItemStack stack1 = ic.getStackInSlot(recipestack);
+			ItemStack folder = ic.getStackInSlot(emptyFolder);
 			
-			ItemStack newFolder = new ItemStack(RFCItems.folder);
-			ItemFolder.setObject(newFolder, stack1);
-			return newFolder;
+			if ((folder.getItemDamage() == 0 && !stack1.getItem().isRepairable()) || (folder.getItemDamage() == 1 && stack1.getItem().isRepairable()))
+			{
+				int damage = 0;
+				if (folder.getItemDamage() == 1)
+					damage = 2;
+				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, damage);
+				ItemFolder.setObject(newFolder, stack1);
+				return newFolder;
+			}
 		}
-		return new ItemStack(RFCItems.emptyFolder);
+		return null;
+//		return new ItemStack(RFCItems.emptyFolder, 1, Math.max(recipeOutput.getItemDamage() - 1, 0));
 	}
 	
 	private boolean allowableIngredient(ItemStack stack) {
 		
-		if (stack.getItem() instanceof ItemTool || stack.hasTagCompound() || stack.getItem() instanceof ItemArmor || stack.isItemStackDamageable())
+		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
 			return false;
-		else if (stack.getItem() == RFCItems.folder || stack.getItem() == RFCItems.emptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
+		
+		if (stack.hasTagCompound())
+			return false;
+		
+		if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
+			return true;
+		else if (stack.getItem().isRepairable() && stack.getItemDamage() != 0)
 			return false;
 		
 		return true;
+	}
+	
+	private boolean checkIngredient(ItemStack stack, int damage) {
+		
+		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
+			return false;
+		
+		if (damage == 2 || stack.hasTagCompound())
+			return false;
+		
+		if (damage == 0)
+		{
+			if (!stack.getItem().isRepairable())
+				return true;
+		}
+		else if (damage == 1)
+		{
+			if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
+				return true;
+		}
+		return false;
 	}
 }

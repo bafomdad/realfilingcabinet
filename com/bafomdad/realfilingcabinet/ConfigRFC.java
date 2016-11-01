@@ -9,6 +9,7 @@ public class ConfigRFC {
 	public static boolean craftingUpgrade;
 	public static boolean enderUpgrade;
 	public static boolean oreDictUpgrade;
+	public static boolean mobUpgrade;
 	public static boolean nametagRecipe;
 	
 	// MISC
@@ -25,6 +26,8 @@ public class ConfigRFC {
 		craftingUpgrade = config.get("recipes", "enableCraftingUpgradeRecipe", true).getBoolean();
 		enderUpgrade = config.get("recipes", "enableEnderUpgradeRecipe", true).getBoolean();
 		oreDictUpgrade = config.get("recipes", "enableOreDictUpgradeRecipe", true).getBoolean();
+		mobUpgrade = config.get("recipes", "enableMobUpgradeRecipe", true).getBoolean();
+		
 		nametagRecipe = config.get("recipes", "enableNametagRecipe", true).getBoolean();
 		
 		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want WAILA to handle the overlay instead.").getBoolean();

@@ -31,13 +31,13 @@ public class TileFilingCabinet extends TileEntity {
 	
 	public void readCustomNBT(NBTTagCompound tag) {}
 	
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		
-		NBTTagCompound tag = new NBTTagCompound();
-		this.writeCustomNBT(tag);
-		return new SPacketUpdateTileEntity(getPos(), 1, tag);
-	}
+//	@Override
+//	public SPacketUpdateTileEntity getUpdatePacket() {
+//		
+//		NBTTagCompound tag = new NBTTagCompound();
+//		this.writeCustomNBT(tag);
+//		return new SPacketUpdateTileEntity(getPos(), 1, tag);
+//	}
 	
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {

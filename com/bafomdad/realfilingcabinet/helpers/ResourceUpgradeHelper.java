@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.api.helper;
+package com.bafomdad.realfilingcabinet.helpers;
 
 import java.util.HashMap;
 import java.util.Map;

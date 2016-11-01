@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.api.common;
+package com.bafomdad.realfilingcabinet.api;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.IProperty;
@@ -14,8 +14,4 @@ public interface IFilingCabinet extends ITileEntityProvider {
 	public void leftClick(TileEntity tile, EntityPlayer player);
 	
 	public void rightClick(TileEntity tile, EntityPlayer player);
-	
-	public void entityCollisionInteraction(World world, BlockPos pos, IBlockState state, Entity entity);
-	
-//	public IProperty[] getIgnoredProperties();
 }

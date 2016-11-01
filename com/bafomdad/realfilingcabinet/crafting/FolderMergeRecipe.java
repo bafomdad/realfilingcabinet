@@ -32,7 +32,7 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList list = new ArrayList(this.recipeItems);
+		ArrayList list = new ArrayList(this.inputs);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {

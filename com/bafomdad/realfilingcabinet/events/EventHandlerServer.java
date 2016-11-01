@@ -1,27 +1,28 @@
 package com.bafomdad.realfilingcabinet.events;
 
-import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
-import com.bafomdad.realfilingcabinet.init.RFCBlocks;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.items.ItemFolder;
-import com.bafomdad.realfilingcabinet.utils.EnderUtils;
-import com.bafomdad.realfilingcabinet.utils.NBTUtils;
-
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class EventHandlerServer {
 
@@ -96,18 +97,21 @@ public class EventHandlerServer {
 				
 				ItemStack folder = event.getEntityPlayer().inventory.getStackInSlot(i);
 				if (folder != null && folder.getItem() == RFCItems.folder) {
-					ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
-					if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
+					if (ItemFolder.getObject(folder) instanceof ItemStack)
 					{
-						if (folder.getItemDamage() == 1) {
-							EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+						ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
+						if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
+						{
+							if (folder.getItemDamage() == 1) {
+								EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
+							}
+							else
+								ItemFolder.add(folder, estack.stackSize);
+							
+							event.setCanceled(true);
+							event.getItem().setDead();
+							break;
 						}
-						else
-							ItemFolder.add(folder, estack.stackSize);
-						
-						event.setCanceled(true);
-						event.getItem().setDead();
-						break;
 					}
 				}
 			}

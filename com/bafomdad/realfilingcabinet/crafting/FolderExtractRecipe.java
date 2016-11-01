@@ -97,18 +97,21 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 			if (stack.getItem() == RFCItems.folder && ItemFolder.getObject(stack) != null)
 			{
 				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
-				long count = ItemFolder.getFileSize(stack);
-				if (count > 0)
+				if (ItemFolder.getObject(stack) instanceof ItemStack)
 				{
-					ItemStack folderStack = (ItemStack)ItemFolder.getObject(stack);
-					int meta = folderStack.getItemDamage();
-					long extract = Math.min(folderStack.getMaxStackSize(), count);
-					
-					if (stack.getItemDamage() == 1) {
-						foldy = stack;
-						canSync = true;
+					long count = ItemFolder.getFileSize(stack);
+					if (count > 0)
+					{
+						ItemStack folderStack = (ItemStack)ItemFolder.getObject(stack);
+						int meta = folderStack.getItemDamage();
+						long extract = Math.min(folderStack.getMaxStackSize(), count);
+						
+						if (stack.getItemDamage() == 1) {
+							foldy = stack;
+							canSync = true;
+						}
+						return new ItemStack(folderStack.getItem(), (int)extract, meta);
 					}
-					return new ItemStack(folderStack.getItem(), (int)extract, meta);
 				}
 			}
 		}
