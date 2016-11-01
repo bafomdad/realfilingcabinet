@@ -13,6 +13,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,14 +34,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
-import com.bafomdad.realfilingcabinet.api.common.IFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.common.IFolder;
-import com.bafomdad.realfilingcabinet.api.common.IUpgrades;
-import com.bafomdad.realfilingcabinet.api.helper.ResourceUpgradeHelper;
-import com.bafomdad.realfilingcabinet.api.helper.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
+import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
@@ -81,7 +83,31 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
     	
-    	entityCollisionInteraction(world, pos, state, entity);
+    	TileEntityRFC tileRFC = (TileEntityRFC)world.getTileEntity(pos);
+    	if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_MOB) == null)
+    		return;
+    	
+    	if (!(entity instanceof EntityLivingBase) || entity instanceof EntityPlayer)
+    		return;
+    	
+    	EntityLivingBase elb = (EntityLivingBase)entity;
+    	if (!elb.isNonBoss() || elb.isChild())
+    		return;
+    	
+    	String entityName = EntityList.getEntityString(elb);
+    	for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
+    		ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
+    		if (folder != null && folder.getItem() == RFCItems.folder) {
+    			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null)
+    			{
+    				if (ItemFolder.getObject(folder).equals(entityName)) {
+    					elb.setDead();
+    					ItemFolder.add(folder, 1);
+    					break;
+    				}
+    			}
+    		}
+    	}
     }
 	
 	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {
@@ -105,12 +131,12 @@ public class BlockRFC extends Block implements IFilingCabinet {
     
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
     	
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing());
+        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 	
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
 		
-		world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, entity)), 2);
+		world.setBlockState(pos, state.withProperty(FACING, entity.getHorizontalFacing().getOpposite()), 2);
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile != null && tile instanceof TileEntityRFC)
 		{
@@ -267,21 +293,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
 					player.setHeldItem(EnumHand.MAIN_HAND, null);
-//					if (!stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
-//						return;
-//					
-//					NBTTagCompound tagPos = NBTUtils.getCompound(stack, StringLibs.RFC_TILEPOS, true);
-//					if (tagPos != null)
-//					{
-//						int xLoc = tagPos.getInteger("X");
-//						int yLoc = tagPos.getInteger("Y");
-//						int zLoc = tagPos.getInteger("Z");
-//						
-//						int dim = NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0);
-//						BlockPos pos = new BlockPos(xLoc, yLoc, zLoc);
-//						if (pos.equals(tileRFC.getPos()) && dim == tileRFC.getWorld().provider.getDimension())
-//							player.setHeldItem(EnumHand.MAIN_HAND, null);
-//					}
 				}
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
@@ -297,6 +308,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 						}
 					}
 				}
+				return;
 			}
 			if (stack.getItem() instanceof IUpgrades) {
 				if (!tileRFC.getWorld().isRemote) {
@@ -342,9 +354,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 		}
 	}
-	
-	@Override
-	public void entityCollisionInteraction(World world, BlockPos pos, IBlockState state, Entity entity) {}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
