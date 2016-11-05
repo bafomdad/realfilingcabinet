@@ -78,8 +78,11 @@ public class ItemFolder extends Item implements IFolder {
 		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true)) {
 			return null;
 		}
-		
 		ItemStack copy = stack.copy();
+		if (stack.getItemDamage() == 2 && count == 0)
+		{
+			setRemSize(copy, 0);
+		}
 		remove(copy, extract);
 		extractSize = (int)extract;
 

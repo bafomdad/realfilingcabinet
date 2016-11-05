@@ -8,10 +8,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
-import com.bafomdad.realfilingcabinet.init.RFCBlocks;
-import com.bafomdad.realfilingcabinet.init.RFCIntegration;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.init.RFCRecipes;
+import com.bafomdad.realfilingcabinet.init.*;
 import com.bafomdad.realfilingcabinet.world.TutorialGenerator;
 
 public class CommonProxy {

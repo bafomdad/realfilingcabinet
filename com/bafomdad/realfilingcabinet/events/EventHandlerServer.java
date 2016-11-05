@@ -99,6 +99,30 @@ public class EventHandlerServer {
 				if (folder != null && folder.getItem() == RFCItems.folder) {
 					if (ItemFolder.getObject(folder) instanceof ItemStack)
 					{
+						if (folder.getItemDamage() == 2)
+						{
+							if (estack.hasTagCompound())
+								return;
+							
+							if (estack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem())
+							{
+								int remSize = estack.getItemDamage();
+								int storedRem = ItemFolder.getRemSize(folder);
+								
+								ItemFolder.addRem(folder, estack.getMaxDamage() - estack.getItemDamage());
+								int newRem = ItemFolder.getRemSize(folder);
+								
+								if (newRem >= estack.getMaxDamage())
+								{
+									ItemFolder.add(folder, 1);
+									int newStoredRem = newRem - estack.getMaxDamage();
+									ItemFolder.setRemSize(folder, newStoredRem);
+								}
+								event.setCanceled(true);
+								event.getItem().setDead();
+								break;
+							}
+						}
 						ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
 						if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
 						{

@@ -112,6 +112,16 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 						}
 						return new ItemStack(folderStack.getItem(), (int)extract, meta);
 					}
+					else if (count == 0 && stack.getItemDamage() == 2)
+					{
+						if (ItemFolder.getRemSize(stack) > 0)
+						{
+							ItemStack folderStack = (ItemStack)ItemFolder.getObject(stack);
+							int damage = folderStack.getMaxDamage() - ItemFolder.getRemSize(stack);
+							
+							return new ItemStack(folderStack.getItem(), 1, damage);
+						}
+					}
 				}
 			}
 		}

@@ -10,8 +10,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,7 +36,6 @@ import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -222,7 +219,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
 			}
-			//TODO: update cabinet model texture when on a server
+			//TODO: todo
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
@@ -314,7 +311,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (!tileRFC.getWorld().isRemote) {
 					UpgradeHelper.setUpgrade(player, tileRFC, stack);
 				}
-				//TODO: update cabinet model texture when on a server
+				//TODO: todo
 				return;
 			}
 			else

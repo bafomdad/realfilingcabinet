@@ -13,9 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 
 public class UpgradeHelper {
 	
