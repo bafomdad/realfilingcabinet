@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
@@ -137,14 +138,12 @@ public class UpgradeHelper {
 		ItemStack upgrade = stackTest(tile);
 		if (upgrade != null)
 		{
-			tile.getTileData().removeTag(StringLibs.RFC_UPGRADE);
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
 			if (!player.inventory.addItemStackToInventory(newStack))
 				player.dropItem(newStack.getItem(), 1);
 			tile.markDirty();
 		}
-		else
-			tile.getTileData().removeTag(StringLibs.RFC_UPGRADE);
+		tile.getTileData().removeTag(StringLibs.RFC_UPGRADE);
 	}
 	
 	private static String stringTest(ItemStack upgrade) {

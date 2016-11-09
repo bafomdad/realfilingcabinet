@@ -209,14 +209,18 @@ public class ItemFolder extends Item implements IFolder {
 			return false;
 		
 		ItemStack folder = player.getHeldItemMainhand();
-		if (folder.getItemDamage() == 3) {
-			if (getObject(folder) != null) {
-				String entityName = EntityList.getEntityString(target);
-				if (getObject(folder).equals(entityName))
-				{
-					add(folder, 1);
-					target.setDead();
-					return true;
+		
+		if (folder != null && folder.getItem() == this)
+		{
+			if (folder.getItemDamage() == 3) {
+				if (getObject(folder) != null) {
+					String entityName = EntityList.getEntityString(target);
+					if (getObject(folder).equals(entityName))
+					{
+						add(folder, 1);
+						target.setDead();
+						return true;
+					}
 				}
 			}
 		}

@@ -26,7 +26,7 @@ public class ConfigRFC {
 		craftingUpgrade = config.get("recipes", "enableCraftingUpgradeRecipe", true).getBoolean();
 		enderUpgrade = config.get("recipes", "enableEnderUpgradeRecipe", true).getBoolean();
 		oreDictUpgrade = config.get("recipes", "enableOreDictUpgradeRecipe", true).getBoolean();
-		mobUpgrade = config.get("recipes", "enableMobUpgradeRecipe", true).getBoolean();
+		mobUpgrade = config.get("recipes", "enableMobUpgradeRecipe", true, "Disabling this also disables the mob folder recipe.").getBoolean();
 		
 		nametagRecipe = config.get("recipes", "enableNametagRecipe", true).getBoolean();
 		

@@ -7,7 +7,9 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -26,6 +28,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,6 +40,8 @@ import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
+import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -52,6 +58,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	protected static final AxisAlignedBB BASE_AABB = new AxisAlignedBB(0.0D + f, 0.0D, 0.0D + f, 1.0D - f, 1.0D - f, 1.0D - f);
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
+	
 	public BlockRFC() {
 		
 		super(Material.IRON);
@@ -219,7 +226,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
 			}
-			//TODO: todo
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
@@ -311,7 +317,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (!tileRFC.getWorld().isRemote) {
 					UpgradeHelper.setUpgrade(player, tileRFC, stack);
 				}
-				//TODO: todo
 				return;
 			}
 			else

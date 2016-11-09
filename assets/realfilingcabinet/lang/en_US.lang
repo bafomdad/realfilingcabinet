@@ -20,6 +20,7 @@ item.realfilingcabinet.upgrade_mob.name=Mob Upgrade
 item.realfilingcabinet.filter.name=Filing Cabinet Filter
 item.realfilingcabinet.rfckey_master.name=Master Key
 item.realfilingcabinet.rfckey_copy.name=Key Copy
+item.realfilingcabinet.debugger.name=Debugging Tool
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet

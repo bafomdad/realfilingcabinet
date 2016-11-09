@@ -22,7 +22,6 @@ public class RFCRecipes {
 		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 1), new Object[] { "P  ", "PA ", "PPP", 'P', Items.PAPER, 'A', Items.IRON_PICKAXE });
-		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 2), new Object[] { "PGS", "PBR", "PPP", 'P', Items.PAPER, 'G', Items.GUNPOWDER, 'S', Items.STRING, 'B', Items.BONE, 'R', Items.ROTTEN_FLESH });
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.whiteoutTape), " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', "slimeball", 'B', new ItemStack(Items.DYE, 1, 15) ));
@@ -38,9 +37,10 @@ public class RFCRecipes {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 2), new Object[] { "OEO", "EFE", "OEO", 'O', Blocks.OBSIDIAN, 'E', Items.ENDER_EYE, 'F', RFCBlocks.blockRFC });
 		if (ConfigRFC.oreDictUpgrade)
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 3), new Object[] { "GOG", "SFB", "GJG", 'G', Blocks.GLASS, 'O', new ItemStack(Blocks.PLANKS, 1, 0), 'S', new ItemStack(Blocks.PLANKS, 1, 1), 'B', new ItemStack(Blocks.PLANKS, 1, 2), 'J', new ItemStack(Blocks.PLANKS, 1, 3), 'F', RFCBlocks.blockRFC });
-		if (ConfigRFC.mobUpgrade)
+		if (ConfigRFC.mobUpgrade) {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 4), new Object[] { "IGI", "BFR", "ISI", 'I', Items.IRON_INGOT, 'G', Items.GUNPOWDER, 'B', Items.BONE, 'R', Items.ROTTEN_FLESH, 'S', Items.STRING, 'F', RFCBlocks.blockRFC });
-		
+			GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 2), new Object[] { "PGS", "PBR", "PPP", 'P', Items.PAPER, 'G', Items.GUNPOWDER, 'S', Items.STRING, 'B', Items.BONE, 'R', Items.ROTTEN_FLESH });
+		}
 		if (ConfigRFC.nametagRecipe)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.NAME_TAG), " PP", " BP", "S  ", 'P', Items.PAPER, 'B', "slimeball", 'S', Items.STRING ));
 		

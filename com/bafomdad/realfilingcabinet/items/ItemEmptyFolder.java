@@ -43,6 +43,17 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	}
 	
 	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
+	
+		switch(stack.getItemDamage())
+		{
+			case 1: list.add("Craft with items that can be damaged/repaired"); return;
+			case 2: list.add("Click any non-child/boss mob with this"); return;
+			default: list.add("Craft with any item/blocks that do not durability");
+		}
+	}
+	
+	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
 		if (!player.worldObj.isRemote)

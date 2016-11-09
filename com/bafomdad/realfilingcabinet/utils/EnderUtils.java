@@ -132,6 +132,9 @@ public class EnderUtils {
 				}
 				index = findNextFolder(tile, index);
 				folder = tile.getInventory().getTrueStackInSlot(index);
+				if (folder == null)
+					return;
+				
 				playerTag.setInteger(StringLibs.RFC_SLOTINDEX, index);
 			}
 			ItemStack newFolder = createEnderFolder(tile, player, folder);
@@ -154,7 +157,7 @@ public class EnderUtils {
 	
 	private static int findNextFolder(TileEntityRFC tile, int slot) {
 		
-		int index = -1;
+		int index = 0;
 		for (int i = slot; i < tile.getInventory().getSlots(); i++) {
 			ItemStack stack = tile.getInventory().getStackInSlot(i);
 			if (stack != null) {

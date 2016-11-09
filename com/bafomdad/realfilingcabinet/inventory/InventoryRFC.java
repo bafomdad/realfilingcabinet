@@ -47,8 +47,6 @@ public class InventoryRFC extends ItemStackHandler {
         {
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
-        		
-//        		return null;
         	}
         	return null;
         }
@@ -58,8 +56,6 @@ public class InventoryRFC extends ItemStackHandler {
         	if (!simulate) {
         		ItemFolder.add(stacks[slot], stack.stackSize);
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
-        		
-//            	return null;
         	}
         	return null;
         }
@@ -129,7 +125,10 @@ public class InventoryRFC extends ItemStackHandler {
 	
 	public ItemStack getTrueStackInSlot(int slot) {
 		
-		return stacks[slot];
+		if (slot >= 0)
+			return stacks[slot];
+		
+		return null;
 	}
 
 	@Override

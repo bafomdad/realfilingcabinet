@@ -7,8 +7,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
@@ -76,8 +80,10 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 			{
 				GlStateManager.color(0.65F, 0.3F, 0.65F);
 			}
+			
+			ResourceLocation res = ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.getTileData().getString(StringLibs.RFC_UPGRADE)));
 			if (UpgradeHelper.hasUpgrade(te))
-				bindTexture(ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.getTileData().getString(StringLibs.RFC_UPGRADE))));
+				bindTexture(res);
 			else
 				bindTexture(ResourceUpgradeHelper.getDefault());
 

@@ -20,6 +20,7 @@ public class RFCItems {
 	public static ItemUpgrades upgrades;
 	public static ItemFilter filter;
 	public static ItemKeys keys;
+	public static ItemDebugger debugger;
 	
 	public static void init() {
 		
@@ -30,6 +31,7 @@ public class RFCItems {
 		upgrades = new ItemUpgrades();
 		filter = new ItemFilter();
 		keys = new ItemKeys();
+		debugger = new ItemDebugger();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -47,6 +49,7 @@ public class RFCItems {
 		ModelLoader.setCustomModelResourceLocation(magnifyingGlass, 0, new ModelResourceLocation(magnifyingGlass.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(whiteoutTape, 0, new ModelResourceLocation(whiteoutTape.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(filter, 0, new ModelResourceLocation(filter.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(debugger, 0, new ModelResourceLocation(debugger.getRegistryName(), "inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(keys, 0, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[0], "inventory"));
 		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));

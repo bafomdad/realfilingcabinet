@@ -123,7 +123,9 @@ public class AutocraftingUtils {
 							
 							ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
 							if (container != null && (inv instanceof InventoryRFC)) {
-								if (!shuntContainerItem(container, inv)) {
+								if (container == (ItemStack)ItemFolder.getObject(folder))
+									consume = false;
+								if (consume && !shuntContainerItem(container, inv)) {
 									shuntContainerItemOutside(container, inv);
 								}
 							}
