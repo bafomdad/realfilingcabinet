@@ -16,6 +16,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
 public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
@@ -26,6 +27,8 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 		setRegistryName("emptyfolder");
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".emptyfolder");
 		setMaxStackSize(8);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 		setCreativeTab(TabRFC.instance);
 		GameRegistry.register(this);
 	}
@@ -49,7 +52,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 		{
 			case 1: list.add("Craft with items that can be damaged/repaired"); return;
 			case 2: list.add("Click any non-child/boss mob with this"); return;
-			default: list.add("Craft with any item/blocks that do not durability");
+			default: list.add("Craft with any item/blocks that do not have durability");
 		}
 	}
 	
@@ -63,6 +66,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 				if (ItemFolder.setObject(newFolder, target)) {
 					player.setHeldItem(hand, newFolder);
+					MobUtils.dropMobEquips(player.worldObj, target);
 					target.setDead();
 					return true;
 				}

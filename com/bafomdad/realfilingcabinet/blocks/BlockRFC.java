@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -49,6 +50,7 @@ import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
@@ -105,6 +107,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
     			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null)
     			{
     				if (ItemFolder.getObject(folder).equals(entityName)) {
+    					MobUtils.dropMobEquips(world, elb);
     					elb.setDead();
     					ItemFolder.add(folder, 1);
     					break;
@@ -226,16 +229,13 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
 			}
+			TileEntityRFC newTile = (TileEntityRFC)player.worldObj.getTileEntity(tileRFC.getPos());
+			player.worldObj.markChunkDirty(newTile.getPos(), newTile);
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
-		{
-			if (player.isSneaking()) {
-				StorageUtils.extractStackManually(tileRFC, player, true);
-			}
-			else
-				StorageUtils.extractStackManually(tileRFC, player, false);
-		}
+			StorageUtils.extractStackManually(tileRFC, player, player.isSneaking());
+
 		else
 		{
 			if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC))
@@ -260,9 +260,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!tileRFC.getOwner().equals(player.getUniqueID()))
 			{
 				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
-				{
 					return;
-				}
 			}
 		}
 		if (tileRFC.calcLastClick(player))
@@ -317,6 +315,8 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (!tileRFC.getWorld().isRemote) {
 					UpgradeHelper.setUpgrade(player, tileRFC, stack);
 				}
+				TileEntityRFC newTile = (TileEntityRFC)player.worldObj.getTileEntity(tileRFC.getPos());
+				player.worldObj.markChunkDirty(newTile.getPos(), newTile);
 				return;
 			}
 			else

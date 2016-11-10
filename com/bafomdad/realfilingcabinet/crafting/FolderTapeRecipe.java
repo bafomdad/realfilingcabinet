@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
@@ -20,7 +21,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 	
 	static
 	{
-		inputs.add(new ItemStack(RFCItems.folder));
+//		inputs.add(new ItemStack(RFCItems.folder));
 		inputs.add(new ItemStack(RFCItems.whiteoutTape));
 	}
 
@@ -40,6 +41,9 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
 				if (stack != null)
 				{
+					if (stack.getItem() instanceof IFolder || stack.isItemEnchanted())
+						list.add(stack);
+					
 					boolean flag = false;
 					Iterator iter = list.iterator();
 					
@@ -67,6 +71,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 		
 		int folder = -1;
 		int tape = -1;
+		int misc = -1;
 		
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
@@ -78,9 +83,11 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 					folder = i;
 				if (stack.getItem() == RFCItems.whiteoutTape)
 					tape = i;
+				if (stack.isItemEnchanted())
+					misc = i;
 			}
 		}
-		if (folder >= 0 && tape >= 0)
+		if (folder >= 0 && tape >= 0 && misc <= 0)
 		{
 			StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), true);
 			
@@ -96,6 +103,14 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 					default: return null;
 				}
 			}
+		}
+		else if (tape >= 0 && misc >= 0 && folder <= 0)
+		{
+			ItemStack stack3 = ic.getStackInSlot(misc);
+			ItemStack copystack = stack3.copy();
+			copystack.getTagCompound().removeTag("ench");
+			
+			return copystack;
 		}
 		return null;
 	}

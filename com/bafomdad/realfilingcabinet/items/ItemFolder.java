@@ -23,6 +23,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class ItemFolder extends Item implements IFolder {
@@ -218,6 +219,7 @@ public class ItemFolder extends Item implements IFolder {
 					if (getObject(folder).equals(entityName))
 					{
 						add(folder, 1);
+						MobUtils.dropMobEquips(player.worldObj, target);
 						target.setDead();
 						return true;
 					}
@@ -249,7 +251,8 @@ public class ItemFolder extends Item implements IFolder {
 								if (stack.getItemDamage() == 1 && !world.isRemote) {
 									EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
 									if (player instanceof FakePlayer)
-										ItemFolder.remove(stack, 1);
+//										ItemFolder.remove(stack, 1);
+										EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
 								}
 								else
 									remove(stack, 1);
