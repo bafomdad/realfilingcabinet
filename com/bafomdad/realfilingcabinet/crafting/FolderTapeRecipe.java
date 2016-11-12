@@ -21,7 +21,6 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 	
 	static
 	{
-//		inputs.add(new ItemStack(RFCItems.folder));
 		inputs.add(new ItemStack(RFCItems.whiteoutTape));
 	}
 
@@ -107,10 +106,8 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 		else if (tape >= 0 && misc >= 0 && folder <= 0)
 		{
 			ItemStack stack3 = ic.getStackInSlot(misc);
-			ItemStack copystack = stack3.copy();
-			copystack.getTagCompound().removeTag("ench");
-			
-			return copystack;
+
+			return new ItemStack(stack3.getItem(), 1, stack3.getItemDamage());
 		}
 		return null;
 	}

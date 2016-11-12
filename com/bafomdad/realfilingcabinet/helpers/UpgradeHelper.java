@@ -7,9 +7,6 @@ import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
@@ -37,12 +34,12 @@ public class UpgradeHelper {
 	 * @param tile
 	 * @return
 	 */
-	public static boolean hasUpgrade(TileEntity tile) {
+	public static boolean hasUpgrade(TileEntityRFC tile) {
 		
 		if (!(tile.getBlockType() instanceof IFilingCabinet))
 			return false;
 		
-		return tile.getTileData().hasKey(StringLibs.RFC_UPGRADE);
+		return !tile.upgrades.isEmpty();
 	}
 	
 	/**
@@ -50,9 +47,9 @@ public class UpgradeHelper {
 	 * @param tile
 	 * @return
 	 */
-	public static boolean isCreative(TileEntity tile) {
+	public static boolean isCreative(TileEntityRFC tile) {
 		
-		return tile.getTileData().getBoolean(StringLibs.TAG_CREATIVE);
+		return tile.isCreative;
 	}
 	
 	/**
@@ -61,12 +58,12 @@ public class UpgradeHelper {
 	 * @param tag
 	 * @return String
 	 */
-	public static String getUpgrade(TileEntity tile, String tag) {
+	public static String getUpgrade(TileEntityRFC tile, String tag) {
 		
 		if (!hasUpgrade(tile))
 			return null;
 		
-		String str = tile.getTileData().getString(StringLibs.RFC_UPGRADE);
+		String str = tile.upgrades;
 		if (str.equals(tag))
 			return str;
 		
@@ -79,7 +76,7 @@ public class UpgradeHelper {
 	 * @param tile
 	 * @param upgrade
 	 */
-	public static void setUpgrade(EntityPlayer player, TileEntity tile, ItemStack upgrade) {
+	public static void setUpgrade(EntityPlayer player, TileEntityRFC tile, ItemStack upgrade) {
 		
 		if (tile.getWorld().isRemote || !(upgrade.getItem() instanceof IUpgrades))
 			return;
@@ -87,17 +84,11 @@ public class UpgradeHelper {
 		if (!((IUpgrades)upgrade.getItem()).canApply(tile, upgrade))
 			return;
 
-		NBTTagCompound tileTag = tile.getTileData();
 		String key = stringTest(upgrade);
 		
 		if (key != null && key.equals(StringLibs.TAG_CREATIVE))
 		{
-			if (tileTag.getBoolean(StringLibs.TAG_CREATIVE))
-				return;
-			
-			tileTag.setBoolean(StringLibs.TAG_CREATIVE, true);
-			if (!player.capabilities.isCreativeMode)
-				upgrade.stackSize--;
+			tile.isCreative = true;
 			tile.markDirty();
 			return;
 		}
@@ -107,11 +98,11 @@ public class UpgradeHelper {
 			
 		if (key != null)
 		{
-			tileTag.setString(StringLibs.RFC_UPGRADE, key);
+			tile.upgrades = key;
 			if (!player.capabilities.isCreativeMode)
 				upgrade.stackSize--;
-			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == 2 && tile instanceof TileEntityRFC)
-				((TileEntityRFC)tile).setHash(tile);
+			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == 2)
+				tile.setHash(tile);
 			tile.markDirty();
 		}
 	}
@@ -121,7 +112,7 @@ public class UpgradeHelper {
 	 * @param player
 	 * @param tile
 	 */
-	public static void removeUpgrade(EntityPlayer player, TileEntity tile) {
+	public static void removeUpgrade(EntityPlayer player, TileEntityRFC tile) {
 		
 		if ((!hasUpgrade(tile) && !isCreative(tile)))
 			return;
@@ -129,7 +120,7 @@ public class UpgradeHelper {
 		ItemStack creative = creativeTest(tile);
 		if (creative != null)
 		{
-			tile.getTileData().setBoolean(StringLibs.TAG_CREATIVE, false);
+			tile.isCreative = false;
 			if (!player.inventory.addItemStackToInventory(creative))
 				player.dropItem(creative.getItem(), 1);
 			tile.markDirty();
@@ -141,9 +132,9 @@ public class UpgradeHelper {
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
 			if (!player.inventory.addItemStackToInventory(newStack))
 				player.dropItem(newStack.getItem(), 1);
-			tile.markDirty();
 		}
-		tile.getTileData().removeTag(StringLibs.RFC_UPGRADE);
+		tile.upgrades = "";
+		tile.markDirty();
 	}
 	
 	private static String stringTest(ItemStack upgrade) {
@@ -158,27 +149,27 @@ public class UpgradeHelper {
 		return null;
 	}
 	
-	public static ItemStack stackTest(TileEntity tile) {
+	public static ItemStack stackTest(TileEntityRFC tile) {
 		
-		String str = tile.getTileData().getString(StringLibs.RFC_UPGRADE);
+		String str = tile.upgrades;
+		if (str.isEmpty())
+			return null;
 		
 		for (Map.Entry<ItemStack, String> entry : upgrades.entrySet())
 		{
 			String value = entry.getValue();
-			if (value.equals(str)) {
+			if (value.equals(str))
 				return entry.getKey();
-			}
 		}
 		return null;
 	}
 	
-	private static ItemStack creativeTest(TileEntity tile) {
+	private static ItemStack creativeTest(TileEntityRFC tile) {
 		
-		boolean bool = tile.getTileData().getBoolean(StringLibs.TAG_CREATIVE);
+		boolean bool = tile.isCreative;
 		if (bool)
-		{
 			return new ItemStack(RFCItems.upgrades, 1, 0);
-		}
+		
 		return null;
 	}
 }

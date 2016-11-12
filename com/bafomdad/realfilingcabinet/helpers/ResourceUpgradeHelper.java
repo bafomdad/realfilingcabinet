@@ -3,10 +3,10 @@ package com.bafomdad.realfilingcabinet.helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 
 public class ResourceUpgradeHelper {
 
@@ -26,10 +26,9 @@ public class ResourceUpgradeHelper {
 		else throw new IllegalArgumentException("[RealFilingCabinet]: Register upgrade resource: ResourceLocation is null, or the string tag is empty");
 	}
 	
-	public static ResourceLocation getTexture(TileEntity tile, String tag) {
+	public static ResourceLocation getTexture(TileEntityRFC tile, String tag) {
 		
-		if (tag != null)
-		{
+		if (tag != null) {
 			for (Map.Entry<ResourceLocation, String> entry : upgradeTextures.entrySet())
 			{
 				String value = entry.getValue();

@@ -7,9 +7,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,7 +15,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,8 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,8 +36,6 @@ import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.FilingCabinetVariant;
-import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -186,7 +179,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			((TileEntityRFC)tile).writeInv(tag, true);
 			if (tile.getTileData().hasKey(StringLibs.RFC_UPGRADE))
 			{
-				ItemStack upgrade = UpgradeHelper.stackTest(tile);
+				ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
 				if (upgrade != null && upgrade.stackSize == 0)
 					upgrade.stackSize = 1;
 				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
@@ -229,8 +222,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
 			}
-			TileEntityRFC newTile = (TileEntityRFC)player.worldObj.getTileEntity(tileRFC.getPos());
-			player.worldObj.markChunkDirty(newTile.getPos(), newTile);
+			tileRFC.markBlockForUpdate();
 			return;
 		}
 		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
@@ -315,8 +307,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (!tileRFC.getWorld().isRemote) {
 					UpgradeHelper.setUpgrade(player, tileRFC, stack);
 				}
-				TileEntityRFC newTile = (TileEntityRFC)player.worldObj.getTileEntity(tileRFC.getPos());
-				player.worldObj.markChunkDirty(newTile.getPos(), newTile);
+				tileRFC.markBlockForUpdate();
 				return;
 			}
 			else

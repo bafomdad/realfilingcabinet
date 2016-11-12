@@ -38,8 +38,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	private UUID lastClickUUID;
 	
 	// NBT variables
-	public int sizeStack = 0;
 	private int rfcHash = -1;
+	public boolean isCreative = false;
+	public String upgrades = "";
 	
 	// Rendering variables
 	public float offset, renderOffset;
@@ -73,6 +74,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeCustomNBT(nbtTag);
+		
 		return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
 	}
 
@@ -81,11 +83,14 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		tag.setTag("inventory", inv.serializeNBT());
 		tag.setBoolean("isOpen", this.isOpen);
+		tag.setBoolean(StringLibs.TAG_CREATIVE, this.isCreative);
 		
 		if (owner != null)
 			tag.setString("Own", owner.toString());
 		if (rfcHash != -1)
 			tag.setInteger(StringLibs.RFC_HASH, rfcHash);
+		
+		tag.setString(StringLibs.RFC_UPGRADE, upgrades);
 	}
 	
 	@Override
@@ -93,12 +98,14 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		inv.deserializeNBT(tag.getCompoundTag("inventory"));
 		this.isOpen = tag.getBoolean("isOpen");
+		this.isCreative = tag.getBoolean(StringLibs.TAG_CREATIVE);
 		
 		this.owner = null;
 		if (tag.hasKey("Own"))
 			owner = UUID.fromString(tag.getString("Own"));
 		if (tag.hasKey(StringLibs.RFC_HASH))
 			rfcHash = tag.getInteger(StringLibs.RFC_HASH);
+		upgrades = tag.getString(StringLibs.RFC_UPGRADE);
 	}
 	
 	public void readInv(NBTTagCompound nbt) {

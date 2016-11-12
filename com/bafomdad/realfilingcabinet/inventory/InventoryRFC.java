@@ -10,6 +10,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
+import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.DurabilityUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 

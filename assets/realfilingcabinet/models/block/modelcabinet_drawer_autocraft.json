@@ -1,8 +1,0 @@
-{
-	"parent": "realfilingcabinet:block/shapes/filingcabinet_drawer",
-	"textures": {
-		"material": "realfilingcabinet:blocks/front_autocraft",
-		"front": "realfilingcabinet:blocks/front_autocraft",
-		"side": "realfilingcabinet:blocks/side_autocraft"
-	}
-}
