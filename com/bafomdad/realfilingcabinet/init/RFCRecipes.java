@@ -28,8 +28,12 @@ public class RFCRecipes {
 		GameRegistry.addRecipe(new ItemStack(RFCItems.magnifyingGlass), new Object[] { "G  ", " S ", "   ", 'S', Items.STICK, 'G', Blocks.GLASS_PANE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.filter), new Object[] { "RRR", " R ", " R ", 'R', new ItemStack(Items.DYE, 1, 1) });
 		
+		if (ConfigRFC.binBlock)
+			GameRegistry.addRecipe(new ItemStack(RFCBlocks.blockBin), new Object[] { "ccc", "BSB", "CCC", 'c', new ItemStack(Blocks.STONE_SLAB, 1, 3), 'C', Blocks.COBBLESTONE, 'B', Blocks.BRICK_BLOCK, 'S', new ItemStack(Blocks.STONE_SLAB, 1, 4) });
+		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 0), new Object[] { "  N", " N ", "I  ", 'N', Items.GOLD_NUGGET, 'I', Items.GOLD_INGOT });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 1), new Object[] { "  C", " C ", "B  ", 'C', Items.CLAY_BALL, 'B', Items.BRICK });
+		
 		
 		if (ConfigRFC.craftingUpgrade)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.upgrades, 1, 1), "LCL", "CFC", "LCL", 'L', "logWood", 'C', "workbench", 'F', RFCBlocks.blockRFC ));

@@ -33,14 +33,23 @@ public class ItemDebugger extends Item {
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         
     	Block block = world.getBlockState(pos).getBlock();
-    	if (block == RFCBlocks.blockRFC)
+    	if (block == RFCBlocks.blockRFC && hand == EnumHand.MAIN_HAND)
     	{
     		TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
     		if (tile == null)
     			return EnumActionResult.FAIL;
     		
-    		String str = FMLCommonHandler.instance().getEffectiveSide().toString() + " : " + tile.getTileData();
+    		String str = FMLCommonHandler.instance().getEffectiveSide().toString() + " : " + tile.upgrades;
     		player.addChatMessage(new TextComponentString(str));
+    	}
+    	ItemStack debugger = player.getHeldItem(EnumHand.OFF_HAND);
+    	ItemStack thing = player.getHeldItem(EnumHand.MAIN_HAND);
+    	if (debugger != null && debugger.getItem() == this) {
+    		if (thing != null && !world.isRemote)
+    		{
+    			String str = "Unlocalized name for item in main hand: " + thing.getUnlocalizedName();
+    			player.addChatMessage(new TextComponentString(str));
+    		}
     	}
     	return EnumActionResult.PASS;
     }
