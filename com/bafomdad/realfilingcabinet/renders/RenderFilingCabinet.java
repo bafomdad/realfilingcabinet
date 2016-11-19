@@ -18,6 +18,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 
 public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC> {
@@ -32,16 +33,17 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 	@Override
 	public void renderTileEntityAt(@Nonnull TileEntityRFC te, double x, double y, double z, float partialTicks, int digProgress) {
 
-		this.renderFilingCabinet(te, x + 0.5F, y + 0.5F, z + 0.5F);
+		if (te != null && te.getWorld() != null)
+			this.renderFilingCabinet(te, x + 0.5F, y + 0.5F, z + 0.5F);
 	}
 	
 	private void renderFilingCabinet(TileEntityRFC te, double x, double y, double z) {
 
 		float f = 0.0625F;
 		
-		if (te != null && te.getWorld() != null)
+		IBlockState state = te.getWorld().getBlockState(te.getPos());
+		if (state != null && state.getBlock() == RFCBlocks.blockRFC)
 		{
-			IBlockState state = te.getWorld().getBlockState(te.getPos());
 			int angle = state.getValue(BlockHorizontal.FACING).getIndex();
 			
 			GlStateManager.pushMatrix();
