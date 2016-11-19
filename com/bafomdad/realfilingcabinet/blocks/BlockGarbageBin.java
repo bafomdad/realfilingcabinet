@@ -1,10 +1,9 @@
 package com.bafomdad.realfilingcabinet.blocks;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
-
-import scala.actors.threadpool.Arrays;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
