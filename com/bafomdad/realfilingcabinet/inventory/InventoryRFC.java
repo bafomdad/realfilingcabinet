@@ -147,8 +147,10 @@ public class InventoryRFC extends ItemStackHandler {
 			if (count == 0)
 				return null;
 			
-			long extract = Math.min(stackFolder.getMaxStackSize(), count);
-			stackFolder.stackSize = (int)extract;
+//			long extract = Math.min(stackFolder.getMaxStackSize(), count);
+//			stackFolder.stackSize = (int)extract;
+			long floor = Math.min(Integer.MAX_VALUE - 1, ItemFolder.getFileSize(getTrueStackInSlot(slot)));
+			stackFolder.stackSize = (int)floor;
 		}
 		return stackFolder;
 	}
