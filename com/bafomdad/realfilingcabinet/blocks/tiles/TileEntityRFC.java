@@ -6,11 +6,9 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import scala.actors.threadpool.Arrays;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,6 +19,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
@@ -152,7 +151,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		return inv;
 	}
 	
-	public FluidRFC getFluidInventory() {
+	public IFluidHandler getFluidInventory() {
 		
 		return fluidinv;
 	}

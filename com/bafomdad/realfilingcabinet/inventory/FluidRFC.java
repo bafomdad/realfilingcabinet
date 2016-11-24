@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 public class FluidRFC implements IFluidHandler {
 	
 	TileEntityRFC tile;
+	FluidStack snapshot = null;
 	
 	public FluidRFC(TileEntityRFC tile) {
 		
@@ -34,7 +35,7 @@ public class FluidRFC implements IFluidHandler {
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
 
-		if (resource != null)
+		if (resource != null && !tile.isCabinetLocked())
 		{
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				FluidStack loopfluid = FluidUtils.getFluidFromFolder(tile, i);
@@ -45,8 +46,6 @@ public class FluidRFC implements IFluidHandler {
 					}
 					return resource.amount;
 				}
-				else if (loopfluid != null && loopfluid.getLocalizedName().equals(resource.getLocalizedName()))
-					return 0;
 			}
 		}
 		return 0;
@@ -55,32 +54,15 @@ public class FluidRFC implements IFluidHandler {
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
 
-		if (resource == null)
+		if (resource == null || tile.isCabinetLocked())
 			return null;
 		
 		return this.drain(resource.amount, doDrain);
-//		if (resource != null)
-//		{
-//			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-//				FluidStack loopfluid = FluidUtils.getFluidFromFolder(tile, i);
-//				if (loopfluid != null && loopfluid.getLocalizedName().equals(resource.getLocalizedName()))
-//				{
-//					if (loopfluid.amount > 0)
-//					{
-//						if (doDrain)
-//							ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), resource.amount);
-//
-//						return loopfluid;
-//					}
-//				}
-//			}
-//		}
-//		return null;
 	}
 
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain) {
-
+		
 		ItemStack stack = tile.getFilter();
 		if (tile.hasItemFrame() && stack == ItemStack.field_190927_a)
 			return null;
@@ -95,23 +77,24 @@ public class FluidRFC implements IFluidHandler {
 				FluidStack loopfluid = FluidUtils.getFluidFromFolder(tile, i);
 				if (loopfluid != null && loopfluid.isFluidEqual(fluid))
 				{
-					FluidTank tank = new FluidTank(loopfluid, loopfluid.amount);
+					this.takeFluidSnapshot(loopfluid);
+					FluidTank tank = new FluidTank(loopfluid, maxDrain);
 					FluidStack f = tank.drain(maxDrain, doDrain);
-					if (f != null && f.amount > 0)
+					if (f != null && f.amount > 0 && doDrain)
 					{
-						System.out.println("Draining: " + f.amount);
-//						ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), f.amount);
+						if (snapshot != null && snapshot.isFluidEqual(f) && doDrain) {
+							ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), snapshot.amount - loopfluid.amount);
+						}
 					}
 					return f;
-//					if (loopfluid.amount > 0)
-//					{
-//						ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), loopfluid.amount);
-//						
-//						return loopfluid.copy();
-//					}
 				}
 			}
 		}
 		return null;
+	}
+	
+	private void takeFluidSnapshot(FluidStack fluid) {
+		
+		snapshot = fluid.copy();
 	}
 }

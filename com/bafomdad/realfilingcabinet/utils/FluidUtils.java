@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class FluidUtils {
@@ -105,7 +106,7 @@ public class FluidUtils {
 	public static FluidStack getFluidFromFolder(TileEntityRFC tile, int slot) {
 		
 		ItemStack stack = tile.getInventory().getTrueStackInSlot(slot);
-		if (stack != ItemStack.field_190927_a)
+		if (stack != ItemStack.field_190927_a && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 4)
 		{
 			int count = (int)ItemFolder.getFileSize(stack);
 			if (Block.getBlockFromName(ItemFolder.getFileName(stack)) == null)

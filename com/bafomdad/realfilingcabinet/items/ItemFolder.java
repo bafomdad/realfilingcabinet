@@ -80,6 +80,14 @@ public class ItemFolder extends Item implements IFolder {
 				
 				return;
 			}
+			if (stack.getItemDamage() == 3)
+			{
+				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
+				Entity entity = EntityList.createEntityByIDFromName(res, player.worldObj);
+				if (entity != null)
+					list.add(count + " " + entity.getName());
+				return;
+			}
 			if (getObject(stack) instanceof ItemStack)
 				name = ((ItemStack)getObject(stack)).getDisplayName();
 			

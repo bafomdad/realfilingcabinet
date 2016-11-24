@@ -46,6 +46,7 @@ public class ItemMysteryFolder extends Item {
 		rando.add(new ItemStack(Blocks.CLAY, 1, 0));
 		rando.add(new ItemStack(Blocks.PRISMARINE, 1, 0));
 		rando.add(new ItemStack(Items.RABBIT_FOOT, 1, 0));
+		rando.add(new ItemStack(Blocks.TORCH, 1, 0));
 	}
 	
 	@Override
