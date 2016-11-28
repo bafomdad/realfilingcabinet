@@ -21,9 +21,6 @@ public class OreDictUtils {
 
 	public static void recreateOreDictionary(ItemStack stack) {
 		
-		if (stack == ItemStack.field_190927_a || Block.getBlockFromItem(stack.getItem()) == Blocks.AIR)
-			return;
-		
 		int[] oreIDs = OreDictionary.getOreIDs(stack);
 		if (oreIDs.length == 0)
 			oreDictMatches = null;
