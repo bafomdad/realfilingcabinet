@@ -44,13 +44,13 @@ public class TutorialGenerator implements IWorldGenerator {
 	
 	public void generateTutorial(WorldServer world, BlockPos pos) {
 		
-		RFCWorldInfo.getInstance().setStructureGenerated(true);
 		MinecraftServer server = world.getMinecraftServer();
 		Template template = world.getStructureTemplateManager().getTemplate(server, TUTORIAL_STRUCTURE);
 		PlacementSettings settings = new PlacementSettings();
 		settings.setRotation(Rotation.NONE);
 		
 		BlockPos newPos = pos.add(-19, -1, -5);
+		RFCWorldInfo.getInstance().setStructureGenerated(true);
 		template.addBlocksToWorld(world, newPos, settings);
 		
 		LogRFC.debug("Structure generated at: " + newPos.toString() + " in world: " + world.getSaveHandler().getWorldDirectory().getName());
