@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -70,8 +72,8 @@ public class ItemFolder extends Item implements IFolder {
 			long count = getFileSize(stack);
 			if (stack.getItemDamage() == 4)
 			{
-				if (Block.getBlockFromName(name) == null)
-					name = FluidRegistry.getFluid(getFileName(stack)).getBlock().getLocalizedName();
+				if (getObject(stack) != null && getObject(stack) instanceof FluidStack)
+					name = ((FluidStack)getObject(stack)).getLocalizedName();
 				list.add(count + "mb " + name);
 				
 				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false);
@@ -187,10 +189,17 @@ public class ItemFolder extends Item implements IFolder {
 				return str;
 		}
 		if (folder.getItemDamage() == 4) {
-			if (!str.isEmpty() && FluidRegistry.getFluid(str) != null)
-				return str;
-			else if (!str.isEmpty() && Block.getBlockFromName(str) != null)
-					return str;
+			if (!str.isEmpty() && FluidRegistry.getFluid(str) != null) {
+				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
+				return new FluidStack(FluidRegistry.getFluid(str), (int)extract);
+			}
+			else if (!str.isEmpty() && Block.getBlockFromName(str) != null) {
+				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
+				if (Block.getBlockFromName(str) == Blocks.WATER)
+					return new FluidStack(FluidRegistry.WATER, (int)extract);
+				else if (Block.getBlockFromName(str) == Blocks.LAVA)
+					return new FluidStack(FluidRegistry.LAVA, (int)extract);
+			}
 		}
 		if (Item.getByNameOrId(str) != null) {
 			Item item = (Item)Item.getByNameOrId(str);
@@ -267,10 +276,10 @@ public class ItemFolder extends Item implements IFolder {
 						add(folder, 1);
 						MobUtils.dropMobEquips(player.worldObj, target);
 						target.setDead();
-						return true;
 					}
 				}
 			}
+			return true;
 		}
 		return false;
 	}

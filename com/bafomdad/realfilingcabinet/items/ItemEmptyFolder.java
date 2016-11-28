@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,9 +16,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -97,7 +93,9 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 					if (!world.isRemote) {
 						ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 4);
 						if (ItemFolder.setObject(newFolder, block)) {
-							player.setHeldItem(hand, newFolder);
+							stack.func_190918_g(1);
+							if (!player.inventory.addItemStackToInventory(newFolder))
+								player.dropItem(newFolder, true);
 							world.setBlockToAir(pos);
 						}
 					}
@@ -117,12 +115,14 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 			{
 				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 				if (ItemFolder.setObject(newFolder, target)) {
-					player.setHeldItem(hand, newFolder);
+					if (!player.inventory.addItemStackToInventory(newFolder))
+						player.dropItem(newFolder, true);
+					stack.func_190918_g(1);
 					MobUtils.dropMobEquips(player.worldObj, target);
 					target.setDead();
-					return true;
 				}
 			}
+			return true;
 		}
 		return false;
 	}

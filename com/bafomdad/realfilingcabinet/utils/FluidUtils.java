@@ -75,7 +75,7 @@ public class FluidUtils {
 		int l = world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos));
 		
 		if (block instanceof BlockLiquid && l == 0) {
-			if (ItemFolder.getObject(stack) != null && ItemFolder.getObject(stack).equals(block.getLocalizedName()))
+			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(block.getLocalizedName()))
 			{
 				if (!world.isRemote) {
 					ItemFolder.add(stack, 1000);
@@ -86,7 +86,7 @@ public class FluidUtils {
 		}
 		else if (block instanceof IFluidBlock && l == 0) {
 			Fluid fluid = ((IFluidBlock)block).getFluid();
-			if (ItemFolder.getObject(stack) != null && ItemFolder.getObject(stack).equals(fluid.getName()))
+			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(fluid.getName()))
 			{
 				if (!world.isRemote) {
 					ItemFolder.add(stack, 1000);

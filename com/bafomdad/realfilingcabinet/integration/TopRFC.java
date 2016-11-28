@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class TopRFC {
@@ -82,6 +83,14 @@ public class TopRFC {
 					}
 					info.horizontal().text(name);
 				}
+				else if (ItemFolder.getObject(folder) instanceof FluidStack)
+				{
+					String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+
+					long storedSize = ItemFolder.getFileSize(folder);
+					String name = fluidName + " - " + storedSize + " mB";
+					info.horizontal().text(name);
+				}
 				else if (ItemFolder.getObject(folder) instanceof String)
 				{
 					if (folder.getItemDamage() == 3)
@@ -91,19 +100,6 @@ public class TopRFC {
 						{
 							long storedSize = ItemFolder.getFileSize(folder);
 							String name = mobName + " - " + storedSize;
-							info.horizontal().text(name);
-						}
-					}
-					else if (folder.getItemDamage() == 4)
-					{
-						String fluidName = ItemFolder.getFileName(folder);
-						if (!fluidName.isEmpty())
-						{
-							if (Block.getBlockFromName(fluidName) == null)
-								fluidName = FluidRegistry.getFluid(ItemFolder.getFileName(folder)).getBlock().getLocalizedName();
-							
-							long storedSize = ItemFolder.getFileSize(folder);
-							String name = fluidName + " - " + storedSize + " mB";
 							info.horizontal().text(name);
 						}
 					}

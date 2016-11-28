@@ -3,17 +3,6 @@ package com.bafomdad.realfilingcabinet.renders;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.bafomdad.realfilingcabinet.ConfigRFC;
-import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.TextHelper;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
-import com.bafomdad.realfilingcabinet.items.ItemFolder;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -26,8 +15,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import org.lwjgl.opengl.GL11;
+
+import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class GuiFileList extends Gui {
 
@@ -67,11 +67,11 @@ public class GuiFileList extends Gui {
 					{
 						List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
 						if (!list.isEmpty())
-						{
+						{	
 							for (int i = 0; i < list.size(); i++)
 							{
 								GL11.glDisable(GL11.GL_LIGHTING);
-								this.drawCenteredString(mc.fontRendererObj, list.get(i), width / 2, 0 + (i * 10), Integer.parseInt("FFFFFF", 16));
+								this.drawCenteredString(mc.fontRendererObj, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 							}
 						}
 					}
@@ -109,6 +109,14 @@ public class GuiFileList extends Gui {
 						}
 					}
 				}
+				else if (ItemFolder.getObject(folder) instanceof FluidStack)
+				{
+					String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+
+					long storedSize = ItemFolder.getFileSize(folder);
+					String name = fluidName + " - " + storedSize + " mB";
+					list.add(name);
+				}
 				else if (ItemFolder.getObject(folder) instanceof String)
 				{
 					if (folder.getItemDamage() == 3)
@@ -121,19 +129,6 @@ public class GuiFileList extends Gui {
 								list.add(TextHelper.format(count) + " " + str);
 							else
 								list.add(count + " " + str);
-						}
-					}
-					else if (folder.getItemDamage() == 4)
-					{
-						String fluidName = ItemFolder.getFileName(folder);
-						if (!fluidName.isEmpty())
-						{
-							if (Block.getBlockFromName(fluidName) == null)
-								fluidName = FluidRegistry.getFluid(ItemFolder.getFileName(folder)).getBlock().getLocalizedName();
-							
-							long storedSize = ItemFolder.getFileSize(folder);
-							String name = fluidName + " - " + storedSize + " mB";
-							list.add(name);
 						}
 					}
 				}

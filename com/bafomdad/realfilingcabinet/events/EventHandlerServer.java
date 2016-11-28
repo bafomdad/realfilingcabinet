@@ -1,6 +1,8 @@
 package com.bafomdad.realfilingcabinet.events;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
@@ -47,9 +49,9 @@ public class EventHandlerServer {
 				if (tile != null && tile instanceof TileEntityRFC) {
 					TileEntityRFC tileRFC = (TileEntityRFC)tile;
 					ItemStack stack = tileRFC.getInventory().getStackFromFolder(rotation);
-					if (stack != null)
+					if (stack != ItemStack.field_190927_a)
 						frame.getDisplayedItem().setStackDisplayName(stack.getDisplayName());
-					else if (stack == null && frame.getDisplayedItem().hasDisplayName())
+					else if (stack == ItemStack.field_190927_a && frame.getDisplayedItem().hasDisplayName())
 						frame.getDisplayedItem().clearCustomName();
 				}
 			}

@@ -162,7 +162,8 @@ public class StorageUtils {
 							FluidActionResult far = FluidUtil.tryFillContainer(container, tile.getFluidInventory(), Fluid.BUCKET_VOLUME, player, true);
 							if (far.success) {
 								container.func_190918_g(1);
-								player.inventory.addItemStackToInventory(far.getResult());
+								if (!player.inventory.addItemStackToInventory(far.getResult()))
+									player.dropItem(far.getResult(), true);
 							}
 							return;
 						}
@@ -180,7 +181,8 @@ public class StorageUtils {
 							if (crouching) {
 								long extract = Math.min(stack.getMaxStackSize(), count);
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
-								player.inventory.addItemStackToInventory(stackExtract);
+								if (!player.inventory.addItemStackToInventory(stackExtract))
+									player.dropItem(stackExtract, true);
 								ItemFolder.remove(folder, extract);
 								tile.markBlockForUpdate();
 								break;
@@ -188,7 +190,8 @@ public class StorageUtils {
 							else
 							{
 								ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-								player.inventory.addItemStackToInventory(stackExtract);
+								if (!player.inventory.addItemStackToInventory(stackExtract))
+									player.dropItem(stackExtract, true);
 								ItemFolder.remove(folder, 1);
 								tile.markBlockForUpdate();
 								break;
@@ -203,7 +206,8 @@ public class StorageUtils {
 					if (crouching) {
 						long extract = Math.min(stack.getMaxStackSize(), count);
 						ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
-						player.inventory.addItemStackToInventory(stackExtract);
+						if (!player.inventory.addItemStackToInventory(stackExtract))
+							player.dropItem(stackExtract, true);
 						ItemFolder.remove(folder, extract);
 						tile.markBlockForUpdate();
 						break;
@@ -211,7 +215,8 @@ public class StorageUtils {
 					else
 					{
 						ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-						player.inventory.addItemStackToInventory(stackExtract);
+						if (!player.inventory.addItemStackToInventory(stackExtract))
+							player.dropItem(stackExtract, true);
 						ItemFolder.remove(folder, 1);
 						tile.markBlockForUpdate();
 						break;
