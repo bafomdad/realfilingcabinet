@@ -8,6 +8,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootEntryItem;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -16,6 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
@@ -167,6 +176,20 @@ public class EventHandlerServer {
 					ItemFolder.setFileSize(enderFolder, 0);
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onLootTableLoad(LootTableLoadEvent event) {
+		
+		LootPool pool = event.getTable().getPool("main");
+		if (pool == null) {
+			pool = new LootPool(new LootEntry[0], new LootCondition[0], new RandomValueRange(5, 10), new RandomValueRange(0), "main");
+			event.getTable().addPool(pool);
+		}
+		if (event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
+		{
+			pool.addEntry(new LootEntryItem(RFCItems.mysteryFolder, 50, 0, new LootFunction[0], new LootCondition[0], RealFilingCabinet.MOD_ID + ":" + RFCItems.mysteryFolder.getUnlocalizedName()));
 		}
 	}
 }

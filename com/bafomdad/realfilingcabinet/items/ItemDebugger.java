@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -17,6 +18,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 
 public class ItemDebugger extends Item {
@@ -41,6 +44,7 @@ public class ItemDebugger extends Item {
     		
     		String str = FMLCommonHandler.instance().getEffectiveSide().toString() + " : " + tile.upgrades;
     		player.addChatMessage(new TextComponentString(str));
+    		return EnumActionResult.SUCCESS;
     	}
     	ItemStack debugger = player.getHeldItem(EnumHand.OFF_HAND);
     	ItemStack thing = player.getHeldItem(EnumHand.MAIN_HAND);

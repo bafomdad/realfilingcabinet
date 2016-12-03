@@ -4,20 +4,25 @@ import java.util.List;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemUpgrades extends Item implements IUpgrades {
 	
-	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob" };
+	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid" };
 
 	public ItemUpgrades() {
 		
@@ -54,8 +59,31 @@ public class ItemUpgrades extends Item implements IUpgrades {
     }
 
 	@Override
-	public boolean canApply(TileEntity tile, ItemStack upgrade) {
+	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
+		if (upgrade.getItemDamage() == 2) {
+			for (ItemStack stack : tile.getInventory().getStacks()) {
+				if (stack != null && (stack.getItem() instanceof IFolder && ((IFolder)stack.getItem()).canBeEnderUpgraded(stack)))
+					break;
+				else if (stack == null) {
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder1")));
+					return false;
+				}
+				else if (stack != null && !((IFolder)stack.getItem()).canBeEnderUpgraded(stack))
+				{
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder2")));
+					return false;
+				}
+			}
+		}
+		if (upgrade.getItemDamage() == 5) {
+			for (ItemStack stack : tile.getInventory().getStacks()) {
+				if (stack != null) {
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 }

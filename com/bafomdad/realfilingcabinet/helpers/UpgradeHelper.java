@@ -8,6 +8,8 @@ import java.util.Map;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
@@ -38,7 +40,7 @@ public class UpgradeHelper {
 		
 		if (!(tile.getBlockType() instanceof IFilingCabinet))
 			return false;
-		
+
 		return !tile.upgrades.isEmpty();
 	}
 	
@@ -60,10 +62,15 @@ public class UpgradeHelper {
 	 */
 	public static String getUpgrade(TileEntityRFC tile, String tag) {
 		
-		if (!hasUpgrade(tile))
+		if (!hasUpgrade(tile) || tag.isEmpty())
 			return null;
 		
 		String str = tile.upgrades;
+		if (!(RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) && str.equals(StringLibs.TAG_MANA))
+		{
+			tile.upgrades = "";
+			return null;
+		}
 		if (str.equals(tag))
 			return str;
 		
@@ -81,7 +88,7 @@ public class UpgradeHelper {
 		if (tile.getWorld().isRemote || !(upgrade.getItem() instanceof IUpgrades))
 			return;
 		
-		if (!((IUpgrades)upgrade.getItem()).canApply(tile, upgrade))
+		if (!((IUpgrades)upgrade.getItem()).canApply(tile, upgrade, player))
 			return;
 
 		String key = stringTest(upgrade);

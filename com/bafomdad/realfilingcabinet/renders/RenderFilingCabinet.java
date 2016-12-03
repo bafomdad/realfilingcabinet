@@ -83,7 +83,7 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 				GlStateManager.color(0.65F, 0.3F, 0.65F);
 			}
 			
-			ResourceLocation res = ResourceUpgradeHelper.getTexture(te, UpgradeHelper.getUpgrade(te, te.upgrades));
+			ResourceLocation res = ResourceUpgradeHelper.getTexture(te, te.upgrades);
 			if (UpgradeHelper.hasUpgrade(te))
 				bindTexture(res);
 			else

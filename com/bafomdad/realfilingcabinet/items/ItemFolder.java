@@ -3,19 +3,28 @@ package com.bafomdad.realfilingcabinet.items;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
@@ -24,6 +33,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
@@ -37,7 +47,7 @@ public class ItemFolder extends Item implements IFolder {
 	
 	public static int extractSize = 0;
 	
-	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob" };
+	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob", "fluid" };
 
 	public ItemFolder() {
 		
@@ -60,6 +70,25 @@ public class ItemFolder extends Item implements IFolder {
 		if (!name.isEmpty())
 		{
 			long count = getFileSize(stack);
+			if (stack.getItemDamage() == 4)
+			{
+				if (getObject(stack) != null && getObject(stack) instanceof FluidStack)
+					name = ((FluidStack)getObject(stack)).getLocalizedName();
+				list.add(count + "mb " + name);
+				
+				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false);
+				String placeMode = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".placemode.on") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".placemode.off");
+				list.add(placeMode);
+				
+				return;
+			}
+			if (stack.getItemDamage() == 3)
+			{
+				Entity entity = EntityList.createEntityByIDFromName(name, player.worldObj);
+				if (entity != null)
+					list.add(count + " " + entity.getName());
+				return;
+			}
 			if (getObject(stack) instanceof ItemStack)
 				name = ((ItemStack)getObject(stack)).getDisplayName();
 			
@@ -92,6 +121,11 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public boolean hasContainerItem(ItemStack stack) {
+		
+		if (getObject(stack) == null)
+			return false;
+		else if (getObject(stack) != null && !(getObject(stack) instanceof ItemStack))
+			return false;
 		
 		return getContainerItem(stack) != null;
 	}
@@ -154,6 +188,26 @@ public class ItemFolder extends Item implements IFolder {
 
 		String str = getFileName(folder);
 		
+		if (folder == null)
+			return null;
+		
+		if (folder.getItemDamage() == 3) {
+			if (!str.isEmpty())
+				return str;
+		}
+		if (folder.getItemDamage() == 4) {
+			if (!str.isEmpty() && FluidRegistry.getFluid(str) != null) {
+				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
+				return new FluidStack(FluidRegistry.getFluid(str), (int)extract);
+			}
+			else if (!str.isEmpty() && FluidRegistry.getFluid(str) == null) {
+				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
+				if (Blocks.WATER.getLocalizedName().equals(getFileName(folder)))
+					return new FluidStack(FluidRegistry.WATER, (int)extract);
+				else if (Blocks.LAVA.getLocalizedName().equals(getFileName(folder)))
+					return new FluidStack(FluidRegistry.LAVA, (int)extract);
+			}
+		}
 		if (Item.getByNameOrId(str) != null) {
 			Item item = (Item)Item.getByNameOrId(str);
 			int meta = getFileMeta(folder);
@@ -163,10 +217,6 @@ public class ItemFolder extends Item implements IFolder {
 			Block block = Block.getBlockFromName(str);
 			int meta = getFileMeta(folder);
 			return new ItemStack(block, 1, meta);
-		}
-		if (folder != null && folder.getItemDamage() == 3) {
-			if (!str.isEmpty())
-				return str;
 		}
 		return null;
 	}
@@ -188,6 +238,18 @@ public class ItemFolder extends Item implements IFolder {
 				add(folder, 1);
 				if (folder.getItemDamage() == 2)
 					addRem(folder, 0);
+				
+				return true;
+			}
+			if (object instanceof BlockLiquid || object instanceof IFluidBlock) 
+			{
+				Block bl = (Block)object;
+				String fluidname = bl.getLocalizedName();
+				if (object instanceof IFluidBlock)
+					fluidname = ((IFluidBlock)object).getFluid().getName();
+				
+				NBTUtils.setString(folder, TAG_FILE_NAME, fluidname);
+				add(folder, 1000);
 				
 				return true;
 			}
@@ -236,10 +298,7 @@ public class ItemFolder extends Item implements IFolder {
 		if (getObject(stack) != null) {
 			if (stack.getItemDamage() < 2) {
 				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock)
-				{
-					if (world.getBlockState(pos).getBlock() != null && world.getBlockState(pos).getBlock() == RFCBlocks.blockBin)
-						return EnumActionResult.FAIL;
-					
+				{	
 					long count = ItemFolder.getFileSize(stack);
 					if (stack.getItemDamage() == 1 && !EnderUtils.preValidateEnderFolder(stack))
 						return EnumActionResult.FAIL;
@@ -267,24 +326,63 @@ public class ItemFolder extends Item implements IFolder {
 			}
 			if (stack.getItemDamage() == 3)
 			{
-				if (ItemFolder.getFileSize(stack) > 0)
-				{
-					if (player.canPlayerEdit(pos.offset(side), side, stack)) {
-						Entity entity = EntityList.createEntityByName(getFileName(stack), world);
-						if (entity != null)
-						{
-							entity.setPosition(pos.getX() + hitX, pos.getY() + hitY, pos.getZ() + hitZ);
-							if (!player.worldObj.isRemote) {
-								world.spawnEntityInWorld(entity);
-								if (!player.capabilities.isCreativeMode)
-									remove(stack, 1);
-							}
-							return EnumActionResult.SUCCESS;
-						}
-					}
-				}
+				if (MobUtils.spawnEntityFromFolder(world, player, stack, pos, side))
+					return EnumActionResult.SUCCESS;
+			}
+			if (stack.getItemDamage() == 4)
+			{
+				if (!(getObject(stack) instanceof FluidStack))
+					return EnumActionResult.PASS;
+				
+				if (FluidUtils.doPlace(world, player, stack, pos, side))
+					return EnumActionResult.SUCCESS;
 			}
 		}
 		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+		
+		ItemStack folder = player.getHeldItemMainhand();
+		if (folder != null && stack.getItemDamage() != 4)
+			return ActionResult.newResult(EnumActionResult.PASS, folder);
+		
+		RayTraceResult rtr = rayTrace(world, player, true);
+		if (rtr == null)
+			return ActionResult.newResult(EnumActionResult.PASS, folder);
+		
+		if (!MobUtils.canPlayerChangeStuffHere(world, player, stack, rtr.getBlockPos(), rtr.sideHit))
+			return ActionResult.newResult(EnumActionResult.PASS, folder);
+		
+		else {
+			if (rtr.typeOfHit == RayTraceResult.Type.BLOCK) {
+				BlockPos pos = rtr.getBlockPos();
+				if (FluidUtils.doDrain(world, player, stack, pos, rtr.sideHit))
+					return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
+			}
+		}
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
+	}
+	
+	@Override
+	public boolean onEntitySwing(EntityLivingBase elb, ItemStack stack) {
+		
+		if (elb instanceof EntityPlayer && elb.isSneaking()) {
+			if (stack != null && stack.getItem() == this) {
+				if (stack.getItemDamage() == 4)
+				{
+					NBTTagCompound tag = stack.getTagCompound();
+					tag.setBoolean(StringLibs.RFC_PLACEMODE, !tag.getBoolean(StringLibs.RFC_PLACEMODE));
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean canBeEnderUpgraded(ItemStack stack) {
+
+		return true;
 	}
 }

@@ -43,8 +43,11 @@ public class EnderUtils {
 		if (!subtract)
 			ItemFolder.add(folder, amount);
 		else
+		{
+			if (amount <= 64)
+				amount = (int)ItemFolder.getFileSize(folder);
 			ItemFolder.remove(folder, amount);
-		
+		}
 		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile);
 	}
 	

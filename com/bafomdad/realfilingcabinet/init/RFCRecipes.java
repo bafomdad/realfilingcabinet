@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import scala.actors.threadpool.Arrays;
+import vazkii.botania.api.BotaniaAPI;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.crafting.*;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -28,12 +31,8 @@ public class RFCRecipes {
 		GameRegistry.addRecipe(new ItemStack(RFCItems.magnifyingGlass), new Object[] { "G  ", " S ", "   ", 'S', Items.STICK, 'G', Blocks.GLASS_PANE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.filter), new Object[] { "RRR", " R ", " R ", 'R', new ItemStack(Items.DYE, 1, 1) });
 		
-		if (ConfigRFC.binBlock)
-			GameRegistry.addRecipe(new ItemStack(RFCBlocks.blockBin), new Object[] { "ccc", "BSB", "CCC", 'c', new ItemStack(Blocks.STONE_SLAB, 1, 3), 'C', Blocks.COBBLESTONE, 'B', Blocks.BRICK_BLOCK, 'S', new ItemStack(Blocks.STONE_SLAB, 1, 4) });
-		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 0), new Object[] { "  N", " N ", "I  ", 'N', Items.GOLD_NUGGET, 'I', Items.GOLD_INGOT });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.keys, 1, 1), new Object[] { "  C", " C ", "B  ", 'C', Items.CLAY_BALL, 'B', Items.BRICK });
-		
 		
 		if (ConfigRFC.craftingUpgrade)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.upgrades, 1, 1), "LCL", "CFC", "LCL", 'L', "logWood", 'C', "workbench", 'F', RFCBlocks.blockRFC ));
@@ -48,6 +47,10 @@ public class RFCRecipes {
 		if (ConfigRFC.nametagRecipe)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.NAME_TAG), " PP", " BP", "S  ", 'P', Items.PAPER, 'B', "slimeball", 'S', Items.STRING ));
 		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
+			BotaniaAPI.registerManaInfusionRecipe(new ItemStack(BotaniaRFC.manaFolder), new ItemStack(RFCItems.emptyFolder, 1, 0), 2000);
+			GameRegistry.addRecipe(new ItemStack(BotaniaRFC.manaUpgrade), new Object[] { "SMS", "MFM", "SMS", 'S', Blocks.STONE, 'M', new ItemStack(BotaniaRFC.manaFolder), 'F', RFCBlocks.blockRFC });
+		}
 		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
 		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};
 		

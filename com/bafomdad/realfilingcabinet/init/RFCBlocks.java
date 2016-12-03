@@ -15,13 +15,10 @@ import com.bafomdad.realfilingcabinet.renders.RenderFilingCabinet;
 public class RFCBlocks {
 
 	public static BlockRFC blockRFC;
-	public static BlockGarbageBin blockBin;
 	
 	public static void init() {
 		
 		blockRFC = new BlockRFC();
-		if (ConfigRFC.binBlock)
-			blockBin = new BlockGarbageBin();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -29,8 +26,5 @@ public class RFCBlocks {
 
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockRFC), 0, new ModelResourceLocation(blockRFC.getRegistryName(), "inventory"));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRFC.class, new RenderFilingCabinet());
-		
-		if (ConfigRFC.binBlock)
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockBin), 0, new ModelResourceLocation(blockBin.getRegistryName(), "inventory"));
 	}
 }

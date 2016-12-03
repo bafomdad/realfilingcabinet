@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
@@ -54,28 +55,41 @@ public class WailaRFC {
 				
 				String name = "";
 				ItemStack folder = inv.getTrueStackInSlot(i);
-				if (folder != null && ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof ItemStack) 
+				if (folder != null && ItemFolder.getObject(folder) != null)
 				{
-					String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
-					long storedSize = ItemFolder.getFileSize(folder);
-					
-					name = stackName + " - " + storedSize;
+					if (ItemFolder.getObject(folder) instanceof ItemStack) 
+					{
+						String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						name = stackName + " - " + storedSize;
+					}
+					else if (ItemFolder.getObject(folder) instanceof FluidStack)
+					{
+						String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+
+						long storedSize = ItemFolder.getFileSize(folder);
+						name = fluidName + " - " + storedSize + " mB";
+					}
+					else if (ItemFolder.getObject(folder) instanceof String)
+					{
+						if (folder.getItemDamage() == 3)
+						{
+							String entityName = ItemFolder.getFileName(folder);
+							long storedSize = ItemFolder.getFileSize(folder);
+							
+							name = entityName + " - " + storedSize;
+						}
+					}
+					if (!name.isEmpty())
+						currenttip.add(name);
 				}
-				else if (ItemFolder.getObject(folder) instanceof String)
-				{
-					String entityName = ItemFolder.getFileName(folder);
-					long storedSize = ItemFolder.getFileSize(folder);
-					
-					name = entityName + " - " + storedSize;
-				}
-				if (!name.isEmpty())
-					currenttip.add(name);
 			}
 			String owner = "";
 			TileEntityRFC tileRFC = (TileEntityRFC)accessor.getTileEntity();
-			if (tileRFC.getOwner() != null)
+			if (tileRFC.getCabinetOwner() != null)
 			{
-				EntityPlayer onlinePlayer = accessor.getPlayer().worldObj.getPlayerEntityByUUID(tileRFC.getOwner());
+				EntityPlayer onlinePlayer = accessor.getPlayer().worldObj.getPlayerEntityByUUID(tileRFC.getCabinetOwner());
 				if (onlinePlayer != null)
 					owner = "Locked, owned by: " + onlinePlayer.getName();
 				else

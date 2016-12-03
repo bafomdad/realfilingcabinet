@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemManaFolder;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +17,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.fluids.FluidStack;
 
 public class ItemBlockRFC extends ItemBlock {
 
@@ -26,7 +30,7 @@ public class ItemBlockRFC extends ItemBlock {
 		
 		if (stack.hasTagCompound())
 		{
-			list.add("<Shift for more info>");
+			list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".itemblockrfc"));
 			if ((Keyboard.isKeyDown(42)) || (Keyboard.isKeyDown(54))) {
 				listItems(stack, list);
 			} else if (list.size() > 2) {
@@ -44,10 +48,20 @@ public class ItemBlockRFC extends ItemBlock {
 			ItemStack folder = ItemStack.loadItemStackFromNBT(itemTag);
 			if (folder != null && folder.getItem() == RFCItems.folder)
 			{
-				String name = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
-				long count = ItemFolder.getFileSize(folder);
+				String name = "";
+				if (ItemFolder.getObject(folder) instanceof ItemStack)
+					name = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+				else if (ItemFolder.getObject(folder) instanceof FluidStack)
+					name = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+				else if (ItemFolder.getObject(folder) instanceof String)
+					name = (String)ItemFolder.getObject(folder);
 				
+				long count = ItemFolder.getFileSize(folder);
 				list.add(TextHelper.format(count) + " " + name);
+			}
+			else if (folder != null && folder.getItem() == BotaniaRFC.manaFolder)
+			{
+				list.add("Mana Folder");
 			}
 		}
 	}

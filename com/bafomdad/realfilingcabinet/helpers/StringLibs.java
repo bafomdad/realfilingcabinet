@@ -10,12 +10,12 @@ public class StringLibs {
 	public static String TAG_OREDICT = "TAG_oredictUpgrade";
 	public static String TAG_MOB = "TAG_mobUpgrade";
 	public static String TAG_DURABILITY = "TAG_durabilityUpgrade";
+	public static String TAG_FLUID = "TAG_fluidUpgrade";
 	
 	// ENDER FOLDER
 	public static String RFC_SLOTINDEX = "RFC_slotindex";
 	public static String RFC_TILEPOS = "RFC_tilepos";
 	public static String RFC_DIM = "RFC_dim";
-	public static String RFC_TOOLTIP1 = "RFC_enderfoldertooltip";
 	public static String RFC_HASH = "RFC_enderhash";
 	
 	// UUID
@@ -25,4 +25,8 @@ public class StringLibs {
 	
 	// MISC
 	public static String RFC_TAPED = "RFC_whiteoutTaped";
+	public static String RFC_PLACEMODE = "RFC_placeMode";
+	
+	// INTEGRATION
+	public static String TAG_MANA = "TAG_manaUpgrade";
 }

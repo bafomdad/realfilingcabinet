@@ -21,6 +21,7 @@ public class RFCItems {
 	public static ItemFilter filter;
 	public static ItemKeys keys;
 	public static ItemDebugger debugger;
+	public static ItemMysteryFolder mysteryFolder;
 	
 	public static void init() {
 		
@@ -32,6 +33,7 @@ public class RFCItems {
 		filter = new ItemFilter();
 		keys = new ItemKeys();
 		debugger = new ItemDebugger();
+		mysteryFolder = new ItemMysteryFolder();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -53,5 +55,7 @@ public class RFCItems {
 		
 		ModelLoader.setCustomModelResourceLocation(keys, 0, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[0], "inventory"));
 		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));
+		
+		ModelLoader.setCustomModelResourceLocation(mysteryFolder, 0, new ModelResourceLocation(mysteryFolder.getRegistryName(), "inventory"));
 	}
 }

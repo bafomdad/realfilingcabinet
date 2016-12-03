@@ -2,8 +2,12 @@ package com.bafomdad.realfilingcabinet.utils;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -41,6 +45,16 @@ public class StorageUtils {
 		if (tile.getWorld().isRemote)
 			return;
 		
+		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null) {
+			FluidStack fluid = FluidUtil.getFluidContained(stack);
+			if (fluid != null)
+			{
+				ItemStack far = FluidUtil.tryEmptyContainer(stack, tile.getFluidInventory(), fluid.amount, player, true);
+				if (far != null && !player.capabilities.isCreativeMode)
+					player.setHeldItem(EnumHand.MAIN_HAND, far);
+			}
+			return;
+		}
 		if (stack.hasTagCompound())
 			return;
 		
@@ -85,23 +99,45 @@ public class StorageUtils {
 			ItemStack loopinv = player.inventory.getStackInSlot(i);
 			if (loopinv != null && (loopinv.getItem() != RFCItems.emptyFolder || loopinv.getItem() != RFCItems.folder))
 			{
+				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null)
+				{
+					FluidStack fluid = FluidUtil.getFluidContained(loopinv);
+					if (fluid == null)
+						continue;
+					
+					ItemStack far = FluidUtil.tryEmptyContainer(loopinv, tile.getFluidInventory(), fluid.amount, player, true);
+					if (far != null)
+					{
+						loopinv.stackSize--;
+						if (loopinv.stackSize == 0)
+							player.inventory.setInventorySlotContents(i, null);
+						player.inventory.addItemStackToInventory(far);
+					}
+					if (!consume)
+						consume = true;
+				}
 				if (loopinv.hasTagCompound())
 					continue;
 				
 				for (int j = 0; j < tile.getInventory().getSlots(); j++) {
-					ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
-					if (tile.getInventory().getTrueStackInSlot(j) != null && tile.getInventory().getTrueStackInSlot(j).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
+					ItemStack tilestack = tile.getInventory().getTrueStackInSlot(j);
+					if (tilestack != null && ItemFolder.getObject(tilestack) instanceof ItemStack)
 					{
-						player.inventory.setInventorySlotContents(i, null);
-						consume = true;
-						break;
-					}
-					if (ItemStack.areItemsEqual(folderstack, loopinv))
-					{
-						ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.stackSize);
-						player.inventory.setInventorySlotContents(i, null);
-						consume = true;
-						break;
+						ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
+						
+						if (tile.getInventory().getTrueStackInSlot(j) != null && tile.getInventory().getTrueStackInSlot(j).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
+						{
+							player.inventory.setInventorySlotContents(i, null);
+							consume = true;
+							break;
+						}
+						if (ItemStack.areItemsEqual(folderstack, loopinv))
+						{
+							ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.stackSize);
+							player.inventory.setInventorySlotContents(i, null);
+							consume = true;
+							break;
+						}	
 					}
 				}
 			}
@@ -119,6 +155,27 @@ public class StorageUtils {
 		if (stack != null) {
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
+				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null)
+				{
+					ItemStack container = player.getHeldItemMainhand();
+					if (container != null && container.getItem() == Items.BUCKET)
+					{
+						FluidStack fluid = FluidUtil.getFluidContained(stack);
+						if (fluid != null)
+						{
+							ItemStack far = FluidUtil.tryFillContainer(container, tile.getFluidInventory(), Fluid.BUCKET_VOLUME, player, true);
+							if (far !=null) {
+								container.stackSize--;
+								if (container.stackSize == 0)
+									player.setHeldItem(EnumHand.MAIN_HAND, null);
+								if (!player.inventory.addItemStackToInventory(far))
+									player.dropItem(far, true);
+							}
+							return;
+						}
+					}
+					else return;
+				}
 				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
 				{
 					OreDictUtils.recreateOreDictionary(stack);
@@ -131,7 +188,8 @@ public class StorageUtils {
 								long extract = Math.min(stack.getMaxStackSize(), count);
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
 								player.inventory.addItemStackToInventory(stackExtract);
-								ItemFolder.remove(folder, extract);
+								if (!UpgradeHelper.isCreative(tile))
+									ItemFolder.remove(folder, extract);
 								tile.markBlockForUpdate();
 								break;
 							}
@@ -139,7 +197,8 @@ public class StorageUtils {
 							{
 								ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 								player.inventory.addItemStackToInventory(stackExtract);
-								ItemFolder.remove(folder, 1);
+								if (!UpgradeHelper.isCreative(tile))
+									ItemFolder.remove(folder, 1);
 								tile.markBlockForUpdate();
 								break;
 							}
@@ -154,7 +213,8 @@ public class StorageUtils {
 						long extract = Math.min(stack.getMaxStackSize(), count);
 						ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
 						player.inventory.addItemStackToInventory(stackExtract);
-						ItemFolder.remove(folder, extract);
+						if (!UpgradeHelper.isCreative(tile))
+							ItemFolder.remove(folder, extract);
 						tile.markBlockForUpdate();
 						break;
 					}
@@ -162,7 +222,8 @@ public class StorageUtils {
 					{
 						ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 						player.inventory.addItemStackToInventory(stackExtract);
-						ItemFolder.remove(folder, 1);
+						if (!UpgradeHelper.isCreative(tile))
+							ItemFolder.remove(folder, 1);
 						tile.markBlockForUpdate();
 						break;
 					}

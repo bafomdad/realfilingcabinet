@@ -4,6 +4,8 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import net.minecraft.util.text.translation.I18n;
+
 public class TextHelper {
 
 	private static final NavigableMap<Long, String> suffixes = new TreeMap();
@@ -30,5 +32,10 @@ public class TextHelper {
 		boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
 		
 		return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
+	}
+	
+	public static String localize(String str) {
+		
+		return I18n.translateToLocal(str);
 	}
 }

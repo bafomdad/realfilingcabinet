@@ -50,8 +50,8 @@ public class TutorialGenerator implements IWorldGenerator {
 		settings.setRotation(Rotation.NONE);
 		
 		BlockPos newPos = pos.add(-19, -1, -5);
-		template.addBlocksToWorld(world, newPos, settings);
 		RFCWorldInfo.getInstance().setStructureGenerated(true);
+		template.addBlocksToWorld(world, newPos, settings);
 		
 		LogRFC.debug("Structure generated at: " + newPos.toString() + " in world: " + world.getSaveHandler().getWorldDirectory().getName());
 	}

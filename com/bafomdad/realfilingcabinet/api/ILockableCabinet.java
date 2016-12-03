@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public interface ILockableCabinet {
 
-	public UUID getOwner();
+	public UUID getCabinetOwner();
 	
 	public boolean setOwner(UUID owner);
 	

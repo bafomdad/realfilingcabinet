@@ -43,6 +43,7 @@ import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
@@ -145,11 +146,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		}
 	}
 	
-	public static EnumFacing getFacingFromEntity(BlockPos pos, EntityLivingBase entity) {
-		
-		return EnumFacing.getFacingFromVector((float)(entity.posX - pos.getX()), (float)(entity.posY - pos.getY()), (float)(entity.posZ - pos.getZ()));
-	}
-	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		
@@ -177,7 +173,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			ItemStack s = new ItemStack(this);
 			NBTTagCompound tag = new NBTTagCompound();
 			((TileEntityRFC)tile).writeInv(tag, true);
-			if (tile.getTileData().hasKey(StringLibs.RFC_UPGRADE))
+			if (!((TileEntityRFC)tile).upgrades.isEmpty())
 			{
 				ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
 				if (upgrade != null && upgrade.stackSize == 0)
@@ -209,9 +205,9 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		
 		if (tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 			{
-				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getCabinetOwner()))
 				{
 					return;
 				}
@@ -249,9 +245,9 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
 		
 		if (tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 			{
-				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getCabinetOwner()))
 					return;
 			}
 		}
@@ -268,11 +264,11 @@ public class BlockRFC extends Block implements IFilingCabinet {
 						tileRFC.setOwner(player.getUniqueID());
 				}
 				else {
-					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 0) {
+					if (tileRFC.getCabinetOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 0) {
 						tileRFC.setOwner(null);
 						return;
 					}
-					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
+					if (tileRFC.getCabinetOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
 						if (!stack.hasTagCompound() || (stack.hasTagCompound() && !stack.getTagCompound().hasKey(StringLibs.RFC_COPY))) {
 							NBTUtils.setString(stack, StringLibs.RFC_COPY, player.getUniqueID().toString());
 							NBTUtils.setString(stack, StringLibs.RFC_FALLBACK, player.getDisplayNameString());
@@ -286,9 +282,28 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
 					player.setHeldItem(EnumHand.MAIN_HAND, null);
+					return;
+				}
+				if (stack.getItemDamage() == 4 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null)
+				{
+					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
+						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
+						if (tileStack == null)
+						{
+							tileRFC.getInventory().setStackInSlot(i, stack);
+							player.setHeldItem(EnumHand.MAIN_HAND, null);
+							tileRFC.markBlockForUpdate();
+							break;
+						}
+					}
+					return;
 				}
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
+					if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null && !FluidUtils.canAcceptFluidContainer(stack))
+					{
+						return;
+					}
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
@@ -384,7 +399,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		
 		TileEntityRFC tileRFC = (TileEntityRFC)world.getTileEntity(pos);
 		if (tileRFC != null && tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 				return -1.0F;
 		}
 		return ForgeHooks.blockStrength(state, player, world, pos);
