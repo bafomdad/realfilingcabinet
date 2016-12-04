@@ -26,7 +26,7 @@ sourceSets
 //	}
 }
 
-version = "1.10.2-1.1.6"
+version = "1.10.2-1.1.8"
 group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 

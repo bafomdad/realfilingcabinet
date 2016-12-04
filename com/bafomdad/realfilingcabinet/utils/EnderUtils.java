@@ -44,10 +44,24 @@ public class EnderUtils {
 			ItemFolder.add(folder, amount);
 		else
 		{
+			// note to self: NEVER do this again
 			if (amount <= 64)
 				amount = (int)ItemFolder.getFileSize(folder);
 			ItemFolder.remove(folder, amount);
 		}
+		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile);
+	}
+	
+	public static void syncToTileAndDecrement(TileEntityRFC tile, int dim, int index) {
+		
+		if (tile == null || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_ENDER) == null)
+			return;
+		
+		ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
+		if (folder.getItem() != RFCItems.folder)
+			return;
+		
+		ItemFolder.remove(folder, 1);
 		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile);
 	}
 	

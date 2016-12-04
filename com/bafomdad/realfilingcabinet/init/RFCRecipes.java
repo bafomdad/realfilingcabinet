@@ -25,6 +25,7 @@ public class RFCRecipes {
 		
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 1), new Object[] { "P  ", "PA ", "PPP", 'P', Items.PAPER, 'A', Items.IRON_PICKAXE });
+		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 3), new Object[] { "PB ", "PWL", "PPP", 'P', Items.PAPER, 'B', Items.BUCKET, 'W', Items.WATER_BUCKET, 'L', Items.LAVA_BUCKET });
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.whiteoutTape), " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', "slimeball", 'B', new ItemStack(Items.DYE, 1, 15) ));
@@ -43,6 +44,9 @@ public class RFCRecipes {
 		if (ConfigRFC.mobUpgrade) {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 4), new Object[] { "IGI", "BFR", "ISI", 'I', Items.IRON_INGOT, 'G', Items.GUNPOWDER, 'B', Items.BONE, 'R', Items.ROTTEN_FLESH, 'S', Items.STRING, 'F', RFCBlocks.blockRFC });
 			GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 2), new Object[] { "PGS", "PBR", "PPP", 'P', Items.PAPER, 'G', Items.GUNPOWDER, 'S', Items.STRING, 'B', Items.BONE, 'R', Items.ROTTEN_FLESH });
+		}
+		if (ConfigRFC.fluidUpgrade) {
+			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 5), new Object[] { "ZBZ", "LFW", "ZBZ", 'Z', Blocks.LAPIS_BLOCK, 'B', Items.BUCKET, 'F', RFCBlocks.blockRFC, 'L', Items.LAVA_BUCKET, 'W', Items.WATER_BUCKET });
 		}
 		if (ConfigRFC.nametagRecipe)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.NAME_TAG), " PP", " BP", "S  ", 'P', Items.PAPER, 'B', "slimeball", 'S', Items.STRING ));
