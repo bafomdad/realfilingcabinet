@@ -7,7 +7,6 @@ public class ConfigRFC {
 	
 	// BLOCKS
 
-
 	// RECIPES
 	public static boolean craftingUpgrade;
 	public static boolean enderUpgrade;
@@ -19,6 +18,7 @@ public class ConfigRFC {
 	// MISC
 	public static boolean magnifyingGlassGui;
 	public static boolean randomVillager;
+	public static boolean seasonalCabinets;
 	
 	// DEBUG
 	public static boolean debugLogger;
@@ -40,6 +40,7 @@ public class ConfigRFC {
 		
 		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want WAILA to handle the overlay instead.").getBoolean();
 		randomVillager = config.get("misc", "enableSpawnRandomVillager", false, "If enabled, will let mob folder spawn villagers with their professions randomized.").getBoolean();
+		seasonalCabinets = config.get("misc", "enableSeasonalCabinets", true, "If enabled, the normal filing cabinets will use a different texture depending on the season").getBoolean();
 		
 		debugLogger = config.get("debug", "enableDebugLogger", false, "Will output stuff to console for debugging purposes").getBoolean();
 		

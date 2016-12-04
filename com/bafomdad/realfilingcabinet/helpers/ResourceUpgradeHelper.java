@@ -1,10 +1,13 @@
 package com.bafomdad.realfilingcabinet.helpers;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.util.ResourceLocation;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 
@@ -12,6 +15,8 @@ public class ResourceUpgradeHelper {
 
 	private static final Map<ResourceLocation, String> upgradeTextures = new HashMap<ResourceLocation, String>();
 	private static final ResourceLocation DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
+	private static final ResourceLocation HALLOWEEN = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/pumpkincabinet.png");
+	private static final ResourceLocation CHRISTMAS = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/candycanecabinet.png");
 	
 	/**
 	 * Put this in preinit phase before you've registered all your items/blocks. Registers your custom model texture for filing cabinet, along with the NBT tag you've mapped it to.
@@ -41,6 +46,14 @@ public class ResourceUpgradeHelper {
 	
 	public static ResourceLocation getDefault() {
 		
+		if (ConfigRFC.seasonalCabinets)
+		{
+			LocalDateTime current = LocalDateTime.now();
+			if (current.getMonth() == Month.OCTOBER)
+				return HALLOWEEN;
+			if (current.getMonth() == Month.DECEMBER)
+				return CHRISTMAS;
+		}
 		return DEFAULT;
 	}
 }
