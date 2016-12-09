@@ -385,4 +385,14 @@ public class ItemFolder extends Item implements IFolder {
 
 		return true;
 	}
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
+		
+		return slotchanged;
+//		if ((oldstack.getItemDamage() == 1 || newstack.getItemDamage() == 1))
+//			return false;
+//		
+//		return true;
+	}
 }

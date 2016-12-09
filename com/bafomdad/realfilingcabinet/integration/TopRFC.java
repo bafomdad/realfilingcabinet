@@ -6,17 +6,21 @@ import javax.annotation.Nullable;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeHitEntityData;
 import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoEntityProvider;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -62,6 +66,27 @@ public class TopRFC {
 							}
 							if (player.isSneaking())
 								addExtraInfo(info, tile);
+						}
+					}
+				}
+			});
+			
+			probe.registerEntityProvider(new IProbeInfoEntityProvider() {
+
+				@Override
+				public String getID() {
+
+					return "realfilingcabinet:entity";
+				}
+				
+				@Override
+				public void addProbeEntityInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data) {
+
+					if (entity instanceof EntityCabinet) {
+						EntityCabinet cabinet = (EntityCabinet)entity;
+						if (cabinet != null)
+						{
+							addCabinetInfo(info, cabinet);
 						}
 					}
 				}
@@ -149,6 +174,28 @@ public class TopRFC {
 			String percentOut = percentFormatter.format(calc);
 			String name = percentOut + " of a full mana pool";
 			info.horizontal().text(name);
+		}
+		
+		public void addCabinetInfo(IProbeInfo info, EntityCabinet cabinet) {
+			
+			info.horizontal().text("Currently carrying:");
+			for (int i = 0; i < cabinet.getInventory().getSlots(); i++) {
+				ItemStack folder = cabinet.getInventory().getStackInSlot(i);
+				if (folder != null && folder.getItem() == RFCItems.folder) {
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof ItemStack) {
+						String name = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(name + " - " + storedSize);
+					}
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof String) {
+						String mobName = (String)ItemFolder.getObject(folder);
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(mobName + " - " + storedSize);
+					}
+				}
+			}
 		}
 	}
 }

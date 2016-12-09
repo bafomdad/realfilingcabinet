@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
@@ -31,6 +32,7 @@ import vazkii.botania.api.mana.spark.ISparkEntity;
 
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -78,6 +80,32 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			offset += offsetSpeed;
 			if (offset >= 0.05F)
 				offset = 0.05F;
+		}
+		if (UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE) != null)
+		{
+			if (!worldObj.isRemote)
+			{
+				EntityCabinet cabinet = new EntityCabinet(worldObj);
+				IBlockState state = worldObj.getBlockState(getPos());
+				float angle = state.getActualState(worldObj, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
+				cabinet.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+				cabinet.setRotationYawHead(angle);
+				cabinet.setOriginPoint(getPos());
+				
+				for (int i = 0; i < this.getInventory().getSlots(); i++) {
+					ItemStack folder = this.getInventory().getTrueStackInSlot(i);
+					if (folder != null) {
+						cabinet.setInventory(i, folder.copy());
+					}
+				}
+				if (this.isCabinetLocked())
+				{
+					UUID uuid = this.getCabinetOwner();
+					cabinet.setOwnerId(uuid);
+				}
+				worldObj.spawnEntityInWorld(cabinet);
+			}
+			worldObj.setBlockToAir(getPos());
 		}
 	}
 	

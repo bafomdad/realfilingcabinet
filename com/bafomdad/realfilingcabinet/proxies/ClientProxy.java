@@ -10,6 +10,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCEntities;
 import com.bafomdad.realfilingcabinet.init.RFCIntegration;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
@@ -28,6 +29,7 @@ public class ClientProxy extends CommonProxy {
 		
 		RFCBlocks.initModels();
 		RFCItems.initModels();
+		RFCEntities.initModels();
 		
 		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
 			BotaniaRFC.registerModels();

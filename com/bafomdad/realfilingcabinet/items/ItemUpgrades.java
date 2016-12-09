@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemUpgrades extends Item implements IUpgrades {
 	
-	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid" };
+	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid", "life" };
 
 	public ItemUpgrades() {
 		
