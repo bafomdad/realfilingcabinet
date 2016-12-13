@@ -48,6 +48,9 @@ public class RFCRecipes {
 		if (ConfigRFC.fluidUpgrade) {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 5), new Object[] { "ZBZ", "LFW", "ZBZ", 'Z', Blocks.LAPIS_BLOCK, 'B', Items.BUCKET, 'F', RFCBlocks.blockRFC, 'L', Items.LAVA_BUCKET, 'W', Items.WATER_BUCKET });
 		}
+		if (ConfigRFC.lifeUpgrade) {
+			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 6), new Object[] { "EDE", "DFD", "EDE", 'E', Items.EMERALD, 'D', Items.DIAMOND, 'F', RFCBlocks.blockRFC });
+		}
 		if (ConfigRFC.nametagRecipe)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.NAME_TAG), " PP", " BP", "S  ", 'P', Items.PAPER, 'B', "slimeball", 'S', Items.STRING ));
 		

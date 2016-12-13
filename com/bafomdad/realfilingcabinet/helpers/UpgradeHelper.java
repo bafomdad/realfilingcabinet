@@ -13,6 +13,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 
 public class UpgradeHelper {
@@ -38,9 +39,6 @@ public class UpgradeHelper {
 	 */
 	public static boolean hasUpgrade(TileEntityRFC tile) {
 		
-		if (!(tile.getBlockType() instanceof IFilingCabinet))
-			return false;
-
 		return !tile.upgrades.isEmpty();
 	}
 	

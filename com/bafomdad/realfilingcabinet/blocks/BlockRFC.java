@@ -125,7 +125,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
     {
     	TileEntity tile = world.getTileEntity(pos);
     	if (tile != null && tile instanceof TileEntityRFC)
-    		rightClick(tile, player);
+    		rightClick(tile, player, side, hitX, hitY, hitZ);
     	
         return true;
     }
@@ -239,7 +239,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	}
 
 	@Override
-	public void rightClick(TileEntity tile, EntityPlayer player) {
+	public void rightClick(TileEntity tile, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
@@ -349,17 +349,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				EnderUtils.extractEnderFolder(tileRFC, player);
 				return;
 			}
-			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-				if (folder != null)
-				{
-					tileRFC.getInventory().setStackInSlot(i, null);
-					player.setHeldItem(EnumHand.MAIN_HAND, folder);
-					tileRFC.markBlockForUpdate();
-					break;
-				}
-			}
+			StorageUtils.folderExtract(tileRFC, player, side, hitX, hitY, hitZ);
 		}
 	}
 	

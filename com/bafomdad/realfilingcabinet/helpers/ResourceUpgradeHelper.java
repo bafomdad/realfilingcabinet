@@ -10,10 +10,14 @@ import net.minecraft.util.ResourceLocation;
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 
 public class ResourceUpgradeHelper {
 
 	private static final Map<ResourceLocation, String> upgradeTextures = new HashMap<ResourceLocation, String>();
+	private static final Map<ResourceLocation, String> upgradeMobTextures = new HashMap<ResourceLocation, String>();
+	
+	private static final ResourceLocation MOB_DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetTexture.png");
 	private static final ResourceLocation DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
 	private static final ResourceLocation HALLOWEEN = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/pumpkincabinet.png");
 	private static final ResourceLocation CHRISTMAS = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/candycanecabinet.png");
@@ -31,6 +35,18 @@ public class ResourceUpgradeHelper {
 		else throw new IllegalArgumentException("[RealFilingCabinet]: Register upgrade resource: ResourceLocation is null, or the string tag is empty");
 	}
 	
+	/**
+	 * Entity version of resource registration for blocks.
+	 * @param resource
+	 * @param str
+	 */
+	public static void registerMobUpgradeResource(ResourceLocation resource, String str) {
+		
+		if (resource != null && !str.isEmpty())
+			upgradeMobTextures.put(resource, str);
+		else throw new IllegalArgumentException("[RealFilingCabinet]: Register upgrade mob resource: ResourceLocation is null, or the string tag is empty");
+	}
+	
 	public static ResourceLocation getTexture(TileEntityRFC tile, String tag) {
 		
 		if (tag != null) {
@@ -44,6 +60,19 @@ public class ResourceUpgradeHelper {
 		return DEFAULT;
 	}
 	
+	public static ResourceLocation getMobTexture(EntityCabinet cabinet, String tag) {
+		
+		if (tag != null) {
+			for (Map.Entry<ResourceLocation, String> entry : upgradeMobTextures.entrySet())
+			{
+				String value = entry.getValue();
+				if (value.equals(tag))
+					return entry.getKey();
+			}
+		}
+		return MOB_DEFAULT;
+	}
+	
 	public static ResourceLocation getDefault() {
 		
 		if (ConfigRFC.seasonalCabinets)
@@ -55,5 +84,10 @@ public class ResourceUpgradeHelper {
 				return CHRISTMAS;
 		}
 		return DEFAULT;
+	}
+	
+	public static ResourceLocation getMobDefault() {
+		
+		return MOB_DEFAULT;
 	}
 }

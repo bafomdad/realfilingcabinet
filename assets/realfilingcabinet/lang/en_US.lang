@@ -69,4 +69,5 @@ tooltip.realfilingcabinet.mana1000000000=All filled up, this is 1000 mana pools 
 message.realfilingcabinet.errorEnder1=This cabinet must have one or more folders in it before applying this upgrade
 message.realfilingcabinet.errorEnder2=This cabinet must not contain addon folders
 message.realfilingcabinet.errorFluid=This cabinet must contain no folders in it before applying this upgrade
+message.realfilingcabinet.errorLife=Do you want this mana to run away?!?
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand

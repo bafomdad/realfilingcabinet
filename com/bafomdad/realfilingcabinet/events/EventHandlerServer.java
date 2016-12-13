@@ -6,6 +6,7 @@ import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -73,7 +74,7 @@ public class EventHandlerServer {
 		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
 		{
 			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
-			if (mainhand != null || !tileRFC.isOpen)
+			if (mainhand != null || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
 				return;
 			
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)

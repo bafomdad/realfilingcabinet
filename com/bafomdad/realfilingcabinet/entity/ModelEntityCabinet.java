@@ -58,7 +58,6 @@ public class ModelEntityCabinet extends ModelBase {
 		legR2.setTextureSize(64, 32);
 		legR2.mirror = true;
 		setRotation(legR2, 0F, 0F, 0F);
-//		legL2.mirror = true;
 		legL2 = new ModelRenderer(this, 19, 2);
 		legL2.addBox(-3F, 0F, -3F, 6, 2, 6);
 		legL2.setRotationPoint(3F, 10F, 0F);
@@ -85,11 +84,13 @@ public class ModelEntityCabinet extends ModelBase {
 	    armL1.render(f5);
 	    GlStateManager.rotate(speed*60f*(float) Math.sin(Math.toRadians(age % 360)*24F), 1, 0, 0);
 	    GlStateManager.rotate(speed*60f*(float) Math.sin(Math.toRadians(age % 360)*24F), 1, 0, 0);
+	    legL2.offsetX = 0.1F;
 	    legL2.offsetY = 0.6F;
 	    legL2.render(f5);
 	    GlStateManager.rotate(-120f*speed*(float) Math.sin(Math.toRadians(age % 360)*24F), 1, 0, 0);
-	    legR2.render(f5);
+	    legR2.offsetX = -0.1F;
 	    legR2.offsetY = 0.6F;
+	    legR2.render(f5);
 	    
 	    GlStateManager.rotate(30F*(float)Math.abs(Math.sin(Math.toRadians(age % 360)*15F)), 0, 1, 0);
 	    GlStateManager.translate(0, -0.15, 0);

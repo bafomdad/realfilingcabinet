@@ -29,7 +29,7 @@ public class StringLibs {
 	public static String RFC_PLACEMODE = "RFC_placeMode";
 	
 	// ENTITY
-	public static String RFC_ORIGIN = "RFC_originPoint";
+	public static String RFC_MOBUPGRADE = "RFC_mobUpgrade";
 	
 	// INTEGRATION
 	public static String TAG_MANA = "TAG_manaUpgrade";

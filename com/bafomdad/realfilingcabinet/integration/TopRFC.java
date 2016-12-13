@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -87,6 +88,8 @@ public class TopRFC {
 						if (cabinet != null)
 						{
 							addCabinetInfo(info, cabinet);
+							if (player.isSneaking())
+								addMobUpgradeInfo(info, cabinet);
 						}
 					}
 				}
@@ -188,6 +191,12 @@ public class TopRFC {
 						
 						info.horizontal().text(name + " - " + storedSize);
 					}
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof FluidStack) {
+						String name = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(name + " - " + storedSize);
+					}
 					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof String) {
 						String mobName = (String)ItemFolder.getObject(folder);
 						long storedSize = ItemFolder.getFileSize(folder);
@@ -196,6 +205,15 @@ public class TopRFC {
 					}
 				}
 			}
+		}
+		
+		public void addMobUpgradeInfo(IProbeInfo info, EntityCabinet cabinet) {
+			
+			String upgrade = "Upgrade: ";
+			if (!MobUpgradeHelper.hasMobUpgrade(cabinet))
+				info.horizontal().text(TextFormatting.GRAY + upgrade + "NONE");
+			else
+				info.horizontal().text(TextFormatting.GRAY + upgrade + TextFormatting.GREEN + MobUpgradeHelper.getMobUpgrade(cabinet, cabinet.upgrades));
 		}
 	}
 }

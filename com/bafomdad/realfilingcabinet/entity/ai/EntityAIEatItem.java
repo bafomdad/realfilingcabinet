@@ -7,11 +7,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 
-public class EntityAIEatItem extends EntityAIBaseRFC {
+public class EntityAIEatItem extends EntityAIBase {
 	
+	private EntityCabinet cabinet;
 	private PathNavigate pathFinder;
 	private EntityItem targetItem = null;
 	
@@ -27,12 +29,7 @@ public class EntityAIEatItem extends EntityAIBaseRFC {
 
 		if (!pathFinder.noPath())
 			return false;
-		
-		if (!isWithinBoundaries())
-		{
-			return true;
-		}
-		
+			
 		if (cabinet.worldObj != null) {
 			List<EntityItem> items = cabinet.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(cabinet.posX - 1, cabinet.posY - 1, cabinet.posZ - 1, cabinet.posX + 1, cabinet.posY + 1, cabinet.posZ + 1).expand(10.0, 10.0, 10.0));
 			EntityItem closest = null;
@@ -41,6 +38,10 @@ public class EntityAIEatItem extends EntityAIBaseRFC {
 				if (!item.isDead && item.onGround) {
 					double dist = item.getDistanceToEntity(cabinet);
 					if (dist < closestDistance && cabinet.getInventory().canInsertItem(item.getEntityItem())) {
+						BlockPos pos = BlockPos.fromLong(cabinet.homePos);
+						if (cabinet.hasHome() && cabinet.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10.0D)
+							return false;
+						
 						closest = item;
 						closestDistance = dist;
 					}
@@ -61,9 +62,6 @@ public class EntityAIEatItem extends EntityAIBaseRFC {
 		pathFinder.clearPathEntity();
 		targetItem = null;
 		cabinet.setYay(false);
-		
-		if (!this.shouldExecute())
-			pathFinder.tryMoveToXYZ(cabinet.getOriginPoint().getX(), cabinet.getOriginPoint().getY(), cabinet.getOriginPoint().getZ(), 0.6F);
 	}
 	
 	@Override

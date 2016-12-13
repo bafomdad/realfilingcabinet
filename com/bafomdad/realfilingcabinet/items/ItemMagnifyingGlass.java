@@ -18,6 +18,7 @@ import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 
@@ -61,9 +62,9 @@ public class ItemMagnifyingGlass extends Item {
 					for (int i = 0; i < cabinet.getInventory().getSlots(); i++) {
 						ItemStack stacky = cabinet.getInventory().getStackInSlot(i);
 						if (stacky != null && stacky.getItem() == RFCItems.folder) {
-							if (ItemFolder.getObject(stacky) != null && ItemFolder.getObject(stacky) instanceof ItemStack)
+							if (ItemFolder.getObject(stacky) != null)
 							{
-								String name = ((ItemStack)ItemFolder.getObject(stacky)).getDisplayName();
+								String name = TextHelper.folderStr(stacky);
 								long storedSize = ItemFolder.getFileSize(stacky);
 								
 								player.addChatMessage(new TextComponentString(name + " - " + storedSize));

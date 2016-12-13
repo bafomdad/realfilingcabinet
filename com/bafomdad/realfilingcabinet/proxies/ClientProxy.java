@@ -27,6 +27,9 @@ public class ClientProxy extends CommonProxy {
 		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/mobcabinet.png"), StringLibs.TAG_MOB);
 		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/fluidcabinet.png"), StringLibs.TAG_FLUID);
 		
+//		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetMobTexture.png"), StringLibs.TAG_MOB);
+//		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetFluidTexture.png"), StringLibs.TAG_FLUID);
+		
 		RFCBlocks.initModels();
 		RFCItems.initModels();
 		RFCEntities.initModels();

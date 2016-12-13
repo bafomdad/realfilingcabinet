@@ -1,5 +1,9 @@
 package com.bafomdad.realfilingcabinet.entity;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
+import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -32,7 +36,12 @@ public class RenderEntityCabinet extends RenderLiving<EntityCabinet> {
 	@Override
 	protected ResourceLocation getEntityTexture(EntityCabinet entity) {
 
-		return new ResourceLocation("realfilingcabinet:textures/entity/cabinetTexture.png");
+		int state = entity.getTextureState();
+		switch (state) {
+			case 1: return new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetMobTexture.png");
+			case 2: return new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetFluidTexture.png");
+			default: return ResourceUpgradeHelper.getMobDefault();
+		}
 	}
 	
 	public static class Factory implements IRenderFactory<EntityCabinet> {

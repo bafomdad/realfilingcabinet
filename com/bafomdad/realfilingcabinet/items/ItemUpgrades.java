@@ -8,6 +8,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,6 +81,14 @@ public class ItemUpgrades extends Item implements IUpgrades {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
 				if (stack != null) {
 					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
+					return false;
+				}
+			}
+		}
+		if (upgrade.getItemDamage() == 6) {
+			for (ItemStack stack : tile.getInventory().getStacks()) {
+				if (stack != null && stack.getItem() == BotaniaRFC.manaFolder) {
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
 					return false;
 				}
 			}

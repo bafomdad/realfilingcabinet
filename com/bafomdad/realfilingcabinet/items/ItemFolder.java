@@ -32,6 +32,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
@@ -191,6 +192,9 @@ public class ItemFolder extends Item implements IFolder {
 		if (folder == null)
 			return null;
 		
+		if (folder.getItem() == BotaniaRFC.manaFolder) {
+			return folder.getDisplayName();
+		}
 		if (folder.getItemDamage() == 3) {
 			if (!str.isEmpty())
 				return str;

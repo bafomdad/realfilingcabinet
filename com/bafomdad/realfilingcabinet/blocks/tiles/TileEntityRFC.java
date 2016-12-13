@@ -90,7 +90,6 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 				float angle = state.getActualState(worldObj, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
 				cabinet.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 				cabinet.setRotationYawHead(angle);
-				cabinet.setOriginPoint(getPos());
 				
 				for (int i = 0; i < this.getInventory().getSlots(); i++) {
 					ItemStack folder = this.getInventory().getTrueStackInSlot(i);
@@ -102,6 +101,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 				{
 					UUID uuid = this.getCabinetOwner();
 					cabinet.setOwnerId(uuid);
+				}
+				else
+				{
+					cabinet.homePos = getPos().toLong();
 				}
 				worldObj.spawnEntityInWorld(cabinet);
 			}

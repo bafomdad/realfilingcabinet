@@ -13,6 +13,7 @@ public class ConfigRFC {
 	public static boolean oreDictUpgrade;
 	public static boolean mobUpgrade;
 	public static boolean fluidUpgrade;
+	public static boolean lifeUpgrade;
 	public static boolean nametagRecipe;
 	
 	// MISC
@@ -36,6 +37,7 @@ public class ConfigRFC {
 		oreDictUpgrade = config.get("recipes", "enableOreDictUpgradeRecipe", true).getBoolean();
 		mobUpgrade = config.get("recipes", "enableMobUpgradeRecipe", true, "Disabling this also disables the mob folder recipe.").getBoolean();
 		fluidUpgrade = config.get("recipes", "enableFluidUpgradeRecipe", true).getBoolean();
+		lifeUpgrade = config.get("recipes", "enableLifeUpgradeRecipe", true).getBoolean();
 		nametagRecipe = config.get("recipes", "enableNametagRecipe", true).getBoolean();
 		
 		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want WAILA to handle the overlay instead.").getBoolean();

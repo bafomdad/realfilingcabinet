@@ -4,7 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -249,5 +251,34 @@ public class StorageUtils {
 			return;
 		
 		NBTUtils.setBoolean(stack, StringLibs.RFC_TAPED, setTaped);
+	}
+	
+	public static void folderExtract(TileEntityRFC tile, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+		
+		if (side == EnumFacing.UP || side == EnumFacing.DOWN) {
+			for (int i = tile.getInventory().getSlots() - 1; i >= 0; i--)
+			{
+				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
+				if (folder != null)
+				{
+					tile.getInventory().setStackInSlot(i, null);
+					player.setHeldItem(EnumHand.MAIN_HAND, folder);
+					tile.markBlockForUpdate();
+					break;
+				}
+			}
+		}
+		else {
+			float l = hitY * 7;
+			int slot = Math.round(l);
+			
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
+			if (folder != null)
+			{
+				tile.getInventory().setStackInSlot(slot, null);
+				player.setHeldItem(EnumHand.MAIN_HAND, folder);
+				tile.markBlockForUpdate();
+			}
+		}
 	}
 }

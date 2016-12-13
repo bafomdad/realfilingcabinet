@@ -3,6 +3,7 @@ package com.bafomdad.realfilingcabinet.entity;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIFollowOwner;
@@ -24,22 +25,28 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.entity.ai.EntityAIEatItem;
-import com.bafomdad.realfilingcabinet.entity.ai.EntityAIHugMob;
-import com.bafomdad.realfilingcabinet.entity.ai.IOriginPoint;
+import com.bafomdad.realfilingcabinet.entity.ai.*;
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
+import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryEntity;
 
-public class EntityCabinet extends EntityTameable implements IOriginPoint {
+public class EntityCabinet extends EntityTameable {
 	
 	private final InventoryEntity inventory;
 	private static final DataParameter<Boolean> YAY = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.BOOLEAN);
-	private long originPos;
+	private static final DataParameter<Integer> STATE = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.VARINT);
+	private int variant = 0;
+	public String upgrades = "";
+	public long homePos;
 	
 	public EntityCabinet(World world) {
 		
@@ -55,6 +62,7 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
 		this.isImmuneToFire = true;
 		this.setTamed(true);
 		this.dataManager.register(YAY, Boolean.valueOf(false));
+		this.dataManager.register(STATE, Integer.valueOf(0));
 	}
 	
 	protected void initEntityAI() {
@@ -63,14 +71,16 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
 		this.tasks.addTask(1, new EntityAIFollowOwner(this, 0.6F, 10.0F, 2.0F));
 		this.tasks.addTask(4, new EntityAIEatItem(this));
 		this.tasks.addTask(5, new EntityAIHugMob(this));
-		this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-		this.tasks.addTask(8, new EntityAILookIdle(this));
+		this.tasks.addTask(6, new EntityAISlurp(this));
+		this.tasks.addTask(7, new EntityAIMoveBackHome(this));
+		this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+		this.tasks.addTask(9, new EntityAILookIdle(this));
 	}
 	
 	protected void applyEntityAttributes() {
 		
 		super.applyEntityAttributes();
-		this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(10.0D);
+		this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(30.0D);
 		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.55D);
 		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
 	}
@@ -101,16 +111,26 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
 		if (this.isEntityInvulnerable(source))
 			return false;
 		
-//		amount = 999.0F;
+		if (!upgrades.isEmpty()) {
+			if (source.getEntity() instanceof EntityPlayer)
+				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getEntity(), this);
+			return false;
+		}
 		this.setTile(source);
-
-		return super.attackEntityFrom(source, amount);
+		return true;
 	}
 	
 	@Override
-	public void onDeath(DamageSource source) {
+	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		
-		super.onDeath(source);
+		if (hand == EnumHand.MAIN_HAND && !this.worldObj.isRemote) {
+			if (stack != null && stack.getItem() instanceof IUpgrades)
+			{
+				MobUpgradeHelper.setUpgrade(player, this, stack);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -128,7 +148,9 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
                 this.inventory.setStackInSlot(i, itemstack.copy());
             }
         }
-        this.originPos = tag.getLong(StringLibs.RFC_ORIGIN);
+        upgrades = tag.getString(StringLibs.RFC_MOBUPGRADE);
+        homePos = tag.getLong("homePos");
+        this.setTextureState(tag.getInteger("varTex"));
 	}
 	
 	@Override
@@ -147,7 +169,9 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
             }
         }
         tag.setTag("Inventory", tagList);
-        tag.setLong(StringLibs.RFC_ORIGIN, originPos);
+        tag.setString(StringLibs.RFC_MOBUPGRADE, upgrades);
+        tag.setLong("homePos", homePos);
+        tag.setInteger("varTex", this.getTextureState());
 	}
 
 	@Override
@@ -184,6 +208,16 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
 		return (Boolean)this.dataManager.get(YAY).booleanValue();
 	}
 	
+	public void setTextureState(int val) {
+		
+		this.dataManager.set(STATE, Integer.valueOf(val));
+	}
+	
+	public int getTextureState() {
+		
+		return (Integer)this.dataManager.get(STATE).intValue();
+	}
+	
 	private void setTile(DamageSource source) {
 		
 		if (source.getEntity() instanceof EntityPlayer) {
@@ -211,17 +245,5 @@ public class EntityCabinet extends EntityTameable implements IOriginPoint {
 				this.setDead();
 			}
 		}
-	}
-
-	@Override
-	public BlockPos getOriginPoint() {
-
-		return BlockPos.fromLong(originPos);
-	}
-
-	@Override
-	public void setOriginPoint(BlockPos pos) {
-
-		this.originPos = pos.toLong();
 	}
 }
