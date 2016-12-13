@@ -71,3 +71,4 @@ message.realfilingcabinet.errorEnder2=This cabinet must not contain addon folder
 message.realfilingcabinet.errorFluid=This cabinet must contain no folders in it before applying this upgrade
 message.realfilingcabinet.errorLife=Do you want this mana to run away?!?
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
+message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!

@@ -24,10 +24,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
@@ -35,6 +37,7 @@ import com.bafomdad.realfilingcabinet.entity.ai.*;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryEntity;
@@ -221,28 +224,33 @@ public class EntityCabinet extends EntityTameable {
 	private void setTile(DamageSource source) {
 		
 		if (source.getEntity() instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)source.getEntity();
 			IBlockState state = RFCBlocks.blockRFC.getDefaultState().withProperty(BlockRFC.FACING, this.getHorizontalFacing().getOpposite());
 			BlockPos pos = new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ));
 			if (!worldObj.isRemote)
 			{
-				worldObj.setBlockState(pos, state);
-				TileEntityRFC tile = (TileEntityRFC)worldObj.getTileEntity(pos);
-				if (tile != null)
-				{
-					for (int i = 0; i < inventory.getSlots(); i++) {
-						ItemStack folder = inventory.getStackInSlot(i);
-						if (folder != null)
-							this.setInventory(tile, i, folder);
-					}
-					if (this.getOwner() != null)
+				if (worldObj.isAirBlock(pos)) {
+					worldObj.setBlockState(pos, state);
+					TileEntityRFC tile = (TileEntityRFC)worldObj.getTileEntity(pos);
+					if (tile != null)
 					{
-						tile.setOwner(this.getOwnerId());
+						for (int i = 0; i < inventory.getSlots(); i++) {
+							ItemStack folder = inventory.getStackInSlot(i);
+							if (folder != null)
+								this.setInventory(tile, i, folder);
+						}
+						if (this.getOwner() != null)
+						{
+							tile.setOwner(this.getOwnerId());
+						}
 					}
+					if (!((EntityPlayer)source.getEntity()).inventory.addItemStackToInventory(new ItemStack(RFCItems.upgrades, 1, 6)))
+						((EntityPlayer)source.getEntity()).dropItem(new ItemStack(RFCItems.upgrades, 1, 6), true);
+					
+					this.setDead();
 				}
-				if (!((EntityPlayer)source.getEntity()).inventory.addItemStackToInventory(new ItemStack(RFCItems.upgrades, 1, 6)))
-					((EntityPlayer)source.getEntity()).dropItem(new ItemStack(RFCItems.upgrades, 1, 6), true);
-				
-				this.setDead();
+				else
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")));
 			}
 		}
 	}
