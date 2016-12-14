@@ -2,10 +2,12 @@ package com.bafomdad.realfilingcabinet.inventory;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -73,6 +75,18 @@ public class InventoryEntity extends ItemStackHandler {
 		
 		if (!elb.isNonBoss() || elb.isChild())
 			return false;
+		
+		if (elb instanceof EntityCabinet)
+			return false;
+		
+		if (elb instanceof IEntityOwnable && ((IEntityOwnable)elb).getOwner() != null)
+			return false;
+		
+		String entityblacklist = elb.getClass().getSimpleName();
+		for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
+			if (toBlacklist.contains(entityblacklist))
+				return false;
+		}
 		
     	String entityName = EntityList.getEntityString(elb);
     	for (int i = 0; i < getSlots(); i++) {

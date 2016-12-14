@@ -106,7 +106,7 @@ public class EntityAISlurp extends EntityAIBase {
 	@Override
 	public boolean continueExecuting() {
 		
-		return cabinet.isEntityAlive() && !pathFinder.noPath() && targetFluid != null;
+		return cabinet.isEntityAlive() && !pathFinder.noPath() && targetFluid != null && MobUpgradeHelper.getMobUpgrade(cabinet, StringLibs.TAG_FLUID) != null;
 	}
 	
 	@Override

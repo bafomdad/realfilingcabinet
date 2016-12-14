@@ -10,6 +10,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 
 public class EntityAIEatItem extends EntityAIBase {
 	
@@ -67,7 +68,7 @@ public class EntityAIEatItem extends EntityAIBase {
 	@Override
 	public boolean continueExecuting() {
 		
-		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetItem.isDead;
+		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetItem.isDead && !MobUpgradeHelper.hasMobUpgrade(cabinet);
 	}
 	
 	@Override

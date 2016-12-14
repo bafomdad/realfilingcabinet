@@ -71,7 +71,7 @@ public class EntityAIHugMob extends EntityAIBase {
 	@Override
 	public boolean continueExecuting() {
 		
-		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetMob.isDead;
+		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetMob.isDead && MobUpgradeHelper.getMobUpgrade(cabinet, StringLibs.TAG_MOB) != null;
 	}
 	
 	@Override
