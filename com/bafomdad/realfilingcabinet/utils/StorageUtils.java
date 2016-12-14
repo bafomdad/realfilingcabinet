@@ -184,7 +184,8 @@ public class StorageUtils {
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
 								if (!player.inventory.addItemStackToInventory(stackExtract))
 									player.dropItem(stackExtract, true);
-								ItemFolder.remove(folder, extract);
+								if (!UpgradeHelper.isCreative(tile))
+									ItemFolder.remove(folder, extract);
 								tile.markBlockForUpdate();
 								break;
 							}
@@ -193,7 +194,8 @@ public class StorageUtils {
 								ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 								if (!player.inventory.addItemStackToInventory(stackExtract))
 									player.dropItem(stackExtract, true);
-								ItemFolder.remove(folder, 1);
+								if (!UpgradeHelper.isCreative(tile))
+									ItemFolder.remove(folder, 1);
 								tile.markBlockForUpdate();
 								break;
 							}
@@ -209,7 +211,8 @@ public class StorageUtils {
 						ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
 						if (!player.inventory.addItemStackToInventory(stackExtract))
 							player.dropItem(stackExtract, true);
-						ItemFolder.remove(folder, extract);
+						if (!UpgradeHelper.isCreative(tile))
+							ItemFolder.remove(folder, extract);
 						tile.markBlockForUpdate();
 						break;
 					}
@@ -218,7 +221,8 @@ public class StorageUtils {
 						ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 						if (!player.inventory.addItemStackToInventory(stackExtract))
 							player.dropItem(stackExtract, true);
-						ItemFolder.remove(folder, 1);
+						if (!UpgradeHelper.isCreative(tile))
+							ItemFolder.remove(folder, 1);
 						tile.markBlockForUpdate();
 						break;
 					}

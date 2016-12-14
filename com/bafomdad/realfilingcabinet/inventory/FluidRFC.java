@@ -1,6 +1,7 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 
@@ -82,7 +83,7 @@ public class FluidRFC implements IFluidHandler {
 					FluidStack f = tank.drain(maxDrain, doDrain);
 					if (f != null && f.amount > 0 && doDrain)
 					{
-						if (snapshot != null && snapshot.isFluidEqual(f) && doDrain) {
+						if (snapshot != null && snapshot.isFluidEqual(f) && doDrain && !UpgradeHelper.isCreative(tile)) {
 							ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), snapshot.amount - loopfluid.amount);
 						}
 					}
