@@ -32,7 +32,7 @@ public class AutocraftingUtils {
 
 	private static IRecipe getRecipeFor(ItemStack stack) {
 		
-		if (stack != ItemStack.field_190927_a) {
+		if (stack != ItemStack.EMPTY) {
 			for (IRecipe recipe : (List<IRecipe>)(CraftingManager.getInstance().getRecipeList())) {
 	    		if ((recipe instanceof ShapedRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe) 
 	    				&& recipe.getRecipeOutput().getItem() == stack.getItem()
@@ -49,7 +49,7 @@ public class AutocraftingUtils {
 		ItemStackHandler tempInv = new ItemStackHandler(tile.getInventory().getSlots());
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack stack = tile.getInventory().getTrueStackInSlot(i);
-			if (stack != ItemStack.field_190927_a)
+			if (stack != ItemStack.EMPTY)
 				tempInv.setStackInSlot(i, tile.getInventory().getTrueStackInSlot(i).copy());
 		}
 		return tempInv;
@@ -62,7 +62,7 @@ public class AutocraftingUtils {
 	
 	public static boolean canCraft(ItemStack input, TileEntityRFC tile) {
 		
-		if (input == ItemStack.field_190927_a)
+		if (input == ItemStack.EMPTY)
 			return false;
 		
 		return consumeRecipeIngredients(input, (IItemHandler)getFakeInv(tile));
@@ -82,11 +82,11 @@ public class AutocraftingUtils {
 				ItemStack[] recipeList = getRecipeItems(recipe);
 				for (int i = 0; i < recipeList.length; i++) {
 					ItemStack ingredient = recipeList[i];
-					if (ingredient != ItemStack.field_190927_a && ingredient.func_190916_E() > 1)
-						ingredient.func_190920_e(1);
-					if (ingredient != ItemStack.field_190927_a && (ingredient.getItemDamage() == -1 || ingredient.getItemDamage() == Short.MAX_VALUE))
+					if (ingredient != ItemStack.EMPTY && ingredient.getCount() > 1)
+						ingredient.setCount(1);
+					if (ingredient != ItemStack.EMPTY && (ingredient.getItemDamage() == -1 || ingredient.getItemDamage() == Short.MAX_VALUE))
 						ingredient.setItemDamage(0);
-					if (ingredient != ItemStack.field_190927_a && !consumeFromInventory(ingredient, inv))
+					if (ingredient != ItemStack.EMPTY && !consumeFromInventory(ingredient, inv))
 						return false;
 				}
 			}
@@ -94,15 +94,15 @@ public class AutocraftingUtils {
 				List<ItemStack> recipeList = getShapelessRecipeItems(recipe);
 				for (int i = 0; i < recipeList.size(); i++) {
 					ItemStack ingredient = recipeList.get(i);
-					if (ingredient != null && ingredient.func_190916_E() > 1)
-						ingredient.func_190920_e(1);
+					if (ingredient != null && ingredient.getCount() > 1)
+						ingredient.setCount(1);
 					if (ingredient != null && (ingredient.getItemDamage() == -1 || ingredient.getItemDamage() == Short.MAX_VALUE))
 						ingredient.setItemDamage(0);
 					if (ingredient != null && !consumeFromInventory(ingredient, inv))
 						return false;
 				}
 			}
-			outputSize = recipe.getRecipeOutput().func_190916_E();
+			outputSize = recipe.getRecipeOutput().getCount();
 		}
 		if (inv instanceof InventoryRFC)
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(((InventoryRFC)inv).getTile());
@@ -116,7 +116,7 @@ public class AutocraftingUtils {
 			if (inv instanceof InventoryRFC)
 				folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
 			
-			if (folder != ItemStack.field_190927_a && folder.getItem() == RFCItems.folder) {
+			if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) instanceof ItemStack)
 				{
 					if (ItemFolder.getObject(folder) != null && stack.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
@@ -125,7 +125,7 @@ public class AutocraftingUtils {
 							boolean consume = true;
 							
 							ItemStack container = ((ItemStack)ItemFolder.getObject(folder)).getItem().getContainerItem((ItemStack)ItemFolder.getObject(folder));
-							if (container != ItemStack.field_190927_a && (inv instanceof InventoryRFC)) {
+							if (container != ItemStack.EMPTY && (inv instanceof InventoryRFC)) {
 								if (container == (ItemStack)ItemFolder.getObject(folder))
 									consume = false;
 								if (consume && !shuntContainerItem(container, inv)) {
@@ -150,7 +150,7 @@ public class AutocraftingUtils {
 		
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
-			if (folder != ItemStack.field_190927_a && folder.getItem() == RFCItems.folder) {
+			if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) != null && container.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
 					ItemFolder.add(folder, 1);
 					return true;
@@ -165,7 +165,7 @@ public class AutocraftingUtils {
 		TileEntityRFC tile = ((InventoryRFC)inv).getTile();
 		
 		EntityItem ei = new EntityItem(tile.getWorld(), tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5, container);
-		tile.getWorld().spawnEntityInWorld(ei);
+		tile.getWorld().spawnEntity(ei);
 	}
 
 	public static ItemStack[] getRecipeItems(IRecipe recipe) {

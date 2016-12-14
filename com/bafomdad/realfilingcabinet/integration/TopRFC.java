@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -11,15 +13,18 @@ import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoEntityProvider;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
+import mcjty.theoneprobe.api.IProbeHitEntityData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -62,13 +67,35 @@ public class TopRFC {
 					}
 				}
 			});
+			probe.registerEntityProvider(new IProbeInfoEntityProvider() {
+
+				@Override
+				public String getID() {
+
+					return "realfilingcabinet:entity";
+				}
+				
+				@Override
+				public void addProbeEntityInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data) {
+
+					if (entity instanceof EntityCabinet) {
+						EntityCabinet cabinet = (EntityCabinet)entity;
+						if (cabinet != null)
+						{
+							addCabinetInfo(info, cabinet);
+							if (player.isSneaking())
+								addMobUpgradeInfo(info, cabinet);
+						}
+					}
+				}
+			});
 			return null;
 		}
 		
 		public void addFolderInfo(IProbeInfo info, TileEntityRFC tile, int slot) {
 			
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
-			if (folder != ItemStack.field_190927_a) {
+			if (folder != ItemStack.EMPTY) {
 				if (ItemFolder.getObject(folder) instanceof ItemStack)
 				{
 					String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
@@ -133,6 +160,43 @@ public class TopRFC {
 			else
 				lockFormat = TextFormatting.RESET + "No";
 			info.horizontal().text(TextFormatting.GRAY + "Locked: " + lockFormat);
+		}
+		
+		public void addCabinetInfo(IProbeInfo info, EntityCabinet cabinet) {
+			
+			info.horizontal().text("Currently carrying:");
+			for (int i = 0; i < cabinet.getInventory().getSlots(); i++) {
+				ItemStack folder = cabinet.getInventory().getStackInSlot(i);
+				if (folder != null && folder.getItem() == RFCItems.folder) {
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof ItemStack) {
+						String name = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(name + " - " + storedSize);
+					}
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof FluidStack) {
+						String name = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(name + " - " + storedSize);
+					}
+					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof String) {
+						String mobName = (String)ItemFolder.getObject(folder);
+						long storedSize = ItemFolder.getFileSize(folder);
+						
+						info.horizontal().text(mobName + " - " + storedSize);
+					}
+				}
+			}
+		}
+		
+		public void addMobUpgradeInfo(IProbeInfo info, EntityCabinet cabinet) {
+			
+			String upgrade = "Upgrade: ";
+			if (!MobUpgradeHelper.hasMobUpgrade(cabinet))
+				info.horizontal().text(TextFormatting.GRAY + upgrade + "NONE");
+			else
+				info.horizontal().text(TextFormatting.GRAY + upgrade + TextFormatting.GREEN + MobUpgradeHelper.getMobUpgrade(cabinet, cabinet.upgrades));
 		}
 	}
 }

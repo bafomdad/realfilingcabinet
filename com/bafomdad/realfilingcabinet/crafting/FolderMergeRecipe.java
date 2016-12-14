@@ -38,7 +38,7 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.field_190927_a)
+				if (stack != ItemStack.EMPTY)
 				{
 					boolean flag = false;
 					Iterator iter = list.iterator();
@@ -71,7 +71,7 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != ItemStack.field_190927_a)
+			if (stack != ItemStack.EMPTY)
 			{
 				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == 0) {
 					if (hostFolder == -1)
@@ -100,6 +100,6 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 				}
 			}
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 }

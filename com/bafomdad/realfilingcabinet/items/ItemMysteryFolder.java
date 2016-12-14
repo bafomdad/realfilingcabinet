@@ -60,7 +60,7 @@ public class ItemMysteryFolder extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack != ItemStack.field_190927_a && stack.getItem() == this)
+		if (stack != ItemStack.EMPTY && stack.getItem() == this)
 		{
 			if (rando == null || rando.isEmpty())
 				return ActionResult.newResult(EnumActionResult.PASS, stack);

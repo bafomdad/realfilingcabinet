@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.init;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.integration.*;
 
 import net.minecraftforge.fml.common.Loader;
@@ -8,9 +9,7 @@ public class RFCIntegration {
 
 	public static void init() {
 		
-//		if (Loader.isModLoaded("Waila"))
-//			WailaRFC.register();
-		if (Loader.isModLoaded("theoneprobe"))
+		if (RealFilingCabinet.topLoaded)
 			TopRFC.register();
 	}
 }

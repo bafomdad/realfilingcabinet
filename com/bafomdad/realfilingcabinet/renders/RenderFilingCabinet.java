@@ -66,7 +66,7 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 				
 				for (int i = 0; i < te.getInventory().getSlots(); i++) {
 					ItemStack renderFolder = te.getInventory().getTrueStackInSlot(i);
-					if (renderFolder != ItemStack.field_190927_a)
+					if (renderFolder != ItemStack.EMPTY)
 					{	
 						GlStateManager.translate(0.0F, -0.0025F, 0.1F);
 						

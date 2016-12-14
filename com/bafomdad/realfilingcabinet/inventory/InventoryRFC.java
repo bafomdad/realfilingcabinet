@@ -40,26 +40,26 @@ public class InventoryRFC extends ItemStackHandler {
 		if (tile.isCabinetLocked() || slot == 8)
 			return stack;
 		
-        if (stack == ItemStack.field_190927_a || stack.func_190916_E() == 0)
-            return ItemStack.field_190927_a;
+        if (stack == ItemStack.EMPTY || stack.getCount() == 0)
+            return ItemStack.EMPTY;
 
         validateSlotIndex(slot);
 
-        if (stacks.get(slot) != ItemStack.field_190927_a && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate))
+        if (stacks.get(slot) != ItemStack.EMPTY && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate))
         {
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
-        	return ItemStack.field_190927_a;
+        	return ItemStack.EMPTY;
         }
         if (StorageUtils.simpleFolderMatch(tile, stack) != -1)
         {
         	slot = StorageUtils.simpleFolderMatch(tile, stack);
         	if (!simulate) {
-        		ItemFolder.add(stacks.get(slot), stack.func_190916_E());
+        		ItemFolder.add(stacks.get(slot), stack.getCount());
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
-        	return ItemStack.field_190927_a;
+        	return ItemStack.EMPTY;
         }
         return stack;
 	}
@@ -72,13 +72,13 @@ public class InventoryRFC extends ItemStackHandler {
 		if (ItemFolder.getObject(stacks.get(slot)) instanceof ItemStack)
 		{
 			ItemStack stackFolder = this.getStackFromFolder(slot);
-			if (stackFolder == ItemStack.field_190927_a || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
-				return ItemStack.field_190927_a;
+			if (stackFolder == ItemStack.EMPTY || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
+				return ItemStack.EMPTY;
 			
-			if (tile.hasItemFrame() && tile.getFilter() == ItemStack.field_190927_a)
-				return ItemStack.field_190927_a;
+			if (tile.hasItemFrame() && tile.getFilter() == ItemStack.EMPTY)
+				return ItemStack.EMPTY;
 			
-			if (tile.getFilter() != ItemStack.field_190927_a)
+			if (tile.getFilter() != ItemStack.EMPTY)
 			{
 				int i = StorageUtils.simpleFolderMatch(tile, tile.getFilter());
 				if (i != -1 && slot == i)
@@ -86,7 +86,7 @@ public class InventoryRFC extends ItemStackHandler {
 					stackFolder = this.getStackFromFolder(i);
 					long filterCount = ItemFolder.getFileSize(getTrueStackInSlot(i));
 					if (filterCount == 0)
-						return ItemStack.field_190927_a;
+						return ItemStack.EMPTY;
 					
 					long filterExtract = Math.min(stackFolder.getMaxStackSize(), filterCount);
 					amount = Math.min((int)filterExtract, amount);
@@ -95,14 +95,14 @@ public class InventoryRFC extends ItemStackHandler {
 						ItemFolder.remove(getTrueStackInSlot(i), amount);
 			    		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 					}
-					stackFolder.func_190920_e(amount);
+					stackFolder.setCount(amount);
 					return stackFolder.copy();
 				}
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			}
 			long count = ItemFolder.getFileSize(getTrueStackInSlot(slot));
 			if (count == 0)
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			
 			long extract = Math.min(stackFolder.getMaxStackSize(), count);
 			amount = Math.min((int)extract, amount);
@@ -111,10 +111,10 @@ public class InventoryRFC extends ItemStackHandler {
 				ItemFolder.remove(getTrueStackInSlot(slot), amount);
 	    		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 			}
-			stackFolder.func_190920_e(amount);
+			stackFolder.setCount(amount);
 			return stackFolder.copy();
 		}	
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -130,7 +130,7 @@ public class InventoryRFC extends ItemStackHandler {
 		if (slot >= 0)
 			return stacks.get(slot);
 		
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -138,19 +138,19 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		validateSlotIndex(slot);
 		
-		if ((stacks.get(slot) != ItemStack.field_190927_a && !(stacks.get(slot).getItem() instanceof IFolder)) || slot == 8)
-			return ItemStack.field_190927_a;
+		if ((stacks.get(slot) != ItemStack.EMPTY && !(stacks.get(slot).getItem() instanceof IFolder)) || slot == 8)
+			return ItemStack.EMPTY;
 		
 		ItemStack stackFolder = getStackFromFolder(slot);
-		if (stackFolder != ItemStack.field_190927_a)
+		if (stackFolder != ItemStack.EMPTY)
 		{
 			long count = ItemFolder.getFileSize(getTrueStackInSlot(slot));
 			if (count == 0)
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			
 //			long extract = Math.min(stackFolder.getMaxStackSize(), count);
 			long extract = Math.min(Integer.MAX_VALUE - 1, count);
-			stackFolder.func_190920_e((int)extract);
+			stackFolder.setCount((int)extract);
 		}
 		return stackFolder;
 	}
@@ -158,20 +158,20 @@ public class InventoryRFC extends ItemStackHandler {
 	public ItemStack getStackFromFolder(int slot) {
 		
 		ItemStack folder = getTrueStackInSlot(slot);
-		if (ItemFolder.getObject(folder) == ItemStack.field_190927_a)
-			return ItemStack.field_190927_a;
+		if (ItemFolder.getObject(folder) == ItemStack.EMPTY)
+			return ItemStack.EMPTY;
 		
-		if (folder != ItemStack.field_190927_a && folder.getItem() instanceof IFolder)
+		if (folder != ItemStack.EMPTY && folder.getItem() instanceof IFolder)
 		{
 			if (ItemFolder.getObject(folder) instanceof ItemStack)
 			{
 				ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
-				if (stack != ItemStack.field_190927_a) {
+				if (stack != ItemStack.EMPTY) {
 					return stack.copy();
 				}
 			}
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 	
 	public NonNullList<ItemStack> getStacks() {

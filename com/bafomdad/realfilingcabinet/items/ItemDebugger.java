@@ -50,16 +50,16 @@ public class ItemDebugger extends Item {
     			return EnumActionResult.FAIL;
     		
     		String str = FMLCommonHandler.instance().getEffectiveSide().toString() + " : " + tile.upgrades;
-    		player.addChatMessage(new TextComponentString(str));
+    		player.sendMessage(new TextComponentString(str));
     		return EnumActionResult.SUCCESS;
     	}
     	ItemStack debugger = player.getHeldItem(EnumHand.OFF_HAND);
     	ItemStack thing = player.getHeldItem(EnumHand.MAIN_HAND);
-    	if (debugger != ItemStack.field_190927_a && debugger.getItem() == this) {
-    		if (thing != ItemStack.field_190927_a && !world.isRemote)
+    	if (debugger != ItemStack.EMPTY && debugger.getItem() == this) {
+    		if (thing != ItemStack.EMPTY && !world.isRemote)
     		{
     			String str = TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".debugger") + ": " + thing.getUnlocalizedName();
-    			player.addChatMessage(new TextComponentString(str));
+    			player.sendMessage(new TextComponentString(str));
     		}
     	}
     	return EnumActionResult.PASS;
@@ -69,9 +69,9 @@ public class ItemDebugger extends Item {
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
         
 		if (!(target instanceof EntityPlayer)) {
-			ResourceLocation res = EntityList.func_191301_a(target);
-			Entity entity = EntityList.createEntityByIDFromName(res, player.worldObj);
-			if (!player.worldObj.isRemote)
+			ResourceLocation res = EntityList.getKey(target);
+			Entity entity = EntityList.createEntityByIDFromName(res, player.world);
+			if (!player.world.isRemote)
 				System.out.println("Entity: " + res.toString() + " / " + entity);
 			return true;
 		}

@@ -64,10 +64,10 @@ public class FluidRFC implements IFluidHandler {
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		
 		ItemStack stack = tile.getFilter();
-		if (tile.hasItemFrame() && stack == ItemStack.field_190927_a)
+		if (tile.hasItemFrame() && stack == ItemStack.EMPTY)
 			return null;
 		
-		else if (tile.hasItemFrame() && stack != ItemStack.field_190927_a)
+		else if (tile.hasItemFrame() && stack != ItemStack.EMPTY)
 		{
 			FluidStack fluid = FluidUtil.getFluidContained(stack);
 			if (fluid == null)

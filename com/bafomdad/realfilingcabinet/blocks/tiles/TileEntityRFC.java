@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -65,6 +67,35 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			offset += offsetSpeed;
 			if (offset >= 0.05F)
 				offset = 0.05F;
+		}
+		if (UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE) != null)
+		{
+			if (!world.isRemote)
+			{
+				EntityCabinet cabinet = new EntityCabinet(world);
+				IBlockState state = world.getBlockState(getPos());
+				float angle = state.getActualState(world, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
+				cabinet.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+				cabinet.setRotationYawHead(angle);
+				
+				for (int i = 0; i < this.getInventory().getSlots(); i++) {
+					ItemStack folder = this.getInventory().getTrueStackInSlot(i);
+					if (folder != null) {
+						cabinet.setInventory(i, folder.copy());
+					}
+				}
+				if (this.isCabinetLocked())
+				{
+					UUID uuid = this.getCabinetOwner();
+					cabinet.setOwnerId(uuid);
+				}
+				else
+				{
+					cabinet.homePos = getPos().toLong();
+				}
+				world.spawnEntity(cabinet);
+			}
+			world.setBlockToAir(getPos());
 		}
 	}
 	
@@ -132,7 +163,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		boolean write = false;
 		NBTTagList invList = new NBTTagList();
 		for (int i = 0; i < inv.getSlots(); i++) {
-			if (inv.getTrueStackInSlot(i) != ItemStack.field_190927_a)
+			if (inv.getTrueStackInSlot(i) != ItemStack.EMPTY)
 			{
 				if (toItem)
 					write = true;
@@ -160,10 +191,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		boolean bool = false;
 		
-		if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID)) {
+		if (getWorld().getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID)) {
 			bool = true;
 		}
-		lastClickTime = worldObj.getTotalWorldTime();
+		lastClickTime = getWorld().getTotalWorldTime();
 		lastClickUUID = player.getPersistentID();
 		
 		return bool;
@@ -175,7 +206,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
 		for (EntityItemFrame frame : frames) {
 			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
-			IBlockState state = worldObj.getBlockState(getPos());
+			IBlockState state = getWorld().getBlockState(getPos());
 			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
 			
 			return frame != null && orientation == rfcOrientation;
@@ -189,9 +220,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
 		for (EntityItemFrame frame : frames) {
 			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
-			IBlockState state = worldObj.getBlockState(getPos());
+			IBlockState state = getWorld().getBlockState(getPos());
 			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
-			if (frame != null && frame.getDisplayedItem() != ItemStack.field_190927_a && (orientation == rfcOrientation)) {
+			if (frame != null && frame.getDisplayedItem() != ItemStack.EMPTY && (orientation == rfcOrientation)) {
 				if (frame.getDisplayedItem().getItem() == RFCItems.filter)
 				{
 					int rotation = frame.getRotation();
@@ -200,7 +231,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 				return frame.getDisplayedItem();
 			}
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -225,7 +256,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	}
 
 	@Override
-	public UUID getOwner() {
+	public UUID getCabinetOwner() {
 
 		return owner;
 	}
@@ -237,7 +268,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		{
 			this.owner = owner;
 			
-			if (worldObj != null && !worldObj.isRemote) {
+			if (getWorld() != null && !getWorld().isRemote) {
 				
 				markDirty();
 				this.markBlockForUpdate();
@@ -249,14 +280,14 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	@Override
 	public boolean isCabinetLocked() {
 
-		return getOwner() != null;
+		return getCabinetOwner() != null;
 	}
 	
 	public boolean hasKeyCopy(EntityPlayer player, UUID uuid) {
 		
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
 			ItemStack keyCopy = player.inventory.mainInventory.get(i);
-			if (keyCopy == ItemStack.field_190927_a)
+			if (keyCopy == ItemStack.EMPTY)
 				continue;
 			if (keyCopy.getItem() == RFCItems.keys && keyCopy.getItemDamage() == 1) {
 				if (keyCopy.hasTagCompound() && keyCopy.getTagCompound().hasKey(StringLibs.RFC_COPY)) {

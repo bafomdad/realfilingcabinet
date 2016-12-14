@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -44,7 +45,7 @@ public class GuiFileList extends Gui {
 		
 		Profiler profiler = mc.mcProfiler;
 		
-		if (event.getType() == ElementType.ALL && ConfigRFC.magnifyingGlassGui)
+		if (event.getType() == ElementType.ALL)
 		{
 			profiler.startSection("RFC-hud");
 			
@@ -52,17 +53,17 @@ public class GuiFileList extends Gui {
 			int width = scaled.getScaledWidth();
 			int height = scaled.getScaledHeight();
 			
-			EntityPlayer player = mc.thePlayer;
+			EntityPlayer player = mc.player;
 			RayTraceResult mop = mc.objectMouseOver;
 			
 			if (mop != null) {
-				IBlockState state = mop.typeOfHit == RayTraceResult.Type.BLOCK ? mc.theWorld.getBlockState(mop.getBlockPos()) : null;
+				IBlockState state = mop.typeOfHit == RayTraceResult.Type.BLOCK ? mc.world.getBlockState(mop.getBlockPos()) : null;
 				Block block = state == null ? null : state.getBlock();
 				ItemStack magnifyingGlass = player.getHeldItemMainhand();
 				
-				if (block instanceof BlockRFC && magnifyingGlass != null && (magnifyingGlass.getItem() == RFCItems.magnifyingGlass))
+				if (ConfigRFC.magnifyingGlassGui && block instanceof BlockRFC && magnifyingGlass != null && (magnifyingGlass.getItem() == RFCItems.magnifyingGlass))
 				{
-					TileEntity tile = player.worldObj.getTileEntity(mop.getBlockPos());
+					TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
 					if (tile != null && tile instanceof TileEntityRFC)
 					{
 						List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
@@ -72,6 +73,31 @@ public class GuiFileList extends Gui {
 							{
 								GL11.glDisable(GL11.GL_LIGHTING);
 								this.drawCenteredString(mc.fontRendererObj, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
+							}
+						}
+					}
+				}
+				else if (block instanceof BlockRFC && magnifyingGlass == ItemStack.EMPTY && player.isSneaking())
+				{
+					if (mop.sideHit == EnumFacing.DOWN || mop.sideHit == EnumFacing.UP)
+						return;
+					
+					TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
+					if (tile != null && tile instanceof TileEntityRFC)
+					{
+						if (((TileEntityRFC)tile).isOpen)
+						{
+							float yPos = (float)mop.hitVec.yCoord;
+							float y = yPos - (int)yPos;
+							float l = y * 7;
+							ItemStack folder = getFolderHit(l, ((TileEntityRFC)tile).getInventory());
+							if (folder != null && ItemFolder.getObject(folder) != null)
+							{
+								String str = TextHelper.folderStr(folder);
+								long count = ItemFolder.getFileSize(folder);
+								String name = str + " - " + count;
+								GL11.glDisable(GL11.GL_LIGHTING);
+								this.drawCenteredString(mc.fontRendererObj, name, width / 2, height / 2, Integer.parseInt("FFFFFF", 16));
 							}
 						}
 					}
@@ -87,53 +113,36 @@ public class GuiFileList extends Gui {
 		for (int i = 0; i < inv.getSlots(); i++)
 		{
 			ItemStack folder = inv.getTrueStackInSlot(i);
-			if (folder != ItemStack.field_190927_a && folder.getItem() instanceof IFolder)
-			{
-				if (ItemFolder.getObject(folder) instanceof ItemStack)
-				{
-					ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
-					if (stack != null)
-					{
-						long count = ItemFolder.getFileSize(folder);
-						if (folder.getItemDamage() == 2) {
-							if (!crouching)
-								list.add(TextHelper.format(count) + " " + stack.getDisplayName() + " [" + ItemFolder.getRemSize(folder) + " / " + stack.getMaxDamage() + "]");
-							else
-								list.add(count + " " + stack.getDisplayName() + " [" + ItemFolder.getRemSize(folder) + " / " + stack.getMaxDamage() + "]");
-						}
-						else {
-							if (!crouching)
-								list.add(TextHelper.format(count) + " " + stack.getDisplayName());
-							else
-								list.add(count + " " + stack.getDisplayName());
-						}
+			if (folder != ItemStack.EMPTY && folder.getItem() instanceof IFolder) {
+				if (ItemFolder.getObject(folder) != null) {
+					String name = TextHelper.folderStr(folder);
+					long count = ItemFolder.getFileSize(folder);
+					
+					if (!crouching) {
+						if (folder.getItemDamage() == 2)
+							list.add(name + " - " + TextHelper.format(count) + " [" + ItemFolder.getRemSize(folder) + " / " + ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage() + "]");
+						if (folder.getItemDamage() == 4)
+							list.add(name + " - " + count + "mB");
+						else
+							list.add(name + " - " + TextHelper.format(count));
 					}
-				}
-				else if (ItemFolder.getObject(folder) instanceof FluidStack)
-				{
-					String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
-
-					long storedSize = ItemFolder.getFileSize(folder);
-					String name = fluidName + " - " + storedSize + " mB";
-					list.add(name);
-				}
-				else if (ItemFolder.getObject(folder) instanceof String)
-				{
-					if (folder.getItemDamage() == 3)
-					{
-						String str = (String)ItemFolder.getObject(folder);
-						if (!str.isEmpty())
-						{
-							long count = ItemFolder.getFileSize(folder);
-							if (!crouching)
-								list.add(TextHelper.format(count) + " " + str);
-							else
-								list.add(count + " " + str);
-						}
+					else {
+						if (folder.getItemDamage() == 2)
+							list.add(name + " - " + count + " [" + ItemFolder.getRemSize(folder) + " / " + ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage() + "]");
+						if (folder.getItemDamage() == 4)
+							list.add(name + " - " + count + "mB");
+						else
+							list.add(name + " - " + count);
 					}
 				}
 			}
 		}
 		return list;
+	}
+	
+	private ItemStack getFolderHit(float y, InventoryRFC inv) {
+		
+		int slot = Math.round(y);
+		return inv.getTrueStackInSlot(slot);
 	}
 }

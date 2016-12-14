@@ -31,7 +31,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 	
 	public static List<ItemStack> input = new ArrayList();
 	private boolean canSync = false;
-	private ItemStack foldy = ItemStack.field_190927_a;
+	private ItemStack foldy = ItemStack.EMPTY;
 	
 	static
 	{
@@ -53,7 +53,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.field_190927_a)
+				if (stack != ItemStack.EMPTY)
 				{
 					boolean flag = false;
 					Iterator iter = list.iterator();
@@ -85,7 +85,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != ItemStack.field_190927_a)
+			if (stack != ItemStack.EMPTY)
 			{
 				folder = i;
 			}
@@ -125,15 +125,15 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 				}
 			}
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 	
 	@SubscribeEvent
 	public void enderFolderExtract(PlayerEvent.ItemCraftedEvent event) {
 		
-		if (!event.player.worldObj.isRemote && canSync)
+		if (!event.player.getEntityWorld().isRemote && canSync)
 		{
-			if (foldy != ItemStack.field_190927_a)
+			if (foldy != ItemStack.EMPTY)
 			{
 				EnderUtils.syncToTile(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
 			}

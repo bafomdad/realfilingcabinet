@@ -45,6 +45,8 @@ public class RFCRecipes {
 		if (ConfigRFC.fluidUpgrade) {
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 5), new Object[] { "ZBZ", "LFW", "ZBZ", 'Z', Blocks.LAPIS_BLOCK, 'B', Items.BUCKET, 'F', RFCBlocks.blockRFC, 'L', Items.LAVA_BUCKET, 'W', Items.WATER_BUCKET });
 		}
+		if (ConfigRFC.lifeUpgrade)
+			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 6), new Object[] { "EDE", "DFD", "EDE", 'E', Items.EMERALD, 'D', Items.DIAMOND, 'F', RFCBlocks.blockRFC });
 		
 		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
 		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};

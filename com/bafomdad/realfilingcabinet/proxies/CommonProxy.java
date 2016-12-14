@@ -6,10 +6,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.*;
 import com.bafomdad.realfilingcabinet.items.ItemMysteryFolder;
+import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.world.TutorialGenerator;
 
 public class CommonProxy {
@@ -18,6 +20,8 @@ public class CommonProxy {
 		
 		RFCBlocks.init();
 		RFCItems.init();
+		RFCEntities.init();
+//		RFCPacketHandler.init();
 	}
 	
 	public void init(FMLInitializationEvent event) {
@@ -32,6 +36,10 @@ public class CommonProxy {
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 3), StringLibs.TAG_OREDICT);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 4), StringLibs.TAG_MOB);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 5), StringLibs.TAG_FLUID);
+		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 6), StringLibs.TAG_LIFE);
+		
+		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 4), StringLibs.TAG_MOB);
+		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 5), StringLibs.TAG_FLUID);
 		
 		GameRegistry.registerWorldGenerator(new TutorialGenerator(), 1);
 	}

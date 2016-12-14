@@ -4,7 +4,12 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
+
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TextHelper {
 
@@ -37,5 +42,21 @@ public class TextHelper {
 	public static String localize(String str) {
 		
 		return I18n.translateToLocal(str);
+	}
+	
+	public static String folderStr(ItemStack folder) {
+		
+		if (!(folder.getItem() instanceof IFolder))
+			return null;
+		
+		if (ItemFolder.getObject(folder) != null) {
+			if (ItemFolder.getObject(folder) instanceof ItemStack)
+				return ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+			if (ItemFolder.getObject(folder) instanceof FluidStack)
+				return ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
+			else if (ItemFolder.getObject(folder) instanceof String)
+				return (String)ItemFolder.getObject(folder);
+		}
+		return null;
 	}
 }

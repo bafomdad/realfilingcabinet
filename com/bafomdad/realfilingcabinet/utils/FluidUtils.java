@@ -45,7 +45,7 @@ public class FluidUtils {
 			
 			if (liquid != null && (hitblock != liquid || (hitblock == liquid && l != 0)))
 			{
-				if (!player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				
 				world.setBlockState(pos, liquid.getDefaultState(), 3);
@@ -53,7 +53,7 @@ public class FluidUtils {
 			}
 			else if (fluid != null && (hitblock != fluid.getBlock() || (hitblock == fluid.getBlock() && l != 0)))
 			{
-				if (!player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				
 				world.setBlockState(pos, fluid.getBlock().getDefaultState(), 3);
@@ -106,7 +106,7 @@ public class FluidUtils {
 	public static FluidStack getFluidFromFolder(TileEntityRFC tile, int slot) {
 		
 		ItemStack stack = tile.getInventory().getTrueStackInSlot(slot);
-		if (stack != ItemStack.field_190927_a && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 4)
+		if (stack != ItemStack.EMPTY && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 4)
 		{
 			int count = (int)ItemFolder.getFileSize(stack);
 			if (Block.getBlockFromName(ItemFolder.getFileName(stack)) == null)

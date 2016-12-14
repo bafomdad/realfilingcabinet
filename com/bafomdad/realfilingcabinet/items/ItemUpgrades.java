@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemUpgrades extends Item implements IUpgrades {
 	
-	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid" };
+	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid", "life" };
 
 	public ItemUpgrades() {
 		
@@ -64,18 +64,18 @@ public class ItemUpgrades extends Item implements IUpgrades {
 
 		if (upgrade.getItemDamage() == 2) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != ItemStack.field_190927_a)
+				if (stack != ItemStack.EMPTY)
 					break;
 				else {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
+					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
 					return false;
 				}
 			}
 		}
 		if (upgrade.getItemDamage() == 5) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != ItemStack.field_190927_a) {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
+				if (stack != ItemStack.EMPTY) {
+					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
 					return false;
 				}
 			}

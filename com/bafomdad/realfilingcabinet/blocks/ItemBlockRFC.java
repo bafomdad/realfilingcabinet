@@ -43,7 +43,7 @@ public class ItemBlockRFC extends ItemBlock {
 		{
 			NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
 			ItemStack folder = new ItemStack(itemTag);
-			if (folder != ItemStack.field_190927_a && folder.getItem() == RFCItems.folder)
+			if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder)
 			{
 				String name = "";
 				if (ItemFolder.getObject(folder) instanceof ItemStack)

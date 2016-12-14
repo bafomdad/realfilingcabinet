@@ -44,13 +44,13 @@ public abstract class TileFilingCabinet extends TileEntity {
 	
 	public void markBlockForUpdate() {
 		
-		IBlockState state = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, state, state, 3);
+		IBlockState state = getWorld().getBlockState(pos);
+		getWorld().notifyBlockUpdate(pos, state, state, 3);
 	}
 	
 	public void markBlockForRenderUpdate() {
 		
-		worldObj.markBlockRangeForRenderUpdate(pos, pos);
+		getWorld().markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -39,19 +40,19 @@ public class EventHandlerServer {
 		
 		if (event.getEntityPlayer() != null && (event.getTarget() != null && event.getTarget() instanceof EntityItemFrame)) {
 			EntityItemFrame frame = (EntityItemFrame)event.getTarget();
-			if (frame.getDisplayedItem() != ItemStack.field_190927_a && frame.getDisplayedItem().getItem() == RFCItems.filter)
+			if (frame.getDisplayedItem() != ItemStack.EMPTY && frame.getDisplayedItem().getItem() == RFCItems.filter)
 			{
 				int rotation = frame.getRotation() + 1;
 				if (rotation > 7)
 					rotation = 0;
 				
-				TileEntity tile = frame.worldObj.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
+				TileEntity tile = frame.getEntityWorld().getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
 				if (tile != null && tile instanceof TileEntityRFC) {
 					TileEntityRFC tileRFC = (TileEntityRFC)tile;
 					ItemStack stack = tileRFC.getInventory().getStackFromFolder(rotation);
-					if (stack != ItemStack.field_190927_a)
+					if (stack != ItemStack.EMPTY)
 						frame.getDisplayedItem().setStackDisplayName(stack.getDisplayName());
-					else if (stack == ItemStack.field_190927_a && frame.getDisplayedItem().hasDisplayName())
+					else if (stack == ItemStack.EMPTY && frame.getDisplayedItem().hasDisplayName())
 						frame.getDisplayedItem().clearCustomName();
 				}
 			}
@@ -69,7 +70,7 @@ public class EventHandlerServer {
 		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
 		{
 			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
-			if (mainhand != ItemStack.field_190927_a || !tileRFC.isOpen)
+			if (mainhand != ItemStack.EMPTY || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
 				return;
 			
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
@@ -80,9 +81,9 @@ public class EventHandlerServer {
 			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
 			{
 				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-				if (folder != ItemStack.field_190927_a)
+				if (folder != ItemStack.EMPTY)
 				{
-					tileRFC.getInventory().setStackInSlot(i, ItemStack.field_190927_a);
+					tileRFC.getInventory().setStackInSlot(i, ItemStack.EMPTY);
 					event.getEntityPlayer().setHeldItem(EnumHand.MAIN_HAND, folder);
 					tileRFC.markBlockForUpdate();
 					break;
@@ -96,14 +97,14 @@ public class EventHandlerServer {
 		
 		ItemStack estack = event.getItem().getEntityItem();
 		
-		if (estack.func_190916_E() > 0)
+		if (estack.getCount() > 0)
 		{
 			for (int i = 0; i < event.getEntityPlayer().inventory.getSizeInventory(); i++) {
 				if (i == event.getEntityPlayer().inventory.currentItem)
 					continue;
 				
 				ItemStack folder = event.getEntityPlayer().inventory.getStackInSlot(i);
-				if (folder != ItemStack.field_190927_a && folder.getItem() == RFCItems.folder) {
+				if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
 					if (ItemFolder.getObject(folder) instanceof ItemStack)
 					{
 						if (folder.getItemDamage() == 2)
@@ -131,13 +132,13 @@ public class EventHandlerServer {
 							}
 						}
 						ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
-						if (folderStack != ItemStack.field_190927_a && ItemStack.areItemsEqual(folderStack, estack))
+						if (folderStack != ItemStack.EMPTY && ItemStack.areItemsEqual(folderStack, estack))
 						{
 							if (folder.getItemDamage() == 1) {
-								EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.func_190916_E(), false);
+								EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.getCount(), false);
 							}
 							else
-								ItemFolder.add(folder, estack.func_190916_E());
+								ItemFolder.add(folder, estack.getCount());
 							
 							event.setCanceled(true);
 							event.getItem().setDead();
@@ -157,7 +158,7 @@ public class EventHandlerServer {
 		
 		for (int i = 0; i < event.player.inventory.mainInventory.size(); i++) {
 			ItemStack enderFolder = event.player.inventory.getStackInSlot(i);
-			if (enderFolder == ItemStack.field_190927_a)
+			if (enderFolder == ItemStack.EMPTY)
 				continue;
 			
 			if (enderFolder.getItem() == RFCItems.folder && enderFolder.getItemDamage() == 1)
@@ -189,7 +190,7 @@ public class EventHandlerServer {
 		{
 			pool.addEntry(new LootEntryItem(RFCItems.mysteryFolder, 50, 0, new LootFunction[0], new LootCondition[0], RealFilingCabinet.MOD_ID + ":" + RFCItems.mysteryFolder.getUnlocalizedName()));
 		}
-		if (event.getName().equals(LootTableList.field_191192_o))
+		if (event.getName().equals(LootTableList.CHESTS_WOODLAND_MANSION))
 		{
 			pool.addEntry(new LootEntryItem(RFCItems.mysteryFolder, 70, 0, new LootFunction[0], new LootCondition[0], RealFilingCabinet.MOD_ID + ":" + RFCItems.mysteryFolder.getUnlocalizedName()));
 		}

@@ -96,10 +96,10 @@ public class BlockRFC extends Block implements IFilingCabinet {
     	if (!elb.isNonBoss() || elb.isChild())
     		return;
     	
-    	ResourceLocation res = EntityList.func_191301_a(elb);
+    	ResourceLocation res = EntityList.getKey(elb);
     	for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
     		ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-    		if (folder != ItemStack.field_190927_a && folder.getItem() == RFCItems.folder) {
+    		if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
     			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null)
     			{
     				if (ItemFolder.getObject(folder).equals(res.toString())) {
@@ -125,24 +125,24 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing heldItem, float side, float hitX, float hitY) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
     	
 		if (hand == EnumHand.MAIN_HAND)
 		{
 			TileEntity tile = world.getTileEntity(pos);
 	    	if (tile != null && tile instanceof TileEntityRFC)
-	    		rightClick(tile, player);
+	    		rightClick(tile, player, facing, hitX, hitY, hitZ);
 	    	
 	    	return true;
 		}
         return false;
     }
     
-	@Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-    	
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-    }
+//	@Override
+//    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+//    	
+//        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+//    }
 	
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
@@ -188,14 +188,14 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!((TileEntityRFC)tile).upgrades.isEmpty())
 			{
 				ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
-				if (upgrade != ItemStack.field_190927_a && upgrade.func_190916_E() == 0)
-					upgrade.func_190920_e(1);
-				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
+				if (upgrade != ItemStack.EMPTY && upgrade.getCount() == 0)
+					upgrade.setCount(1);
+				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
 			}
 			if (!tag.hasNoTags())
 			{
 				s.setTagCompound(tag);
-				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
+				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
 				return;
 			}
 		}
@@ -217,15 +217,15 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		
 		if (tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 			{
-				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getCabinetOwner()))
 				{
 					return;
 				}
 			}
 		}
-		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != ItemStack.field_190927_a && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
+		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != ItemStack.EMPTY && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
@@ -238,12 +238,12 @@ public class BlockRFC extends Block implements IFilingCabinet {
 
 		else
 		{
-			if (tileRFC.hasItemFrame() && tileRFC.getFilter() != ItemStack.field_190927_a)
+			if (tileRFC.hasItemFrame() && tileRFC.getFilter() != ItemStack.EMPTY)
 			{
 				if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC))
 				{
 					ItemStack stack = tileRFC.getFilter().copy();
-					stack.func_190920_e(AutocraftingUtils.getOutputSize());
+					stack.setCount(AutocraftingUtils.getOutputSize());
 					if (!UpgradeHelper.isCreative(tileRFC))
 						AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());
 					if (!player.inventory.addItemStackToInventory(stack))
@@ -254,15 +254,15 @@ public class BlockRFC extends Block implements IFilingCabinet {
 	}
 
 	@Override
-	public void rightClick(TileEntity tile, EntityPlayer player) {
+	public void rightClick(TileEntity tile, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		ItemStack stack = player.getHeldItemMainhand();
 		
 		if (tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 			{
-				if (!tileRFC.hasKeyCopy(player, tileRFC.getOwner()))
+				if (!tileRFC.hasKeyCopy(player, tileRFC.getCabinetOwner()))
 					return;
 			}
 		}
@@ -270,7 +270,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		{
 			StorageUtils.addAllStacksManually(tileRFC, player);
 		}
-		if (!player.isSneaking() && stack != ItemStack.field_190927_a)
+		if (!player.isSneaking() && stack != ItemStack.EMPTY)
 		{
 			if (stack.getItem() instanceof ItemKeys)
 			{
@@ -279,11 +279,11 @@ public class BlockRFC extends Block implements IFilingCabinet {
 						tileRFC.setOwner(player.getUniqueID());
 				}
 				else {
-					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 0) {
+					if (tileRFC.getCabinetOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 0) {
 						tileRFC.setOwner(null);
 						return;
 					}
-					if (tileRFC.getOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
+					if (tileRFC.getCabinetOwner().equals(player.getUniqueID()) && stack.getItemDamage() == 1) {
 						if (!stack.hasTagCompound() || (stack.hasTagCompound() && !stack.getTagCompound().hasKey(StringLibs.RFC_COPY))) {
 							NBTUtils.setString(stack, StringLibs.RFC_COPY, player.getUniqueID().toString());
 							NBTUtils.setString(stack, StringLibs.RFC_FALLBACK, player.getDisplayNameString());
@@ -296,17 +296,17 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			{
 				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
-					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.field_190927_a);
+					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					return;
 				}
 				if (stack.getItemDamage() == 4 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null)
 				{
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
-						if (tileStack == ItemStack.field_190927_a)
+						if (tileStack == ItemStack.EMPTY)
 						{
 							tileRFC.getInventory().setStackInSlot(i, stack);
-							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.field_190927_a);
+							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 							tileRFC.markBlockForUpdate();
 							break;
 						}
@@ -322,10 +322,10 @@ public class BlockRFC extends Block implements IFilingCabinet {
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
-						if (tileStack == ItemStack.field_190927_a)
+						if (tileStack == ItemStack.EMPTY)
 						{
 							tileRFC.getInventory().setStackInSlot(i, stack);
-							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.field_190927_a);
+							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 							tileRFC.markBlockForUpdate();
 							break;
 						}
@@ -345,7 +345,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				StorageUtils.addStackManually(tileRFC, player, stack);
 			}
 		}
-		if (!player.isSneaking() && stack == ItemStack.field_190927_a)
+		if (!player.isSneaking() && stack == ItemStack.EMPTY)
 		{	
 			if (!tileRFC.getWorld().isRemote)
 			{
@@ -357,24 +357,14 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 			tileRFC.markBlockForUpdate();
 		}
-		if (player.isSneaking() && stack == ItemStack.field_190927_a && tileRFC.isOpen)
+		if (player.isSneaking() && stack == ItemStack.EMPTY && tileRFC.isOpen)
 		{		
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 			{
 				EnderUtils.extractEnderFolder(tileRFC, player);
 				return;
 			}
-			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-				if (folder != ItemStack.field_190927_a)
-				{
-					player.setHeldItem(EnumHand.MAIN_HAND, folder);
-					tileRFC.getInventory().setStackInSlot(i, ItemStack.field_190927_a);
-					tileRFC.markBlockForUpdate();
-					break;
-				}
-			}
+			StorageUtils.folderExtract(tileRFC, player, side, hitX, hitY, hitZ);
 		}
 	}
 	
@@ -414,7 +404,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		
 		TileEntityRFC tileRFC = (TileEntityRFC)world.getTileEntity(pos);
 		if (tileRFC != null && tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getOwner().equals(player.getUniqueID()))
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
 				return -1.0F;
 		}
 		return ForgeHooks.blockStrength(state, player, world, pos);

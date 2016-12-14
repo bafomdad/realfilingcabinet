@@ -49,7 +49,7 @@ public class OreDictUtils {
 	
 	public static boolean areItemsEqual(ItemStack stack1, ItemStack stack2) {
 		
-		if (stack1 == ItemStack.field_190927_a || stack2 == ItemStack.field_190927_a)
+		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY)
 			return false;
 		
 		if (stack1.getItem() == null || stack2.getItem() == null)

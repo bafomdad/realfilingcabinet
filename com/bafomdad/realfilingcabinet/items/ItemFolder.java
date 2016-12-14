@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
@@ -85,7 +86,7 @@ public class ItemFolder extends Item implements IFolder {
 			if (stack.getItemDamage() == 3)
 			{
 				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
-				Entity entity = EntityList.createEntityByIDFromName(res, player.worldObj);
+				Entity entity = EntityList.createEntityByIDFromName(res, player.world);
 				if (entity != null)
 					list.add(count + " " + entity.getName());
 				return;
@@ -247,9 +248,12 @@ public class ItemFolder extends Item implements IFolder {
 				return true;
 			}
 			if (object instanceof EntityLivingBase) {
+				if (object instanceof EntityCabinet)
+					return false;
+				
 				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && !((EntityLivingBase)object).isChild())
 				{
-					ResourceLocation entityName = EntityList.func_191301_a((Entity)object);
+					ResourceLocation entityName = EntityList.getKey((Entity)object);
 					NBTUtils.setString(folder, TAG_FILE_NAME, entityName.toString());
 					add(folder, 1);
 					return true;
@@ -265,16 +269,19 @@ public class ItemFolder extends Item implements IFolder {
 		if (target.isChild() || !target.isNonBoss())
 			return false;
 		
+		if (target instanceof EntityCabinet)
+			return false;
+		
 		ItemStack folder = player.getHeldItemMainhand();
-		if (folder != ItemStack.field_190927_a && folder.getItem() == this)
+		if (folder != ItemStack.EMPTY && folder.getItem() == this)
 		{
 			if (folder.getItemDamage() == 3) {
 				if (getObject(folder) != null) {
-					ResourceLocation res = EntityList.func_191301_a(target);
+					ResourceLocation res = EntityList.getKey(target);
 					if (getObject(folder).equals(res.toString()))
 					{
 						add(folder, 1);
-						MobUtils.dropMobEquips(player.worldObj, target);
+						MobUtils.dropMobEquips(player.world, target);
 						target.setDead();
 					}
 				}
@@ -290,7 +297,7 @@ public class ItemFolder extends Item implements IFolder {
 		ItemStack stack = player.getHeldItemMainhand();
 		ItemStack offstack = player.getHeldItemOffhand();
 		
-		if (offstack != ItemStack.field_190927_a) {
+		if (offstack != ItemStack.EMPTY) {
 			System.out.println(offstack);
 			return EnumActionResult.PASS;
 		}
@@ -341,7 +348,7 @@ public class ItemFolder extends Item implements IFolder {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack != ItemStack.field_190927_a && stack.getItemDamage() != 4)
+		if (stack != ItemStack.EMPTY && stack.getItemDamage() != 4)
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 		
 		RayTraceResult rtr = rayTrace(world, player, true);
@@ -365,7 +372,7 @@ public class ItemFolder extends Item implements IFolder {
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
         
 		if (entityLiving instanceof EntityPlayer && entityLiving.isSneaking()) {
-			if (stack != ItemStack.field_190927_a && stack.getItem() == this) {
+			if (stack != ItemStack.EMPTY && stack.getItem() == this) {
 				if (stack.getItemDamage() == 4)
 				{	
 					NBTTagCompound tag = stack.getTagCompound();
@@ -376,4 +383,10 @@ public class ItemFolder extends Item implements IFolder {
 		}
 		return false;
     }
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
+		
+		return slotchanged;
+	}
 }

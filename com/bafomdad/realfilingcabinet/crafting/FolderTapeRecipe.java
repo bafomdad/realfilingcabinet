@@ -38,7 +38,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.field_190927_a)
+				if (stack != ItemStack.EMPTY)
 				{
 					if (stack.getItem() instanceof IFolder || stack.isItemEnchanted())
 						list.add(stack);
@@ -76,7 +76,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 			
 			ItemStack stack = ic.getStackInSlot(i);
 			
-			if (stack != ItemStack.field_190927_a)
+			if (stack != ItemStack.EMPTY)
 			{
 				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() != 1)
 					folder = i;
@@ -100,7 +100,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 					case 2: return new ItemStack(RFCItems.emptyFolder, 1, 1);
 					case 3: return new ItemStack(RFCItems.emptyFolder, 1, 2);
 					case 4: return new ItemStack(RFCItems.emptyFolder, 1, 3);
-					default: return ItemStack.field_190927_a;
+					default: return ItemStack.EMPTY;
 				}
 			}
 		}
@@ -110,6 +110,6 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 
 			return new ItemStack(stack3.getItem(), 1, stack3.getItemDamage());
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 }

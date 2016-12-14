@@ -11,6 +11,7 @@ public class StringLibs {
 	public static String TAG_MOB = "TAG_mobUpgrade";
 	public static String TAG_DURABILITY = "TAG_durabilityUpgrade";
 	public static String TAG_FLUID = "TAG_fluidUpgrade";
+	public static String TAG_LIFE = "TAG_lifeUpgrade";
 	
 	// ENDER FOLDER
 	public static String RFC_SLOTINDEX = "RFC_slotindex";
@@ -26,4 +27,7 @@ public class StringLibs {
 	// MISC
 	public static String RFC_TAPED = "RFC_whiteoutTaped";
 	public static String RFC_PLACEMODE = "RFC_placeMode";
+	
+	// ENTITY
+	public static String RFC_MOBUPGRADE = "RFC_mobUpgrade";
 }

@@ -51,7 +51,7 @@ public class MobUtils {
 				Entity entity = EntityList.createEntityByIDFromName(res, world);
 				if (entity != null)
 				{
-					if (!player.worldObj.isRemote) {
+					if (!player.world.isRemote) {
 						pos = pos.offset(side);
 						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager))
 						{
@@ -77,13 +77,13 @@ public class MobUtils {
 		
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack toDrop = list.get(i);
-			if (toDrop.func_190916_E() == 0)
+			if (toDrop.getCount() == 0)
 			{
-				toDrop.func_190920_e(1);
+				toDrop.setCount(1);
 				EntityItem ei = new EntityItem(world, entity.posX, entity.posY, entity.posZ, toDrop);
 				
 				if (!world.isRemote)
-					world.spawnEntityInWorld(ei);
+					world.spawnEntity(ei);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public class MobUtils {
     	EntityEquipmentSlot[] slots = new EntityEquipmentSlot[] { EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
     	for (int i = 0; i < slots.length; i++) {
     		ItemStack stack = entity.getItemStackFromSlot(slots[i]);
-    		if (stack != ItemStack.field_190927_a)
+    		if (stack != ItemStack.EMPTY)
     		{
     			invList.add(stack);
     		}

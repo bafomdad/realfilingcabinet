@@ -103,7 +103,7 @@ public class EnderUtils {
 		if (pos.getY() == -1)
 			return null;
 		
-		for (WorldServer world : server.worldServers) {
+		for (WorldServer world : server.worlds) {
 			for (Object obj : world.loadedTileEntityList) {
 				if (obj instanceof TileEntityRFC)
 				{
@@ -123,7 +123,7 @@ public class EnderUtils {
 			int index = playerTag.getInteger(StringLibs.RFC_SLOTINDEX);
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(index);
 			
-			if (folder == ItemStack.field_190927_a) {
+			if (folder == ItemStack.EMPTY) {
 				if (findNextFolder(tile, index) == -1)
 				{
 					folder = tile.getInventory().getTrueStackInSlot(0);
@@ -132,7 +132,7 @@ public class EnderUtils {
 				}
 				index = findNextFolder(tile, index);
 				folder = tile.getInventory().getTrueStackInSlot(index);
-				if (folder == ItemStack.field_190927_a)
+				if (folder == ItemStack.EMPTY)
 					return;
 				
 				playerTag.setInteger(StringLibs.RFC_SLOTINDEX, index);
@@ -145,7 +145,7 @@ public class EnderUtils {
 		{
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
-				if (folder != ItemStack.field_190927_a)
+				if (folder != ItemStack.EMPTY)
 				{
 					ItemStack newFolder = createEnderFolder(tile, player, folder);
 					player.setHeldItem(EnumHand.MAIN_HAND, newFolder);
@@ -160,7 +160,7 @@ public class EnderUtils {
 		int index = 0;
 		for (int i = slot; i < tile.getInventory().getSlots(); i++) {
 			ItemStack stack = tile.getInventory().getStackInSlot(i);
-			if (stack != ItemStack.field_190927_a) {
+			if (stack != ItemStack.EMPTY) {
 				index = i;
 				break;
 			}

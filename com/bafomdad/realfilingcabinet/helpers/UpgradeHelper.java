@@ -100,7 +100,7 @@ public class UpgradeHelper {
 		{
 			tile.upgrades = key;
 			if (!player.capabilities.isCreativeMode)
-				upgrade.func_190918_g(1);
+				upgrade.shrink(1);
 			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == 2)
 				tile.setHash(tile);
 			tile.markDirty();
@@ -118,7 +118,7 @@ public class UpgradeHelper {
 			return;
 
 		ItemStack creative = creativeTest(tile);
-		if (creative != ItemStack.field_190927_a)
+		if (creative != ItemStack.EMPTY)
 		{
 			tile.isCreative = false;
 			if (!player.inventory.addItemStackToInventory(creative))
@@ -127,7 +127,7 @@ public class UpgradeHelper {
 			return;
 		}
 		ItemStack upgrade = stackTest(tile);
-		if (upgrade != ItemStack.field_190927_a)
+		if (upgrade != ItemStack.EMPTY)
 		{
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
 			if (!player.inventory.addItemStackToInventory(newStack))
@@ -153,7 +153,7 @@ public class UpgradeHelper {
 		
 		String str = tile.upgrades;
 		if (str.isEmpty())
-			return ItemStack.field_190927_a;
+			return ItemStack.EMPTY;
 		
 		for (Map.Entry<ItemStack, String> entry : upgrades.entrySet())
 		{
@@ -161,7 +161,7 @@ public class UpgradeHelper {
 			if (value.equals(str))
 				return entry.getKey();
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 	
 	private static ItemStack creativeTest(TileEntityRFC tile) {
@@ -170,6 +170,6 @@ public class UpgradeHelper {
 		if (bool)
 			return new ItemStack(RFCItems.upgrades, 1, 0);
 		
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 }

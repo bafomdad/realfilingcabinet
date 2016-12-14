@@ -72,7 +72,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack != ItemStack.field_190927_a && stack.getItemDamage() != 3)
+		if (stack != ItemStack.EMPTY && stack.getItemDamage() != 3)
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 		
 		RayTraceResult rtr = rayTrace(world, player, true);
@@ -93,7 +93,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 					if (!world.isRemote) {
 						ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 4);
 						if (ItemFolder.setObject(newFolder, block)) {
-							stack.func_190918_g(1);
+							stack.shrink(1);
 							if (!player.inventory.addItemStackToInventory(newFolder))
 								player.dropItem(newFolder, true);
 							world.setBlockToAir(pos);
@@ -109,7 +109,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
-		if (!player.worldObj.isRemote)
+		if (!player.world.isRemote)
 		{
 			if (stack.getItemDamage() == 2)
 			{
@@ -117,8 +117,8 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 				if (ItemFolder.setObject(newFolder, target)) {
 					if (!player.inventory.addItemStackToInventory(newFolder))
 						player.dropItem(newFolder, true);
-					stack.func_190918_g(1);
-					MobUtils.dropMobEquips(player.worldObj, target);
+					stack.shrink(1);
+					MobUtils.dropMobEquips(player.world, target);
 					target.setDead();
 				}
 			}

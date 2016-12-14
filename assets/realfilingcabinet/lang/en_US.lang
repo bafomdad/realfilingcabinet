@@ -20,6 +20,7 @@ item.realfilingcabinet.upgrade_oredict.name=OreDict Upgrade
 item.realfilingcabinet.upgrade_durability.name=Durability Upgrade
 item.realfilingcabinet.upgrade_mob.name=Mob Upgrade
 item.realfilingcabinet.upgrade_fluid.name=Fluid Upgrade
+item.realfilingcabinet.upgrade_life.name=Life Upgrade
 item.realfilingcabinet.filter.name=Filing Cabinet Filter
 item.realfilingcabinet.rfckey_master.name=Master Key
 item.realfilingcabinet.rfckey_copy.name=Key Copy
@@ -28,6 +29,9 @@ item.realfilingcabinet.mysteryfolder.name=Mystery Folder
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet
+
+# ENTITIES
+entity.realfilingcabinet.cabinet.name=Filing Cabinet
 
 # TOOLTIPS
 tooltip.realfilingcabinet.mystery1=It is a mystery.
@@ -46,3 +50,4 @@ tooltip.realfilingcabinet.placemode.off=Place Mode: OFF
 message.realfilingcabinet.errorEnder=This cabinet must have one or more folders in it before applying this upgrade
 message.realfilingcabinet.errorFluid=This cabinet must contain no folders in it before applying this upgrade
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
+message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!
