@@ -7,6 +7,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -28,6 +29,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
@@ -251,6 +253,15 @@ public class ItemFolder extends Item implements IFolder {
 				if (object instanceof EntityCabinet)
 					return false;
 				
+				if (object instanceof IEntityOwnable && ((IEntityOwnable)object).getOwner() != null)
+					return false;
+				
+				String entityblacklist = ((EntityLivingBase)object).getClass().getSimpleName();
+				for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
+					if (toBlacklist.contains(entityblacklist))
+						return false;
+				}
+				
 				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && !((EntityLivingBase)object).isChild())
 				{
 					ResourceLocation entityName = EntityList.getKey((Entity)object);
@@ -271,6 +282,15 @@ public class ItemFolder extends Item implements IFolder {
 		
 		if (target instanceof EntityCabinet)
 			return false;
+		
+		if (target instanceof IEntityOwnable && ((IEntityOwnable)target).getOwner() != null)
+			return false;
+		
+		String entityblacklist = target.getClass().getSimpleName();
+		for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
+			if (toBlacklist.contains(entityblacklist))
+				return false;
+		}
 		
 		ItemStack folder = player.getHeldItemMainhand();
 		if (folder != ItemStack.EMPTY && folder.getItem() == this)
