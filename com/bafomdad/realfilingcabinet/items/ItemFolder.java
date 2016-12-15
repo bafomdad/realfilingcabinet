@@ -293,7 +293,7 @@ public class ItemFolder extends Item implements IFolder {
 		}
 		
 		ItemStack folder = player.getHeldItemMainhand();
-		if (folder != ItemStack.EMPTY && folder.getItem() == this)
+		if (!folder.isEmpty() && folder.getItem() == this)
 		{
 			if (folder.getItemDamage() == 3) {
 				if (getObject(folder) != null) {

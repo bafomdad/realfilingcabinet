@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 import net.minecraft.entity.Entity;
@@ -101,5 +102,28 @@ public class MobUtils {
     		}
     	}
     	return invList;
+	}
+	
+	public static void addOrCreateMobFolder(EntityPlayer player, ItemStack folder, EntityLivingBase target) {
+		
+		if (folder.getItemDamage() == 2) {
+			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
+			if (ItemFolder.setObject(newFolder, target)) {
+				if (!player.inventory.addItemStackToInventory(newFolder))
+					player.dropItem(newFolder, true);
+				folder.shrink(1);
+				target.setDead();
+			}
+		}
+		else if (folder.getItemDamage() == 3) {
+			if (ItemFolder.getObject(folder) != null) {
+				ResourceLocation res = EntityList.getKey(target);
+				if (ItemFolder.getObject(folder).equals(res.toString()))
+				{
+					MobUtils.dropMobEquips(player.world, target);
+					target.setDead();
+				}
+			}
+		}
 	}
 }

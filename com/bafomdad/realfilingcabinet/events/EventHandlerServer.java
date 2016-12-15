@@ -31,6 +31,7 @@ import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class EventHandlerServer {
@@ -50,10 +51,18 @@ public class EventHandlerServer {
 				if (tile != null && tile instanceof TileEntityRFC) {
 					TileEntityRFC tileRFC = (TileEntityRFC)tile;
 					ItemStack stack = tileRFC.getInventory().getStackFromFolder(rotation);
-					if (stack != ItemStack.EMPTY)
+					if (!stack.isEmpty())
 						frame.getDisplayedItem().setStackDisplayName(stack.getDisplayName());
 					else if (stack == ItemStack.EMPTY && frame.getDisplayedItem().hasDisplayName())
 						frame.getDisplayedItem().clearCustomName();
+				}
+			}
+		}
+		if (event.getEntityPlayer() != null && (event.getTarget() != null && event.getTarget() instanceof EntityVillager)) {
+			if (!event.getEntityPlayer().world.isRemote && event.getEntityPlayer().getActiveHand() == EnumHand.MAIN_HAND) {
+				ItemStack folder = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+				if (!folder.isEmpty() && (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.emptyFolder)) {
+					MobUtils.addOrCreateMobFolder(event.getEntityPlayer(), folder, (EntityLivingBase)event.getTarget());
 				}
 			}
 		}
@@ -70,7 +79,7 @@ public class EventHandlerServer {
 		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
 		{
 			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
-			if (mainhand != ItemStack.EMPTY || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
+			if (!mainhand.isEmpty() || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
 				return;
 			
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
@@ -81,7 +90,7 @@ public class EventHandlerServer {
 			for (int i = tileRFC.getInventory().getSlots() - 1; i >= 0; i--)
 			{
 				ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-				if (folder != ItemStack.EMPTY)
+				if (!folder.isEmpty())
 				{
 					tileRFC.getInventory().setStackInSlot(i, ItemStack.EMPTY);
 					event.getEntityPlayer().setHeldItem(EnumHand.MAIN_HAND, folder);
@@ -104,7 +113,7 @@ public class EventHandlerServer {
 					continue;
 				
 				ItemStack folder = event.getEntityPlayer().inventory.getStackInSlot(i);
-				if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
+				if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
 					if (ItemFolder.getObject(folder) instanceof ItemStack)
 					{
 						if (folder.getItemDamage() == 2)
@@ -158,7 +167,7 @@ public class EventHandlerServer {
 		
 		for (int i = 0; i < event.player.inventory.mainInventory.size(); i++) {
 			ItemStack enderFolder = event.player.inventory.getStackInSlot(i);
-			if (enderFolder == ItemStack.EMPTY)
+			if (enderFolder.isEmpty())
 				continue;
 			
 			if (enderFolder.getItem() == RFCItems.folder && enderFolder.getItemDamage() == 1)
