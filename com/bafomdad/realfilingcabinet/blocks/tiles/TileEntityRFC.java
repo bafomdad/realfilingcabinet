@@ -379,7 +379,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	@Override
 	public boolean canRecieveManaFromBursts() {
 
-		return UpgradeHelper.getUpgrade(this, StringLibs.TAG_MANA) != null && getManaFromFolder() != -1 && UpgradeHelper.isCreative(this);
+		return UpgradeHelper.getUpgrade(this, StringLibs.TAG_MANA) != null && getManaFromFolder() != -1 && !UpgradeHelper.isCreative(this);
 	}
 
 	@Override
