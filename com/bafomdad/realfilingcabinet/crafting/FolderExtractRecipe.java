@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -131,6 +132,15 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 	@SubscribeEvent
 	public void enderFolderExtract(PlayerEvent.ItemCraftedEvent event) {
 		
+		if (event.crafting.getItem() instanceof IFolder) {
+			for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
+				ItemStack container = event.craftMatrix.getStackInSlot(i);
+				if (container != null && !(container.getItem() instanceof IFolder))
+				{
+					event.craftMatrix.setInventorySlotContents(i, null);
+				}
+			}
+		}
 		if (!event.player.worldObj.isRemote && canSync)
 		{
 			if (foldy != null)
