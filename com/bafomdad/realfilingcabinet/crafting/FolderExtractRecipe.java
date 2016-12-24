@@ -135,7 +135,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		if (event.crafting.getItem() instanceof IFolder) {
 			for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
 				ItemStack container = event.craftMatrix.getStackInSlot(i);
-				if (container != null && !(container.getItem() instanceof IFolder))
+				if (container != null && !(container.getItem() instanceof IFolder) && container.getItem().hasContainerItem(container))
 				{
 					event.craftMatrix.setInventorySlotContents(i, null);
 				}
