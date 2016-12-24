@@ -26,13 +26,13 @@ sourceSets
 //	}
 }
 
-version = "1.11-1.0.9"
+version = "1.11-1.1.0"
 group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
 minecraft {
     version = "1.11-13.19.0.2156"
-	mappings = "snapshot_20161111"
+	mappings = "snapshot_20161118"
 	makeObfSourceJar = false
 }
 dependencies {

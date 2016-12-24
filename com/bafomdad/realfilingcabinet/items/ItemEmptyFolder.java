@@ -20,6 +20,8 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
@@ -92,11 +94,11 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 				if ((block instanceof BlockLiquid || block instanceof IFluidBlock) && l == 0) {
 					if (!world.isRemote) {
 						ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 4);
-						if (ItemFolder.setObject(newFolder, block)) {
-							stack.shrink(1);
+						if (ItemFolder.setObject(newFolder, block)) {							
 							if (!player.inventory.addItemStackToInventory(newFolder))
 								player.dropItem(newFolder, true);
 							world.setBlockToAir(pos);
+							stack.shrink(1);
 						}
 					}
 					return ActionResult.newResult(EnumActionResult.SUCCESS, stack);

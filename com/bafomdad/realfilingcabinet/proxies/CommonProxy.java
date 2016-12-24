@@ -21,7 +21,7 @@ public class CommonProxy {
 		RFCBlocks.init();
 		RFCItems.init();
 		RFCEntities.init();
-//		RFCPacketHandler.init();
+		RFCPacketHandler.init();
 	}
 	
 	public void init(FMLInitializationEvent event) {
