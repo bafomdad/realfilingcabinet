@@ -66,19 +66,18 @@ public class MobUtils {
 	public static void dropMobEquips(World world, EntityLivingBase entity) {
 		
 		List<ItemStack> list = loopArmor(entity);
+//		System.out.println(list);
 		if (list.isEmpty() || list == null)
 			return;
 		
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack toDrop = list.get(i);
 			if (toDrop.stackSize == 0)
-			{
 				toDrop.stackSize = 1;
-				EntityItem ei = new EntityItem(world, entity.posX, entity.posY, entity.posZ, toDrop);
-				
-				if (!world.isRemote)
-					world.spawnEntityInWorld(ei);
-			}
+			
+			EntityItem ei = new EntityItem(world, entity.posX, entity.posY, entity.posZ, toDrop);
+			if (!world.isRemote)
+				world.spawnEntityInWorld(ei);
 		}
 	}
 
