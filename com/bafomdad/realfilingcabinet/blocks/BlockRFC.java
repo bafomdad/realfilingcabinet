@@ -80,6 +80,15 @@ public class BlockRFC extends Block implements IFilingCabinet {
         
     	addCollisionBoxToList(pos, aabb, collidingBoxes, BASE_AABB);
     }
+    
+    @Override
+    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    	
+    	if (side == EnumFacing.DOWN || side.getIndex() == state.getValue(FACING).getIndex()) {
+    		return false;
+    	}
+    	return true;
+    }
 	
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
     	
