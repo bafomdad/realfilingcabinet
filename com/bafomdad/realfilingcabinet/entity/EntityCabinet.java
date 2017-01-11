@@ -19,6 +19,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -183,6 +186,12 @@ public class EntityCabinet extends EntityTameable {
 		return null;
 	}
 	
+	@Override
+	public int getMaxFallHeight() {
+		
+		return 10;
+	}
+	
 	public InventoryEntity getInventory() {
 		
 		return inventory;
@@ -254,4 +263,14 @@ public class EntityCabinet extends EntityTameable {
 			}
 		}
 	}
+	
+	@Override
+    public float getPathPriority(PathNodeType nodeType) {
+    	
+    	if (nodeType.getPriority() != 0.0F && (nodeType == PathNodeType.LAVA || nodeType == PathNodeType.DANGER_OTHER)) {
+    		
+    		return 0.0F;
+    	}
+    	return super.getPathPriority(nodeType);
+    }
 }
