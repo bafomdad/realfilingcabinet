@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.BlockPos;
@@ -127,6 +128,7 @@ public class EntityAISlurp extends EntityAIBase {
 				{
 					targetFluid = null;
 					cabinet.worldObj.setBlockToAir(targetPos);
+					cabinet.playSound(SoundEvents.ENTITY_GENERIC_DRINK, 0.2F, (float)Math.random() * 0.5F);
 					ItemFolder.add(folderToPut, 1000);
 				}
 			}

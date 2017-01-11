@@ -10,6 +10,7 @@ import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -91,6 +92,7 @@ public class EntityAIHugMob extends EntityAIBase {
 				if (flag)
 				{
 					MobUtils.dropMobEquips(cabinet.worldObj, targetMob);
+					targetMob.playSound(SoundEvents.ENTITY_GENERIC_EAT, 0.2F, 0.5F + (float) Math.random() * 0.5F);
 					targetMob.setDead();
 					cabinet.setYay(false);
 				}

@@ -27,7 +27,7 @@ public class EntityAIMoveBackHome extends EntityAIBase {
 		
 		if (cabinet.worldObj != null) {
 			BlockPos pos = BlockPos.fromLong(cabinet.homePos);
-			if (cabinet.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 5.0D)
+			if ((cabinet.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 5.0D) || (cabinet.isInWater()))
 			{
 				dest = pos;
 				return true;
