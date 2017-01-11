@@ -269,7 +269,12 @@ public class StorageUtils {
 			}
 		}
 		else {
-			float l = hitY * 7;
+			int slotCount = 0;
+			for (int j = 0; j < tile.getInventory().getSlots(); j++) {
+				if (tile.getInventory().getTrueStackInSlot(j) != null)
+					slotCount++;
+			}
+			float l = hitY * (Math.max(slotCount - 1, 0));
 			int slot = Math.round(l);
 			
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
