@@ -1,6 +1,7 @@
 package com.bafomdad.realfilingcabinet.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,8 +78,10 @@ public class AutocraftingUtils {
 		{
 			if (getRecipeItems(recipe) != null) {
 				ItemStack[] recipeList = getRecipeItems(recipe);
+//				System.out.println(Arrays.asList(recipeList).toString() + " / " + recipe.getRecipeOutput());
 				for (int i = 0; i < recipeList.length; i++) {
 					ItemStack ingredient = recipeList[i];
+//					System.out.println(ingredient.getDisplayName());
 					if (ingredient != null && ingredient.stackSize > 1)
 						ingredient.stackSize = 1;
 					if (ingredient != null && (ingredient.getItemDamage() == -1 || ingredient.getItemDamage() == Short.MAX_VALUE))
@@ -116,7 +119,7 @@ public class AutocraftingUtils {
 			if (folder != null && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) instanceof ItemStack)
 				{
-					if (ItemFolder.getObject(folder) != null && stack.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
+					if (ItemFolder.getObject(folder) != null && (stack.isItemEqual((ItemStack)ItemFolder.getObject(folder)))) {
 						if (ItemFolder.getFileSize(folder) > 0)
 						{
 							boolean consume = true;
@@ -180,7 +183,8 @@ public class AutocraftingUtils {
 	
 	public static ItemStack[] getRecipeItemsOre(ShapedOreRecipe shaped) {
 		
-		try {
+		try 
+		{
 			Object[] objects = ObfuscationReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shaped, 3);
 			ItemStack[] items = new ItemStack[objects.length];
 			
@@ -200,6 +204,7 @@ public class AutocraftingUtils {
 					while (itr.hasNext())
 					{
 						items[i] = itr.next();
+						break;
 					}
 				}
 			}

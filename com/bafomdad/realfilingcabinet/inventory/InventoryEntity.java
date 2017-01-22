@@ -12,6 +12,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.DurabilityUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
@@ -37,7 +38,28 @@ public class InventoryEntity extends ItemStackHandler {
         {
         	slot = simpleFolderMatch(stack);
         	if (!simulate) {
-        		ItemFolder.add(stacks[slot], stack.stackSize);
+        		if (stacks[slot].getItemDamage() == 2)
+        		{
+					int remSize = stack.getItemDamage();
+					int storedRem = ItemFolder.getRemSize(stacks[slot]);
+					
+					if (remSize == 0)
+					{
+						ItemFolder.add(stacks[slot], 1);
+					}
+					
+					ItemFolder.addRem(stacks[slot], stack.getMaxDamage() - stack.getItemDamage());
+					int newRem = ItemFolder.getRemSize(stacks[slot]);
+					
+					if (newRem >= stack.getMaxDamage())
+					{
+						ItemFolder.add(stacks[slot], 1);
+						int newStoredRem = newRem - stack.getMaxDamage();
+						ItemFolder.setRemSize(stacks[slot], newStoredRem);
+					}
+        		}
+        		else
+        			ItemFolder.add(stacks[slot], stack.stackSize);
         	}
         	return null;
         }
@@ -113,6 +135,8 @@ public class InventoryEntity extends ItemStackHandler {
 		
 		for (int i = 0; i < getSlots(); i++) {
 			ItemStack loopinv = getStackFromFolder(i);
+			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 2 && stack.getItem() == loopinv.getItem()))
+				return i;
 			if (loopinv != null && StorageUtils.simpleMatch(stack, loopinv))
 				return i;
 		}

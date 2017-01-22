@@ -51,6 +51,7 @@ public class EntityCabinet extends EntityTameable {
 	private static final DataParameter<Boolean> YAY = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> STATE = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.VARINT);
 	private int variant = 0;
+	private boolean isRealEntity = false;
 	public String upgrades = "";
 	public long homePos;
 	
@@ -117,6 +118,10 @@ public class EntityCabinet extends EntityTameable {
 		if (this.isEntityInvulnerable(source))
 			return false;
 		
+		if (!this.worldObj.isRemote && !this.isLegit()) {
+			this.setDead();
+			return false;
+		}
 		if (!upgrades.isEmpty()) {
 			if (source.getEntity() instanceof EntityPlayer)
 				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getEntity(), this);
@@ -154,6 +159,7 @@ public class EntityCabinet extends EntityTameable {
                 this.inventory.setStackInSlot(i, itemstack.copy());
             }
         }
+        isRealEntity = tag.getBoolean("legitEntity");
         upgrades = tag.getString(StringLibs.RFC_MOBUPGRADE);
         homePos = tag.getLong("homePos");
         this.setTextureState(tag.getInteger("varTex"));
@@ -175,6 +181,7 @@ public class EntityCabinet extends EntityTameable {
             }
         }
         tag.setTag("Inventory", tagList);
+        tag.setBoolean("legitEntity", isRealEntity);
         tag.setString(StringLibs.RFC_MOBUPGRADE, upgrades);
         tag.setLong("homePos", homePos);
         tag.setInteger("varTex", this.getTextureState());
@@ -228,6 +235,16 @@ public class EntityCabinet extends EntityTameable {
 	public int getTextureState() {
 		
 		return (Integer)this.dataManager.get(STATE).intValue();
+	}
+	
+	public boolean isLegit() {
+		
+		return this.isRealEntity;
+	}
+	
+	public void setLegit() {
+		
+		this.isRealEntity = true;
 	}
 	
 	private void setTile(DamageSource source) {

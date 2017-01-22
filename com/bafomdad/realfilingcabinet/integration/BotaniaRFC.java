@@ -4,23 +4,12 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
-
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
-import com.bafomdad.realfilingcabinet.items.ItemManaFolder;
-import com.bafomdad.realfilingcabinet.items.ItemManaUpgrade;
 
 public class BotaniaRFC {
 	
 	private static final NavigableMap<Integer, String> manaSuffixes = new TreeMap();
-	
-	public static ItemManaFolder manaFolder;
-	public static ItemManaUpgrade manaUpgrade;
 	
 	static {
 		
@@ -38,20 +27,6 @@ public class BotaniaRFC {
 		manaSuffixes.put(10000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
 		manaSuffixes.put(100000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
 		manaSuffixes.put(1000000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
-	}
-
-	public static void register() {
-		
-		manaFolder = new ItemManaFolder();
-		manaUpgrade = new ItemManaUpgrade();
-	}
-	
-	public static void registerModels() {
-		
-		ModelLoader.setCustomModelResourceLocation(manaFolder, 0, new ModelResourceLocation(manaFolder.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(manaUpgrade, 0, new ModelResourceLocation(manaUpgrade.getRegistryName(), "inventory"));
-		
-		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/manacabinet.png"), StringLibs.TAG_MANA);
 	}
 	
 	public static String formatMana(int value) {

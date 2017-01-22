@@ -59,7 +59,7 @@ public class ItemBlockRFC extends ItemBlock {
 				long count = ItemFolder.getFileSize(folder);
 				list.add(TextHelper.format(count) + " " + name);
 			}
-			else if (folder != null && folder.getItem() == BotaniaRFC.manaFolder)
+			else if (folder != null && folder.getItem() == RFCItems.manaFolder)
 			{
 				list.add("Mana Folder");
 			}

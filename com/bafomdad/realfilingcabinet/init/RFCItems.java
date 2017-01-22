@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.init;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.items.*;
@@ -23,6 +24,10 @@ public class RFCItems {
 	public static ItemDebugger debugger;
 	public static ItemMysteryFolder mysteryFolder;
 	
+	// Botania integration
+	public static ItemManaFolder manaFolder;
+	public static ItemManaUpgrade manaUpgrade;
+	
 	public static void init() {
 		
 		emptyFolder = new ItemEmptyFolder();
@@ -34,6 +39,11 @@ public class RFCItems {
 		keys = new ItemKeys();
 		debugger = new ItemDebugger();
 		mysteryFolder = new ItemMysteryFolder();
+		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
+			manaFolder = new ItemManaFolder();
+			manaUpgrade = new ItemManaUpgrade();
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -57,5 +67,10 @@ public class RFCItems {
 		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(mysteryFolder, 0, new ModelResourceLocation(mysteryFolder.getRegistryName(), "inventory"));
+		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
+			ModelLoader.setCustomModelResourceLocation(manaFolder, 0, new ModelResourceLocation(manaFolder.getRegistryName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(manaUpgrade, 0, new ModelResourceLocation(manaUpgrade.getRegistryName(), "inventory"));
+		}
 	}
 }

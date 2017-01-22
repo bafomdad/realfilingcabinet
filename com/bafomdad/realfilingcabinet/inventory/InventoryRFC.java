@@ -62,17 +62,42 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		LogRFC.debug("Extraction slot: " + slot + " / Extraction amount: " + amount + " / " + simulate);
 		
+//		if (tile.snapshot != null) 
+//		{	
+//			if (!simulate)
+//				tile.snapshotcount -= amount;
+//			if (tile.snapshotcount <= 0) {
+//				ItemStack temp = tile.snapshot.copy();
+//				if (!UpgradeHelper.isCreative(tile))
+//					AutocraftingUtils.doCraft(tile.snapshot, tile.getInventory());
+//				tile.clearSnapshot();
+//				return temp;
+//			}
+//			return tile.snapshot;
+//		}
 		if (ItemFolder.getObject(stacks[slot]) instanceof ItemStack)
 		{
 			ItemStack stackFolder = this.getStackFromFolder(slot);
 			if (stackFolder == null || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
 				return null;
 			
-			if (tile.hasItemFrame() && tile.getFilter() == null)
-				return null;
-			
+//			if (tile.hasItemFrame() && tile.getFilter() == null) {
+//				tile.clearSnapshot();
+//				return null;
+//			}
 			if (tile.getFilter() != null)
 			{
+//				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null) {
+//					ItemStack toCraft = tile.getFilter().copy();
+//					if (toCraft.isItemDamaged())
+//						toCraft.setItemDamage(0);
+//					if (AutocraftingUtils.canCraft(toCraft, tile))
+//					{
+//						tile.snapshot = toCraft;
+//						tile.snapshotcount = AutocraftingUtils.getOutputSize();
+//						return tile.snapshot;
+//					}
+//				}
 				int i = StorageUtils.simpleFolderMatch(tile, tile.getFilter());
 				if (i != -1 && slot == i)
 				{
@@ -131,6 +156,14 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		validateSlotIndex(slot);
 		
+//		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null) {
+//			if (tile.snapshot != null)
+//				return tile.snapshot;
+//			
+//			if (tile.getFilter() != null) {
+//				return tile.getFilter().copy();
+//			}
+//		}
 		if ((stacks[slot] != null && !(stacks[slot].getItem() instanceof IFolder)) || slot == 8)
 			return null;
 		

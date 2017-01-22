@@ -45,7 +45,7 @@ public class OreDictUtils {
 		return oreDictMatches != null;
 	}
 	
-	public static boolean areItemsEqual(ItemStack stack1, ItemStack stack2) {
+	public static boolean areItemsEqual(ItemStack stack1, ItemStack stack2, boolean ignoreWhitelist) {
 		
 		if (stack1 == null || stack2 == null)
 			return false;
@@ -53,14 +53,13 @@ public class OreDictUtils {
 		if (stack1.getItem() == null || stack2.getItem() == null)
 			return false;
 		
-		if (!stack1.isItemEqual(stack2) || (stack1.isItemEqual(stack2) && stack1.getItemDamage() != stack2.getItemDamage()))
+		if (!stack1.isItemEqual(stack2) /*|| (stack1.isItemEqual(stack2) && stack1.getItemDamage() != stack2.getItemDamage())*/)
 		{
 			if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
 				return false;
 			}
-			
-//			if (stack1.getItem() == stack2.getItem())
-//				return false;
+			if (stack1.getItem() == stack2.getItem())
+				return false;
 			
 			int[] ids1 = OreDictionary.getOreIDs(stack1);
 			int[] ids2 = OreDictionary.getOreIDs(stack2);
@@ -74,7 +73,8 @@ public class OreDictUtils {
 						continue;
 					
 					String name = OreDictionary.getOreName(id1);
-					if (isEntryValid(name)) {
+					if (isEntryValid(name, ignoreWhitelist)) {
+//						System.out.println(name + " / " + id1 + " / " + stack1);
 						oreMatch = true;
 						break;
 					}
@@ -88,12 +88,12 @@ public class OreDictUtils {
 		return ItemStack.areItemStackTagsEqual(stack1, stack2);
 	}
 	
-	private static boolean isEntryValid(String name) {
+	private static boolean isEntryValid(String name, boolean ignoreWhitelist) {
 		
 		if (OreDictRegistry.instance().getWhitelist().contains(name))
 			return true;
 		
-		return true;
+		return ignoreWhitelist;
 	}
 	
 	public static class OreDictRegistry {
@@ -102,7 +102,7 @@ public class OreDictUtils {
 		
 		private Set<String> whitelist = new HashSet<String>();
 		
-		public void init() {
+		public OreDictRegistry() {
 			
 			for (String item : new String[] { "oreIron", "oreGold", "oreAluminum", "oreAluminium", "oreTin", "oreCopper", "oreLead", "oreSilver", "orePlatinum", "oreNickel" })
 				addWhitelist(item);
@@ -115,6 +115,12 @@ public class OreDictUtils {
 
 	        for (String item : new String[] { "nuggetIron", "nuggetGold", "nuggetAluminum", "nuggetAluminium", "nuggetTin", "nuggetCopper", "nuggetLead", "nuggetSilver", "nuggetPlatinum", "nuggetNickel" })
 	            addWhitelist(item);
+	        
+	        for (String item : new String[] { "logWood", "plankWood", "slabWood", "stairWood", "stickWood", "treeSapling", "treeLeaves", "vine" })
+	        	addWhitelist(item);
+	        
+	        for (String item : new String[] { "dye", "paneGlass", "paneGlassColorless", "chest", "chestWood", "chestTrapped" })
+	        	addWhitelist(item);
 		}
 		
 		public static OreDictRegistry instance() {

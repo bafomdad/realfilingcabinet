@@ -30,12 +30,12 @@ public class ClientProxy extends CommonProxy {
 //		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetMobTexture.png"), StringLibs.TAG_MOB);
 //		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetFluidTexture.png"), StringLibs.TAG_FLUID);
 		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
+			ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/manacabinet.png"), StringLibs.TAG_MANA);
+		
 		RFCBlocks.initModels();
 		RFCItems.initModels();
 		RFCEntities.initModels();
-		
-		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
-			BotaniaRFC.registerModels();
 	}
 	
 	@Override

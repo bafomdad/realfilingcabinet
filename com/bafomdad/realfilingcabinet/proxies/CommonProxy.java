@@ -6,10 +6,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.*;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.items.ItemMysteryFolder;
 import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.world.TutorialGenerator;
@@ -21,7 +24,6 @@ public class CommonProxy {
 		RFCBlocks.init();
 		RFCItems.init();
 		RFCEntities.init();
-		RFCIntegration.preInit();
 //		RFCPacketHandler.init();
 	}
 	
@@ -41,6 +43,9 @@ public class CommonProxy {
 		
 		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 4), StringLibs.TAG_MOB);
 		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 5), StringLibs.TAG_FLUID);
+		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
+			UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.manaUpgrade, 1, 0), StringLibs.TAG_MANA);
 		
 		GameRegistry.registerWorldGenerator(new TutorialGenerator(), 1);
 	}

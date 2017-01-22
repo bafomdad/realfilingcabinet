@@ -5,7 +5,9 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +16,7 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
@@ -45,15 +48,35 @@ public class MobUtils {
 				Entity entity = EntityList.createEntityByIDFromName(entityName, world);
 				if (entity != null)
 				{
+					boolean spawn = false;
 					if (!player.worldObj.isRemote) {
 						pos = pos.offset(side);
 						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager))
 						{
-							EntityVillager villager = (EntityVillager)ItemMonsterPlacer.spawnCreature(world, entityName, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
-							villager.setProfession(0);
+		                    EntityVillager entityliving = (EntityVillager)entity;
+		                    entity.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+		                    entityliving.rotationYawHead = entityliving.rotationYaw;
+		                    entityliving.renderYawOffset = entityliving.rotationYaw;
+		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
+							entityliving.setProfession(0);
+		                    world.spawnEntityInWorld(entity);
+		                    entityliving.playLivingSound();
+		                    
+		                    spawn = true;
 						}
-						else
-							ItemMonsterPlacer.spawnCreature(world, entityName, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
+						else {
+							EntityLiving entityliving = (EntityLiving)entity;
+		                    entity.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+		                    entityliving.rotationYawHead = entityliving.rotationYaw;
+		                    entityliving.renderYawOffset = entityliving.rotationYaw;
+		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
+		                    world.spawnEntityInWorld(entity);
+		                    entityliving.playLivingSound();
+		                    
+		                    spawn = true;
+						}
+					}
+					if (spawn) {
 						if (!player.capabilities.isCreativeMode)
 							ItemFolder.remove(stack, 1);
 					}

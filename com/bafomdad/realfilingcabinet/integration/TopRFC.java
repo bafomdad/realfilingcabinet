@@ -22,6 +22,7 @@ import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -131,8 +132,12 @@ public class TopRFC {
 						if (!mobName.isEmpty())
 						{
 							long storedSize = ItemFolder.getFileSize(folder);
-							String name = mobName + " - " + storedSize;
-							info.horizontal().text(name);
+							String name = ItemFolder.getFileName(folder);
+							Entity entity = EntityList.createEntityByIDFromName(name, tile.getWorld());
+							if (entity != null)
+								info.horizontal().text(entity.getName() + " - " + storedSize);
+							else
+								info.horizontal().text(name + " - " + storedSize);
 						}
 					}
 				}
@@ -188,8 +193,15 @@ public class TopRFC {
 					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof ItemStack) {
 						String name = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
 						long storedSize = ItemFolder.getFileSize(folder);
+						String storage = "" + storedSize;
 						
-						info.horizontal().text(name + " - " + storedSize);
+						if (folder.getItemDamage() == 2)
+						{
+							int storedRem = ItemFolder.getRemSize(folder);
+							int maxDamage = ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage();
+							storage = storedSize + " [" + storedRem + " / " + maxDamage + "]"; 
+						}
+						info.horizontal().text(name + " - " + storage);
 					}
 					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof FluidStack) {
 						String name = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
@@ -198,10 +210,20 @@ public class TopRFC {
 						info.horizontal().text(name + " - " + storedSize);
 					}
 					if (ItemFolder.getObject(folder) != null && ItemFolder.getObject(folder) instanceof String) {
-						String mobName = (String)ItemFolder.getObject(folder);
-						long storedSize = ItemFolder.getFileSize(folder);
-						
-						info.horizontal().text(mobName + " - " + storedSize);
+						if (folder.getItemDamage() == 3)
+						{
+							String mobName = (String)ItemFolder.getObject(folder);
+							if (!mobName.isEmpty())
+							{
+								long storedSize = ItemFolder.getFileSize(folder);
+								String name = ItemFolder.getFileName(folder);
+								Entity entity = EntityList.createEntityByIDFromName(name, cabinet.worldObj);
+								if (entity != null)
+									info.horizontal().text(entity.getName() + " - " + storedSize);
+								else
+									info.horizontal().text(name + " - " + storedSize);
+							}
+						}
 					}
 				}
 			}

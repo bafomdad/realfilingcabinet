@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,7 +101,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
     		return;
     	
     	EntityLivingBase elb = (EntityLivingBase)entity;
-    	if (!elb.isNonBoss() || elb.isChild())
+    	if (!elb.isNonBoss() || (elb.isChild() && !(elb instanceof EntityZombie)))
     		return;
     	
     	String entityName = EntityList.getEntityString(elb);
@@ -235,9 +236,13 @@ public class BlockRFC extends Block implements IFilingCabinet {
 
 		else
 		{
-			if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC))
+			ItemStack toCraft = tileRFC.getFilter().copy();
+			if (toCraft != null && toCraft.isItemDamaged())
+				toCraft.setItemDamage(0);
+			
+			if (AutocraftingUtils.canCraft(toCraft, tileRFC))
 			{
-				ItemStack stack = tileRFC.getFilter();
+				ItemStack stack = toCraft;
 				stack.stackSize = AutocraftingUtils.getOutputSize();
 				if (!UpgradeHelper.isCreative(tileRFC))
 					AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());

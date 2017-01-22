@@ -7,6 +7,8 @@ import java.util.TreeMap;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -58,8 +60,14 @@ public class TextHelper {
 				return ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
 			if (ItemFolder.getObject(folder) instanceof FluidStack)
 				return ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
-			else if (ItemFolder.getObject(folder) instanceof String)
+			else if (ItemFolder.getObject(folder) instanceof String) {
+				if (folder.getItemDamage() == 3) {
+					Entity entity = EntityList.createEntityByIDFromName(ItemFolder.getFileName(folder), null);
+					if (entity != null)
+						return entity.getName();
+				}
 				return (String)ItemFolder.getObject(folder);
+			}
 		}
 		return null;
 	}

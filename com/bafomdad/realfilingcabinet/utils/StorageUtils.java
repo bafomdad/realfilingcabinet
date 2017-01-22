@@ -1,5 +1,7 @@
 package com.bafomdad.realfilingcabinet.utils;
 
+import java.util.Arrays;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -31,7 +33,7 @@ public class StorageUtils {
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict())
 				{
-					if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv)) {
+					if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv, true)) {
 						return i;
 					}
 				}
@@ -66,7 +68,7 @@ public class StorageUtils {
 			{
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict()) {
-					if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv))
+					if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv, true))
 					{
 						ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.stackSize);
 						player.setHeldItem(EnumHand.MAIN_HAND, null);
@@ -182,7 +184,7 @@ public class StorageUtils {
 				{
 					OreDictUtils.recreateOreDictionary(stack);
 					if (OreDictUtils.hasOreDict()) {
-						if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv))
+						if (loopinv != null && OreDictUtils.areItemsEqual(stack, loopinv, true))
 						{
 							ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 							long count = ItemFolder.getFileSize(folder);

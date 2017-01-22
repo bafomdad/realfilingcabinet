@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -35,6 +36,7 @@ import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
@@ -195,7 +197,7 @@ public class ItemFolder extends Item implements IFolder {
 		if (folder == null)
 			return null;
 		
-		if (folder.getItem() == BotaniaRFC.manaFolder) {
+		if (folder.getItem() == RFCItems.manaFolder) {
 			return folder.getDisplayName();
 		}
 		if (folder.getItemDamage() == 3) {
@@ -272,7 +274,7 @@ public class ItemFolder extends Item implements IFolder {
 					if (toBlacklist.contains(entityblacklist))
 						return false;
 				}
-				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && !((EntityLivingBase)object).isChild())
+				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild()))
 				{
 					String entityName = EntityList.getEntityString((EntityLivingBase)object);
 					NBTUtils.setString(folder, TAG_FILE_NAME, entityName);
@@ -287,7 +289,7 @@ public class ItemFolder extends Item implements IFolder {
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
-		if (target.isChild())
+		if (target.isChild() && !(target instanceof EntityZombie))
 			return false;
 		
 		if (target instanceof EntityCabinet)

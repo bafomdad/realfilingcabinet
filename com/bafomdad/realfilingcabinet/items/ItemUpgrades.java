@@ -8,6 +8,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -77,17 +78,17 @@ public class ItemUpgrades extends Item implements IUpgrades {
 				}
 			}
 		}
-		if (upgrade.getItemDamage() == 5) {
-			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != null) {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
-					return false;
-				}
-			}
-		}
+//		if (upgrade.getItemDamage() == 5) {
+//			for (ItemStack stack : tile.getInventory().getStacks()) {
+//				if (stack != null) {
+//					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
+//					return false;
+//				}
+//			}
+//		}
 		if (upgrade.getItemDamage() == 6) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != null && stack.getItem() == BotaniaRFC.manaFolder) {
+				if (stack != null && stack.getItem() == RFCItems.manaFolder) {
 					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
 					return false;
 				}

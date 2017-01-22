@@ -60,6 +60,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	
 	// NBT variables
 	private int rfcHash = -1;
+//	public int snapshotcount = 0;
+//	public ItemStack snapshot = null;
 	public boolean isCreative = false;
 	public String upgrades = "";
 	
@@ -103,9 +105,11 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 					cabinet.setOwnerId(uuid);
 				}
 				else
-				{
 					cabinet.homePos = getPos().toLong();
-				}
+				
+				if (!cabinet.isLegit())
+					cabinet.setLegit();
+				
 				worldObj.spawnEntityInWorld(cabinet);
 			}
 			worldObj.setBlockToAir(getPos());
@@ -141,6 +145,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			tag.setInteger(StringLibs.RFC_HASH, rfcHash);
 		
 		tag.setString(StringLibs.RFC_UPGRADE, upgrades);
+		
+//		if (snapshot != null && snapshotcount > 0) {
+//			tag.setInteger("RFC_snapshotcount", this.snapshotcount);
+//		}
 	}
 	
 	@Override
@@ -156,6 +164,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		if (tag.hasKey(StringLibs.RFC_HASH))
 			rfcHash = tag.getInteger(StringLibs.RFC_HASH);
 		upgrades = tag.getString(StringLibs.RFC_UPGRADE);
+		
+//		if (snapshot != null && snapshotcount > 0) {
+//			snapshotcount = tag.getInteger("RFC_snapshotcount");
+//		}
 	}
 	
 	public void readInv(NBTTagCompound nbt) {
@@ -320,7 +332,21 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		return this.rfcHash;
 	}
-
+	
+//	public void clearSnapshot() {
+//		
+//		this.snapshot = null;
+//		this.snapshotcount = 0;
+//	}
+//	
+//	public boolean isSnapshotSame(ItemStack input) {
+//		
+//		if (input == null || snapshot == null)
+//			return false;
+//		
+//		return input.getItem() == snapshot.getItem() && input.getItemDamage() == snapshot.getItemDamage();
+//	}
+	
 	// BOTANIA IMPLEMENTATION
 	long MAX_MANA_INTERNAL = ItemManaFolder.getMaxManaFolder() * 8;
 	int MAX_VANILLA_MANA_POOL = 1000000;
