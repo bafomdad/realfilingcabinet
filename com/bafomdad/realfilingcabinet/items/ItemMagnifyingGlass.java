@@ -38,13 +38,11 @@ public class ItemMagnifyingGlass extends Item {
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         
     	Block block = world.getBlockState(pos).getBlock();
-    	if (player.isSneaking() && block == RFCBlocks.blockRFC)
-    	{
+    	if (player.isSneaking() && block == RFCBlocks.blockRFC) {
     		if (!world.isRemote)
-    		{
-        		world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()));
-        		return EnumActionResult.SUCCESS;
-    		}
+        		world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()), 2);
+
+    		return EnumActionResult.SUCCESS;
     	}
     	return EnumActionResult.PASS;
     }

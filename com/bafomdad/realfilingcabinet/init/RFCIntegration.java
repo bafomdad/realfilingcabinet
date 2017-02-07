@@ -11,5 +11,7 @@ public class RFCIntegration {
 		
 		if (RealFilingCabinet.topLoaded)
 			TopRFC.register();
+		if (RealFilingCabinet.enderioLoaded)
+			EnderIORFC.register();
 	}
 }

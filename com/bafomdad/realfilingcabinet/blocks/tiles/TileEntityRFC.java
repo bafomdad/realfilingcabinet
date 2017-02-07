@@ -90,9 +90,11 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 					cabinet.setOwnerId(uuid);
 				}
 				else
-				{
 					cabinet.homePos = getPos().toLong();
-				}
+				
+				if (!cabinet.isLegit())
+					cabinet.setLegit();
+				
 				world.spawnEntity(cabinet);
 			}
 			world.setBlockToAir(getPos());

@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -30,7 +31,14 @@ public class FluidRFC implements IFluidHandler {
 	@Override
 	public IFluidTankProperties[] getTankProperties() {
 		
-		return null;
+		FluidTankProperties[] props = new FluidTankProperties[8];
+		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
+			if (!folder.isEmpty() && folder.getItemDamage() == 4 && ItemFolder.getObject(folder) instanceof FluidStack) {
+				props[i] = new FluidTankProperties(((FluidStack)ItemFolder.getObject(folder)), Math.max(Integer.MAX_VALUE - 1, (int)ItemFolder.getFileSize(folder)));
+			}
+		}
+		return props;
 	}
 
 	@Override

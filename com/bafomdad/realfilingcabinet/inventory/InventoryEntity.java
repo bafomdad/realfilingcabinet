@@ -38,7 +38,26 @@ public class InventoryEntity extends ItemStackHandler {
         {
         	slot = simpleFolderMatch(stack);
         	if (!simulate) {
-        		ItemFolder.add(stacks.get(slot), stack.getCount());
+        		if (getStacks().get(slot).getItemDamage() == 2)
+        		{
+        			int remSize = stack.getItemDamage();
+        			int storedRem = ItemFolder.getRemSize(getStacks().get(slot));
+        			
+        			if (remSize == 0)
+        				ItemFolder.add(getStacks().get(slot), 1);
+        			
+        			ItemFolder.addRem(getStacks().get(slot), stack.getMaxDamage() - stack.getItemDamage());
+        			int newRem = ItemFolder.getRemSize(getStacks().get(slot));
+        			
+        			if (newRem >= stack.getMaxDamage())
+        			{
+        				ItemFolder.add(getStacks().get(slot), 1);
+        				int newStoredRem = newRem - stack.getMaxDamage();
+        				ItemFolder.setRemSize(getStacks().get(slot), newStoredRem);
+        			}
+        		}
+        		else
+        			ItemFolder.add(stacks.get(slot), stack.getCount());
         	}
         	return null;
         }
@@ -114,6 +133,8 @@ public class InventoryEntity extends ItemStackHandler {
 		
 		for (int i = 0; i < getSlots(); i++) {
 			ItemStack loopinv = getStackFromFolder(i);
+			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 2 && stack.getItem() == loopinv.getItem()))
+				return i;
 			if (loopinv != null && StorageUtils.simpleMatch(stack, loopinv))
 				return i;
 		}

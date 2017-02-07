@@ -4,10 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -16,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -45,6 +49,14 @@ public class FluidUtils {
 			
 			if (liquid != null && (hitblock != liquid || (hitblock == liquid && l != 0)))
 			{
+				if (liquid == Blocks.WATER && world.provider.doesWaterVaporize() && !ConfigRFC.waterNether) {
+					world.playSound(player, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+					for (int k = 0; k < 8; ++k)
+						world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, (double)pos.getX() + Math.random(), (double)pos.getY() + Math.random(), (double)pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
+					if (!player.world.isRemote && !player.capabilities.isCreativeMode)
+						ItemFolder.remove(stack, 1000);
+					return true;
+				}
 				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				

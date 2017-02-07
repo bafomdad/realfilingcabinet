@@ -7,8 +7,8 @@ import java.util.TreeMap;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextHelper {
@@ -41,7 +41,7 @@ public class TextHelper {
 	
 	public static String localize(String str) {
 		
-		return I18n.translateToLocal(str);
+		return I18n.format(str);
 	}
 	
 	public static String folderStr(ItemStack folder) {

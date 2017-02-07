@@ -72,14 +72,14 @@ public class ItemUpgrades extends Item implements IUpgrades {
 				}
 			}
 		}
-		if (upgrade.getItemDamage() == 5) {
-			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != ItemStack.EMPTY) {
-					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
-					return false;
-				}
-			}
-		}
+//		if (upgrade.getItemDamage() == 5) {
+//			for (ItemStack stack : tile.getInventory().getStacks()) {
+//				if (stack != ItemStack.EMPTY) {
+//					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
+//					return false;
+//				}
+//			}
+//		}
 		return true;
 	}
 }

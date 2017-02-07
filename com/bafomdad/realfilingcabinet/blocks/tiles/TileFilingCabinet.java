@@ -56,6 +56,6 @@ public abstract class TileFilingCabinet extends TileEntity {
 	@Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
     	
-    	return false;
+    	return oldState.getBlock() != newState.getBlock();
     }
 }

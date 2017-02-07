@@ -3,28 +3,25 @@ package com.bafomdad.realfilingcabinet.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.items.ItemFolder;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+
+import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class MobUtils {
 	
@@ -52,17 +49,37 @@ public class MobUtils {
 				Entity entity = EntityList.createEntityByIDFromName(res, world);
 				if (entity != null)
 				{
+					boolean spawn = false;
 					if (!player.world.isRemote) {
 						pos = pos.offset(side);
 						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager))
 						{
-							EntityVillager villager = (EntityVillager)ItemMonsterPlacer.spawnCreature(world, res, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
-							villager.setProfession(0);
+		                    EntityVillager entityliving = (EntityVillager)entity;
+		                    entity.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+		                    entityliving.rotationYawHead = entityliving.rotationYaw;
+		                    entityliving.renderYawOffset = entityliving.rotationYaw;
+		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
+							entityliving.setProfession(0);
+		                    world.spawnEntity(entity);
+		                    entityliving.playLivingSound();
+		                    
+		                    spawn = true;
 						}
-						else
-							ItemMonsterPlacer.spawnCreature(world, res, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D);
-						if (!player.capabilities.isCreativeMode)
-							ItemFolder.remove(stack, 1);
+						else {
+							EntityLiving entityliving = (EntityLiving)entity;
+		                    entity.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+		                    entityliving.rotationYawHead = entityliving.rotationYaw;
+		                    entityliving.renderYawOffset = entityliving.rotationYaw;
+		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
+		                    world.spawnEntity(entity);
+		                    entityliving.playLivingSound();
+		                    
+		                    spawn = true;
+						}
+						if (spawn) {
+							if (!player.capabilities.isCreativeMode)
+								ItemFolder.remove(stack, 1);
+						}
 					}
 				}
 			}

@@ -87,9 +87,14 @@ public class GuiFileList extends Gui {
 					{
 						if (((TileEntityRFC)tile).isOpen)
 						{
+							int slotCount = 0;
+							for (int j = 0; j < ((TileEntityRFC)tile).getInventory().getSlots(); j++) {
+								if (!((TileEntityRFC)tile).getInventory().getTrueStackInSlot(j).isEmpty())
+									slotCount++;
+							}
 							float yPos = (float)mop.hitVec.yCoord;
 							float y = yPos - (int)yPos;
-							float l = y * 7;
+							float l = y * (Math.max(slotCount - 1, 0));
 							ItemStack folder = getFolderHit(l, ((TileEntityRFC)tile).getInventory());
 							if (folder != null && ItemFolder.getObject(folder) != null)
 							{

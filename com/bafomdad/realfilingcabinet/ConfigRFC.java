@@ -20,6 +20,7 @@ public class ConfigRFC {
 	public static boolean magnifyingGlassGui;
 	public static boolean randomVillager;
 	public static boolean seasonalCabinets;
+	public static boolean waterNether;
 	public static List<String> mobFolderBlacklist;
 	
 	// DEBUG
@@ -40,6 +41,7 @@ public class ConfigRFC {
 		magnifyingGlassGui = config.get("misc", "enableMagnifyingGlassGUI", true, "Disable this if you want TheOneProbe to handle the overlay instead.").getBoolean();
 		randomVillager = config.get("misc", "enableSpawnRandomVillager", false, "If enabled, will let mob folders with a villager in it spawn villagers with their professions randomized.").getBoolean();
 		seasonalCabinets = config.get("misc", "enableSeasonalCabinets", true, "If enabled, the normal filing cabinets will use a different texture depending on the season").getBoolean();
+		waterNether = config.get("misc", "enableNetherWater", false, "If enabled, will let fluid folders containing water to place water in the nether.").getBoolean();
 		mobFolderBlacklist = Arrays.asList(config.getStringList("mobFolderBlacklist", "misc", new String[] {}, "Use this to blacklist certain mobs from being captured in the Mob Folders. Put the class name of the entities here."));
 		
 		debugLogger = config.get("debug", "enableDebugLogger", false, "Will output stuff to console for debugging purposes").getBoolean();

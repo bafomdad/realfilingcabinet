@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -49,6 +50,7 @@ public class EntityCabinet extends EntityTameable {
 	private static final DataParameter<Boolean> YAY = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> STATE = EntityDataManager.createKey(EntityCabinet.class, DataSerializers.VARINT);
 	private int variant = 0;
+	private boolean isRealEntity = false;
 	public String upgrades = "";
 	public long homePos;
 	
@@ -98,7 +100,7 @@ public class EntityCabinet extends EntityTameable {
 	@Override
 	public boolean isEntityInvulnerable(DamageSource source) {
 		
-		if (source == DamageSource.outOfWorld)
+		if (source == DamageSource.OUT_OF_WORLD)
 			return false;
 		
 		if (source.getEntity() instanceof EntityPlayer && source.getEntity().isSneaking()) {
@@ -115,6 +117,10 @@ public class EntityCabinet extends EntityTameable {
 		if (this.isEntityInvulnerable(source))
 			return false;
 		
+		if (!this.world.isRemote && !this.isLegit()) {
+			this.setDead();
+			return false;
+		}
 		if (!upgrades.isEmpty()) {
 			if (source.getEntity() instanceof EntityPlayer)
 				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getEntity(), this);
@@ -153,6 +159,7 @@ public class EntityCabinet extends EntityTameable {
                 this.inventory.setStackInSlot(i, itemstack.copy());
             }
         }
+        isRealEntity = tag.getBoolean("legitEntity");
         upgrades = tag.getString(StringLibs.RFC_MOBUPGRADE);
         homePos = tag.getLong("homePos");
         this.setTextureState(tag.getInteger("varTex"));
@@ -174,6 +181,7 @@ public class EntityCabinet extends EntityTameable {
             }
         }
         tag.setTag("Inventory", tagList);
+        tag.setBoolean("legitEntity", isRealEntity);
         tag.setString(StringLibs.RFC_MOBUPGRADE, upgrades);
         tag.setLong("homePos", homePos);
         tag.setInteger("varTex", this.getTextureState());
@@ -223,6 +231,16 @@ public class EntityCabinet extends EntityTameable {
 		return (Integer)this.dataManager.get(STATE).intValue();
 	}
 	
+	public boolean isLegit() {
+		
+		return this.isRealEntity;
+	}
+	
+	public void setLegit() {
+		
+		this.isRealEntity = true;
+	}
+	
 	private void setTile(DamageSource source) {
 		
 		if (source.getEntity() instanceof EntityPlayer) {
@@ -255,5 +273,20 @@ public class EntityCabinet extends EntityTameable {
 					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")));
 			}
 		}
+	}
+	
+	@Override
+	public int getMaxFallHeight() {
+		
+		return 10;
+	}
+	
+	@Override
+	public float getPathPriority(PathNodeType nodeType) {
+		
+		if (nodeType.getPriority() != 0.0F && (nodeType == PathNodeType.LAVA || nodeType == PathNodeType.DANGER_OTHER))
+			return 0.0F;
+			
+		return super.getPathPriority(nodeType);
 	}
 }

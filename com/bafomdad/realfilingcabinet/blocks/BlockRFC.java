@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,13 +94,13 @@ public class BlockRFC extends Block implements IFilingCabinet {
     		return;
     	
     	EntityLivingBase elb = (EntityLivingBase)entity;
-    	if (!elb.isNonBoss() || elb.isChild())
+    	if (!elb.isNonBoss() || (elb.isChild() && !(elb instanceof EntityZombie)))
     		return;
     	
     	ResourceLocation res = EntityList.getKey(elb);
     	for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
     		ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
-    		if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
+    		if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
     			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null)
     			{
     				if (ItemFolder.getObject(folder).equals(res.toString())) {
@@ -188,7 +189,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			if (!((TileEntityRFC)tile).upgrades.isEmpty())
 			{
 				ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
-				if (upgrade != ItemStack.EMPTY && upgrade.getCount() == 0)
+				if (!upgrade.isEmpty() && upgrade.getCount() == 0)
 					upgrade.setCount(1);
 				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
 			}
@@ -225,7 +226,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				}
 			}
 		}
-		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != ItemStack.EMPTY && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
+		if (player.isSneaking() && !player.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)
 		{
 			if (!tileRFC.getWorld().isRemote) {
 				UpgradeHelper.removeUpgrade(player, tileRFC);
@@ -233,22 +234,24 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			tileRFC.markBlockForUpdate();
 			return;
 		}
-		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null)
+		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT) == null) {
 			StorageUtils.extractStackManually(tileRFC, player, player.isSneaking());
-
+			return;
+		}
 		else
 		{
-			if (tileRFC.hasItemFrame() && tileRFC.getFilter() != ItemStack.EMPTY)
+			ItemStack toCraft = tileRFC.getFilter().copy();
+			if (!tileRFC.getFilter().isEmpty() && toCraft.isItemDamaged())
+				toCraft.setItemDamage(0);
+				
+			if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC))
 			{
-				if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC))
-				{
-					ItemStack stack = tileRFC.getFilter().copy();
-					stack.setCount(AutocraftingUtils.getOutputSize());
-					if (!UpgradeHelper.isCreative(tileRFC))
-						AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());
-					if (!player.inventory.addItemStackToInventory(stack))
-						player.dropItem(stack.getItem(), 1);
-				}
+				ItemStack stack = toCraft;
+				stack.setCount(AutocraftingUtils.getOutputSize());
+				if (!UpgradeHelper.isCreative(tileRFC))
+					AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());
+				if (!player.inventory.addItemStackToInventory(stack))
+					player.dropItem(stack.getItem(), AutocraftingUtils.getOutputSize());
 			}
 		}
 	}
@@ -270,7 +273,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		{
 			StorageUtils.addAllStacksManually(tileRFC, player);
 		}
-		if (!player.isSneaking() && stack != ItemStack.EMPTY)
+		if (!player.isSneaking() && !stack.isEmpty())
 		{
 			if (stack.getItem() instanceof ItemKeys)
 			{
@@ -303,7 +306,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				{
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
-						if (tileStack == ItemStack.EMPTY)
+						if (tileStack.isEmpty())
 						{
 							tileRFC.getInventory().setStackInSlot(i, stack);
 							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
@@ -322,7 +325,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
-						if (tileStack == ItemStack.EMPTY)
+						if (tileStack.isEmpty())
 						{
 							tileRFC.getInventory().setStackInSlot(i, stack);
 							player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
@@ -345,7 +348,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				StorageUtils.addStackManually(tileRFC, player, stack);
 			}
 		}
-		if (!player.isSneaking() && stack == ItemStack.EMPTY)
+		if (!player.isSneaking() && stack.isEmpty())
 		{	
 			if (!tileRFC.getWorld().isRemote)
 			{
@@ -357,7 +360,7 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 			tileRFC.markBlockForUpdate();
 		}
-		if (player.isSneaking() && stack == ItemStack.EMPTY && tileRFC.isOpen)
+		if (player.isSneaking() && stack.isEmpty() && tileRFC.isOpen)
 		{		
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 			{

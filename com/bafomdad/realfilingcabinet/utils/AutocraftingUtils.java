@@ -203,6 +203,7 @@ public class AutocraftingUtils {
 					while (itr.hasNext())
 					{
 						items[i] = itr.next();
+						break;
 					}
 				}
 			}

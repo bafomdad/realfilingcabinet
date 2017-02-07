@@ -10,7 +10,6 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceSets
@@ -26,17 +25,14 @@ sourceSets
 //	}
 }
 
-version = "1.11-1.1.0"
+version = "1.11.2-1.2.1"
 group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
 minecraft {
-    version = "1.11-13.19.0.2156"
-	mappings = "snapshot_20161118"
+    version = "1.11.2-13.20.0.2226"
+	mappings = "snapshot_20161220"
 	makeObfSourceJar = false
-}
-dependencies {
-
 }
 jar {
 	exclude "build/*"

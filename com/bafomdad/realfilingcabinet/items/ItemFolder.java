@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -262,7 +263,7 @@ public class ItemFolder extends Item implements IFolder {
 						return false;
 				}
 				
-				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && !((EntityLivingBase)object).isChild())
+				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild()))
 				{
 					ResourceLocation entityName = EntityList.getKey((Entity)object);
 					NBTUtils.setString(folder, TAG_FILE_NAME, entityName.toString());
@@ -277,7 +278,7 @@ public class ItemFolder extends Item implements IFolder {
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
-		if (target.isChild() || !target.isNonBoss())
+		if (target.isChild() && !(target instanceof EntityZombie))
 			return false;
 		
 		if (target instanceof EntityCabinet)
@@ -314,37 +315,33 @@ public class ItemFolder extends Item implements IFolder {
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		ItemStack stack = player.getHeldItemMainhand();
-		ItemStack offstack = player.getHeldItemOffhand();
-		
-		if (offstack != ItemStack.EMPTY) {
-			System.out.println(offstack);
-			return EnumActionResult.PASS;
-		}
+		ItemStack stack = player.getHeldItem(hand);
 		if (getObject(stack) != null) {
 			if (stack.getItemDamage() < 2) {
-				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock)
-				{
+				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {	
 					long count = ItemFolder.getFileSize(stack);
 					if (stack.getItemDamage() == 1 && !EnderUtils.preValidateEnderFolder(stack))
 						return EnumActionResult.FAIL;
 					
-					if (count > 0)
-					{
-						ItemStack stackToPlace = ((ItemStack)getObject(stack)).copy();
-						player.setHeldItem(EnumHand.OFF_HAND, stackToPlace);
+					if (count > 0) {
+						ItemStack stackToPlace = new ItemStack(((ItemStack)getObject(stack)).getItem(), 1, ((ItemStack)getObject(stack)).getItemDamage());
+						ItemStack savedfolder = player.getHeldItem(hand);
 						
-						if (stackToPlace.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side, hitX, hitY, hitZ) == EnumActionResult.SUCCESS) {
-							if (!player.capabilities.isCreativeMode)
-							{
-								if (stack.getItemDamage() == 1 && !world.isRemote) {
+						player.setHeldItem(hand, stackToPlace);
+						EnumActionResult ear = stackToPlace.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+						player.setHeldItem(hand, savedfolder);
+						
+						if (ear == EnumActionResult.SUCCESS) {
+							if (!player.capabilities.isCreativeMode) {
+								if (stack.getItemDamage() == 1 && !world.isRemote) 
+								{
 									EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
 									if (player instanceof FakePlayer)
 										EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
 								}
 								else
 									remove(stack, 1);
-							}		
+							}
 							return EnumActionResult.SUCCESS;
 						}
 					}
@@ -357,6 +354,9 @@ public class ItemFolder extends Item implements IFolder {
 			}
 			if (stack.getItemDamage() == 4)
 			{
+				if (!(getObject(stack) instanceof FluidStack))
+					return EnumActionResult.PASS;
+				
 				if (FluidUtils.doPlace(world, player, stack, pos, side))
 					return EnumActionResult.SUCCESS;
 			}
@@ -392,7 +392,7 @@ public class ItemFolder extends Item implements IFolder {
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
         
 		if (entityLiving instanceof EntityPlayer && entityLiving.isSneaking()) {
-			if (stack != ItemStack.EMPTY && stack.getItem() == this) {
+			if (!stack.isEmpty() && stack.getItem() == this) {
 				if (stack.getItemDamage() == 4)
 				{	
 					NBTTagCompound tag = stack.getTagCompound();
