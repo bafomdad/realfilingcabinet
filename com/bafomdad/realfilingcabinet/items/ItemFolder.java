@@ -287,6 +287,18 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	@Override
+    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        
+		if (getObject(stack) != null && stack.getItemDamage() == 4 && !world.isRemote) {
+			if (NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, true) && FluidUtils.canFill(world, player, stack, pos, side))
+				return EnumActionResult.SUCCESS;
+			if (!NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false) && FluidUtils.canDrain(world, player, stack, pos, side))
+				return EnumActionResult.SUCCESS;
+		}
+		return EnumActionResult.PASS;
+    }
+	
+	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
 		if (target.isChild() && !(target instanceof EntityZombie))
@@ -365,7 +377,6 @@ public class ItemFolder extends Item implements IFolder {
 			{
 				if (!(getObject(stack) instanceof FluidStack))
 					return EnumActionResult.PASS;
-				
 				if (FluidUtils.doPlace(world, player, stack, pos, side))
 					return EnumActionResult.SUCCESS;
 			}
@@ -390,8 +401,10 @@ public class ItemFolder extends Item implements IFolder {
 		else {
 			if (rtr.typeOfHit == RayTraceResult.Type.BLOCK) {
 				BlockPos pos = rtr.getBlockPos();
-				if (FluidUtils.doDrain(world, player, stack, pos, rtr.sideHit))
+				if (FluidUtils.doDrain(world, player, folder, pos, rtr.sideHit))
 					return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
+//				if (player.isSneaking() && FluidUtils.canDrain(world, player, folder, pos, rtr.sideHit))
+//					return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
 			}
 		}
 		return ActionResult.newResult(EnumActionResult.PASS, stack);
@@ -401,12 +414,10 @@ public class ItemFolder extends Item implements IFolder {
 	public boolean onEntitySwing(EntityLivingBase elb, ItemStack stack) {
 		
 		if (elb instanceof EntityPlayer && elb.isSneaking()) {
-			if (stack != null && stack.getItem() == this) {
-				if (stack.getItemDamage() == 4)
-				{
-					NBTTagCompound tag = stack.getTagCompound();
-					tag.setBoolean(StringLibs.RFC_PLACEMODE, !tag.getBoolean(StringLibs.RFC_PLACEMODE));
-				}
+			if (stack != null && stack.getItem() == this && stack.getItemDamage() == 4) 
+			{
+				NBTTagCompound tag = stack.getTagCompound();
+				tag.setBoolean(StringLibs.RFC_PLACEMODE, !tag.getBoolean(StringLibs.RFC_PLACEMODE));
 			}
 		}
 		return false;
@@ -422,9 +433,5 @@ public class ItemFolder extends Item implements IFolder {
 	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
 		
 		return slotchanged;
-//		if ((oldstack.getItemDamage() == 1 || newstack.getItemDamage() == 1))
-//			return false;
-//		
-//		return true;
 	}
 }

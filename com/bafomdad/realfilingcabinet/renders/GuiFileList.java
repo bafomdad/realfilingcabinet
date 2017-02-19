@@ -89,6 +89,9 @@ public class GuiFileList extends Gui {
 					TileEntity tile = player.worldObj.getTileEntity(mop.getBlockPos());
 					if (tile != null && tile instanceof TileEntityRFC)
 					{
+						if (UpgradeHelper.getUpgrade((TileEntityRFC)tile, StringLibs.TAG_ENDER) != null)
+							return;
+						
 						if (((TileEntityRFC)tile).isOpen)
 						{
 							int slotCount = 0;

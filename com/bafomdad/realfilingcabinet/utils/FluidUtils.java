@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
@@ -106,6 +108,46 @@ public class FluidUtils {
 					ItemFolder.add(stack, 1000);
 					world.setBlockToAir(pos);
 				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean canFill(World world, EntityPlayer player, ItemStack stack, BlockPos pos, EnumFacing facing) {
+		
+		if (!MobUtils.canPlayerChangeStuffHere(world, player, stack, pos, facing))
+			return false;
+		
+		if (world.getTileEntity(pos) == null)
+			return false;
+		
+		if (world.getTileEntity(pos).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)) {
+			IFluidHandler handler = world.getTileEntity(pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+			int fillamount = handler.fill((FluidStack)ItemFolder.getObject(stack), true);
+			if (fillamount > 0) {
+				if (!world.isRemote && !player.capabilities.isCreativeMode)
+					ItemFolder.remove(stack, fillamount);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean canDrain(World world, EntityPlayer player, ItemStack stack, BlockPos pos, EnumFacing facing) {
+		
+		if (!MobUtils.canPlayerChangeStuffHere(world, player, stack, pos, facing))
+			return false;
+		
+		if (world.getTileEntity(pos) == null)
+			return false;
+
+		if (world.getTileEntity(pos).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing)) {
+			IFluidHandler handler = world.getTileEntity(pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+			FluidStack fluid = handler.drain(1000, false);
+			if (fluid != null && ItemFolder.getFileName(stack).equals(fluid.getLocalizedName())) {
+				handler.drain(1000, true);
+				ItemFolder.add(stack, fluid.amount);
 				return true;
 			}
 		}
