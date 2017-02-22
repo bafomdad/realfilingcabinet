@@ -79,7 +79,7 @@ public class EventHandlerServer {
 		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
 		{
 			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
-			if (!mainhand.isEmpty() || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
+			if (!mainhand.isEmpty() || !tileRFC.isOpen)
 				return;
 			
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)

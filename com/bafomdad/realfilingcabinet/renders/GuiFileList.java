@@ -77,36 +77,6 @@ public class GuiFileList extends Gui {
 						}
 					}
 				}
-				else if (block instanceof BlockRFC && magnifyingGlass == ItemStack.EMPTY && player.isSneaking())
-				{
-					if (mop.sideHit == EnumFacing.DOWN || mop.sideHit == EnumFacing.UP)
-						return;
-					
-					TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
-					if (tile != null && tile instanceof TileEntityRFC)
-					{
-						if (((TileEntityRFC)tile).isOpen)
-						{
-							int slotCount = 0;
-							for (int j = 0; j < ((TileEntityRFC)tile).getInventory().getSlots(); j++) {
-								if (!((TileEntityRFC)tile).getInventory().getTrueStackInSlot(j).isEmpty())
-									slotCount++;
-							}
-							float yPos = (float)mop.hitVec.yCoord;
-							float y = yPos - (int)yPos;
-							float l = y * (Math.max(slotCount - 1, 0));
-							ItemStack folder = getFolderHit(l, ((TileEntityRFC)tile).getInventory());
-							if (folder != null && ItemFolder.getObject(folder) != null)
-							{
-								String str = TextHelper.folderStr(folder);
-								long count = ItemFolder.getFileSize(folder);
-								String name = str + " - " + count;
-								GL11.glDisable(GL11.GL_LIGHTING);
-								this.drawCenteredString(mc.fontRendererObj, name, width / 2, height / 2, Integer.parseInt("FFFFFF", 16));
-							}
-						}
-					}
-				}
 			}
 			profiler.endSection();
 		}

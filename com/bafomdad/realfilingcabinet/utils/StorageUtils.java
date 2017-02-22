@@ -252,34 +252,15 @@ public class StorageUtils {
 	
 	public static void folderExtract(TileEntityRFC tile, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		if (side == EnumFacing.UP || side == EnumFacing.DOWN) {
-			for (int i = tile.getInventory().getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
-				if (folder != ItemStack.EMPTY)
-				{
-					tile.getInventory().setStackInSlot(i, ItemStack.EMPTY);
-					player.setHeldItem(EnumHand.MAIN_HAND, folder);
-					tile.markBlockForUpdate();
-					break;
-				}
-			}
-		}
-		else {
-			int slotCount = 0;
-			for (int j = 0; j < tile.getInventory().getSlots(); j++) {
-				if (!tile.getInventory().getTrueStackInSlot(j).isEmpty())
-					slotCount++;
-			}
-			float l = hitY * (Math.max(slotCount - 1, 0));
-			int slot = Math.round(l);
-			
-			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
+		for (int i = tile.getInventory().getSlots() - 1; i >= 0; i--)
+		{
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder != ItemStack.EMPTY)
 			{
-				tile.getInventory().setStackInSlot(slot, ItemStack.EMPTY);
+				tile.getInventory().setStackInSlot(i, ItemStack.EMPTY);
 				player.setHeldItem(EnumHand.MAIN_HAND, folder);
 				tile.markBlockForUpdate();
+				break;
 			}
 		}
 	}
