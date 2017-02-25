@@ -39,7 +39,7 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.EMPTY)
+				if (!stack.isEmpty())
 				{
 					if (allowableIngredient(stack))
 						list.add(stack);
@@ -75,7 +75,7 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != ItemStack.EMPTY)
+			if (!stack.isEmpty())
 			{
 				if (stack.getItem() instanceof IEmptyFolder)
 					emptyFolder = i;
