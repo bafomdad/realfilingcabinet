@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 
 public class FluidRFC implements IFluidHandler {
 	
@@ -37,6 +38,8 @@ public class FluidRFC implements IFluidHandler {
 			if (!folder.isEmpty() && folder.getItemDamage() == 4 && ItemFolder.getObject(folder) instanceof FluidStack) {
 				props[i] = new FluidTankProperties(((FluidStack)ItemFolder.getObject(folder)), Math.max(Integer.MAX_VALUE - 1, (int)ItemFolder.getFileSize(folder)));
 			}
+			else
+				props[i] = (FluidTankProperties)EmptyFluidHandler.EMPTY_TANK_PROPERTIES;
 		}
 		return props;
 	}
