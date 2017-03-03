@@ -31,7 +31,6 @@ public class CommonProxy {
 		
 		RFCRecipes.init();
 		RFCIntegration.init();
-		ItemMysteryFolder.fillRandoList();
 		
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 0), StringLibs.TAG_CREATIVE);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 1), StringLibs.TAG_CRAFT);
