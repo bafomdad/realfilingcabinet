@@ -59,8 +59,6 @@ public class StorageUtils {
 			}
 			return;
 		}
-		if (stack.hasTagCompound())
-			return;
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
@@ -79,6 +77,15 @@ public class StorageUtils {
 			}
 			if ((tile.getInventory().getTrueStackInSlot(i) != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 2) && DurabilityUtils.matchDurability(tile, stack))
 			{
+				player.setHeldItem(EnumHand.MAIN_HAND, null);
+				tile.markBlockForUpdate();
+				break;
+			}
+			if ((tile.getInventory().getTrueStackInSlot(i) != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 5)) {
+				if (!ItemStack.areItemStackTagsEqual(loopinv, stack))
+					return;
+				
+				ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.stackSize);
 				player.setHeldItem(EnumHand.MAIN_HAND, null);
 				tile.markBlockForUpdate();
 				break;
@@ -120,8 +127,8 @@ public class StorageUtils {
 					if (!consume)
 						consume = true;
 				}
-				if (loopinv.hasTagCompound())
-					continue;
+//				if (loopinv.hasTagCompound())
+//					continue;
 				
 				for (int j = 0; j < tile.getInventory().getSlots(); j++) {
 					ItemStack tilestack = tile.getInventory().getTrueStackInSlot(j);
@@ -129,15 +136,24 @@ public class StorageUtils {
 					{
 						ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
 						
-						if (tile.getInventory().getTrueStackInSlot(j) != null && tile.getInventory().getTrueStackInSlot(j).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
+						if (tilestack != null && tilestack.getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
 						{
+							player.inventory.setInventorySlotContents(i, null);
+							consume = true;
+							break;
+						}
+						if (tilestack != null && tilestack.getItemDamage() == 5) {
+							if (!ItemStack.areItemStackTagsEqual(loopinv, folderstack))
+								continue;
+							
+							ItemFolder.add(tilestack, loopinv.stackSize);
 							player.inventory.setInventorySlotContents(i, null);
 							consume = true;
 							break;
 						}
 						if (ItemStack.areItemsEqual(folderstack, loopinv))
 						{
-							ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.stackSize);
+							ItemFolder.add(tilestack, loopinv.stackSize);
 							player.inventory.setInventorySlotContents(i, null);
 							consume = true;
 							break;
@@ -257,34 +273,15 @@ public class StorageUtils {
 	
 	public static void folderExtract(TileEntityRFC tile, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		if (side == EnumFacing.UP || side == EnumFacing.DOWN) {
-			for (int i = tile.getInventory().getSlots() - 1; i >= 0; i--)
-			{
-				ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
-				if (folder != null)
-				{
-					tile.getInventory().setStackInSlot(i, null);
-					player.setHeldItem(EnumHand.MAIN_HAND, folder);
-					tile.markBlockForUpdate();
-					break;
-				}
-			}
-		}
-		else {
-			int slotCount = 0;
-			for (int j = 0; j < tile.getInventory().getSlots(); j++) {
-				if (tile.getInventory().getTrueStackInSlot(j) != null)
-					slotCount++;
-			}
-			float l = hitY * (Math.max(slotCount - 1, 0));
-			int slot = Math.round(l);
-			
-			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
+		for (int i = tile.getInventory().getSlots() - 1; i >= 0; i--)
+		{
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder != null)
 			{
-				tile.getInventory().setStackInSlot(slot, null);
+				tile.getInventory().setStackInSlot(i, null);
 				player.setHeldItem(EnumHand.MAIN_HAND, folder);
 				tile.markBlockForUpdate();
+				break;
 			}
 		}
 	}

@@ -39,7 +39,8 @@ public class ItemMagnifyingGlass extends Item {
     	Block block = world.getBlockState(pos).getBlock();
     	if (player.isSneaking() && block == RFCBlocks.blockRFC)
     	{
-			world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()));
+    		if (!world.isRemote)
+    			world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()), 2);
     		return EnumActionResult.SUCCESS;
     	}
     	return EnumActionResult.PASS;

@@ -50,10 +50,11 @@ public class ItemFolder extends Item implements IFolder {
 	private static final String TAG_FILE_SIZE = "fileSize";
 	
 	private static final String TAG_REM_SIZE = "leftoverSize";
+	private static final String TAG_ITEMTAG = "itemTagCompound";
 	
 	public static int extractSize = 0;
 	
-	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob", "fluid" };
+	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob", "fluid", "nbt" };
 
 	public ItemFolder() {
 		
@@ -100,8 +101,15 @@ public class ItemFolder extends Item implements IFolder {
 			
 			list.add(TextHelper.format(count) + " " + name);
 			
-			if (stack.getItemDamage() == 2)
+			if (stack.getItemDamage() == 2) 
+			{
 				list.add("Durability: " + ItemFolder.getRemSize(stack) + " / " + ((ItemStack)getObject(stack)).getMaxDamage());
+				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_IGNORENBT, false);
+				String ignoreNBT = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.true") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.false");
+				list.add(ignoreNBT);
+				
+				return;
+			}
 		}
 	}
 	
@@ -189,6 +197,16 @@ public class ItemFolder extends Item implements IFolder {
 		int current = getRemSize(stack);
 		setRemSize(stack, Math.max(current - count, 0));
 	}
+	
+	public static NBTTagCompound getItemTag(ItemStack stack) {
+		
+		return NBTUtils.getCompound(stack, TAG_ITEMTAG, true);
+	}
+	
+	public static void setItemTag(ItemStack stack, NBTTagCompound tag) {
+		
+		NBTUtils.setCompound(stack, TAG_ITEMTAG, tag);
+	}
 
 	public static Object getObject(ItemStack folder) {
 
@@ -217,17 +235,22 @@ public class ItemFolder extends Item implements IFolder {
 					return new FluidStack(FluidRegistry.LAVA, (int)extract);
 			}
 		}
+		ItemStack copystack = null;
 		if (Item.getByNameOrId(str) != null) {
 			Item item = (Item)Item.getByNameOrId(str);
 			int meta = getFileMeta(folder);
-			return new ItemStack(item, 1, meta);
+			copystack = new ItemStack(item, 1, meta);
+			if (folder.getItemDamage() == 5)
+				copystack.setTagCompound(getItemTag(folder));
 		}
 		if (Block.getBlockFromName(str) != null) {
 			Block block = Block.getBlockFromName(str);
 			int meta = getFileMeta(folder);
-			return new ItemStack(block, 1, meta);
+			copystack = new ItemStack(block, 1, meta);
+			if (folder.getItemDamage() == 5)
+				copystack.setTagCompound(getItemTag(folder));
 		}
-		return null;
+		return copystack;
 	}
 
 	public static boolean setObject(ItemStack folder, Object object) {
@@ -247,6 +270,9 @@ public class ItemFolder extends Item implements IFolder {
 				add(folder, 1);
 				if (folder.getItemDamage() == 2)
 					addRem(folder, 0);
+				
+				if (folder.getItemDamage() == 5)
+					setItemTag(folder, ((ItemStack)object).getTagCompound());
 				
 				return true;
 			}
@@ -388,9 +414,17 @@ public class ItemFolder extends Item implements IFolder {
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
 		
 		ItemStack folder = player.getHeldItemMainhand();
-		if (folder != null && stack.getItemDamage() != 4)
+		if (folder != null && folder.getItem() != this)
 			return ActionResult.newResult(EnumActionResult.PASS, folder);
 		
+		if (folder.getItemDamage() == 2) {
+			NBTTagCompound tag = stack.getTagCompound();
+			tag.setBoolean(StringLibs.RFC_IGNORENBT, !tag.getBoolean(StringLibs.RFC_IGNORENBT));
+			return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
+		}
+		if (folder.getItemDamage() != 4) {
+			return ActionResult.newResult(EnumActionResult.PASS, folder);
+		}
 		RayTraceResult rtr = rayTrace(world, player, true);
 		if (rtr == null)
 			return ActionResult.newResult(EnumActionResult.PASS, folder);
@@ -403,8 +437,6 @@ public class ItemFolder extends Item implements IFolder {
 				BlockPos pos = rtr.getBlockPos();
 				if (FluidUtils.doDrain(world, player, folder, pos, rtr.sideHit))
 					return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
-//				if (player.isSneaking() && FluidUtils.canDrain(world, player, folder, pos, rtr.sideHit))
-//					return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
 			}
 		}
 		return ActionResult.newResult(EnumActionResult.PASS, stack);
@@ -422,16 +454,23 @@ public class ItemFolder extends Item implements IFolder {
 		}
 		return false;
 	}
-
-	@Override
-	public boolean canBeEnderUpgraded(ItemStack stack) {
-
-		return true;
-	}
 	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
 		
-		return slotchanged;
+		return oldstack.getItem() != newstack.getItem() || (oldstack.getItem() == newstack.getItem() && oldstack.getItemDamage() != newstack.getItemDamage());
+	}
+
+	@Override
+	public ItemStack isFolderEmpty(ItemStack stack) {
+
+		switch (stack.getItemDamage()) {
+			case 0: return new ItemStack(RFCItems.emptyFolder, 1, 0);
+			case 2: return new ItemStack(RFCItems.emptyFolder, 1, 1);
+			case 3: return new ItemStack(RFCItems.emptyFolder, 1, 2);
+			case 4: return new ItemStack(RFCItems.emptyFolder, 1, 3);
+			case 5: return new ItemStack(RFCItems.emptyFolder, 1, 4);
+		}
+		return null;
 	}
 }

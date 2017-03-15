@@ -65,27 +65,14 @@ public class ItemUpgrades extends Item implements IUpgrades {
 
 		if (upgrade.getItemDamage() == 2) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != null && (stack.getItem() instanceof IFolder && ((IFolder)stack.getItem()).canBeEnderUpgraded(stack)))
+				if (stack != null && stack.getItem() instanceof IFolder)
 					break;
 				else if (stack == null) {
 					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder1")));
 					return false;
 				}
-				else if (stack != null && !((IFolder)stack.getItem()).canBeEnderUpgraded(stack))
-				{
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder2")));
-					return false;
-				}
 			}
 		}
-//		if (upgrade.getItemDamage() == 5) {
-//			for (ItemStack stack : tile.getInventory().getStacks()) {
-//				if (stack != null) {
-//					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
-//					return false;
-//				}
-//			}
-//		}
 		if (upgrade.getItemDamage() == 6) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
 				if (stack != null && stack.getItem() == RFCItems.manaFolder) {

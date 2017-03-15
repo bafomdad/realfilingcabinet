@@ -60,9 +60,11 @@ public class RFCRecipes {
 		}
 		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
 		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};
+		List<ItemStack> inputs3 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 4)); }};
 		
 		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 0), inputs1));
 		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 2), inputs2));
+		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 5), inputs3));
 		GameRegistry.addRecipe(new FolderExtractRecipe());
 		GameRegistry.addRecipe(new FolderMergeRecipe());
 		GameRegistry.addRecipe(new FolderTapeRecipe());

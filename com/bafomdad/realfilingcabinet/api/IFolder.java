@@ -4,5 +4,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IFolder {
 	
-	public boolean canBeEnderUpgraded(ItemStack stack);
+	public ItemStack isFolderEmpty(ItemStack stack);
 }

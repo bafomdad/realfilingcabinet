@@ -30,7 +30,7 @@ import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
 public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
-	public String[] folderType = new String[] { "normal", "dura", "mob", "fluid" };
+	public String[] folderType = new String[] { "normal", "dura", "mob", "fluid", "nbt" };
 	
 	public ItemEmptyFolder() {
 		
@@ -58,13 +58,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
 	
-		switch(stack.getItemDamage())
-		{
-			case 1: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder1")); return;
-			case 2: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder2")); return;
-			case 3: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder3")); return;
-			default: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder0"));
-		}
+		list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder" + stack.getItemDamage()));
 	}
 	
 	@Override

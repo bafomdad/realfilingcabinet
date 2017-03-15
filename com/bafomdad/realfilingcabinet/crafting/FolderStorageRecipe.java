@@ -95,6 +95,11 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 				ItemFolder.setObject(newFolder, stack1);
 				return newFolder;
 			}
+			else if (folder.getItemDamage() == 4 && stack1.hasTagCompound()) {
+				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 5);
+				ItemFolder.setObject(newFolder, stack1);
+				return newFolder;
+			}
 		}
 		return null;
 //		return new ItemStack(RFCItems.emptyFolder, 1, Math.max(recipeOutput.getItemDamage() - 1, 0));
@@ -105,8 +110,8 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
 			return false;
 		
-		if (stack.hasTagCompound())
-			return false;
+//		if (stack.hasTagCompound())
+//			return false;
 		
 		if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
 			return true;
@@ -114,26 +119,5 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 			return false;
 		
 		return true;
-	}
-	
-	private boolean checkIngredient(ItemStack stack, int damage) {
-		
-		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
-			return false;
-		
-		if (damage == 2 || stack.hasTagCompound())
-			return false;
-		
-		if (damage == 0)
-		{
-			if (!stack.getItem().isRepairable())
-				return true;
-		}
-		else if (damage == 1)
-		{
-			if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
-				return true;
-		}
-		return false;
 	}
 }

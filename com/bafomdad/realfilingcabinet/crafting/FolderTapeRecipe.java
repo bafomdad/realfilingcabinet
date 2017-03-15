@@ -94,13 +94,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 			if (ItemFolder.getObject(stack2) != null && ItemFolder.getFileSize(stack2) == 0)
 			{
 				ItemStack stacky = ic.getStackInSlot(folder);
-				switch(stacky.getItemDamage())
-				{
-					case 0: return new ItemStack(RFCItems.emptyFolder, 1, 0);
-					case 2: return new ItemStack(RFCItems.emptyFolder, 1, 1);
-					case 3: return new ItemStack(RFCItems.emptyFolder, 1, 2);
-					default: return null;
-				}
+				return ((IFolder)stacky.getItem()).isFolderEmpty(stacky);
 			}
 		}
 		else if (tape >= 0 && misc >= 0 && folder <= 0)

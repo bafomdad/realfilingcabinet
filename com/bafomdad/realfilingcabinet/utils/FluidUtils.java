@@ -65,6 +65,7 @@ public class FluidUtils {
 					ItemFolder.remove(stack, 1000);
 				
 				world.setBlockState(pos, liquid.getDefaultState(), 3);
+				world.notifyBlockOfStateChange(pos, world.getBlockState(pos).getBlock());
 				return true;
 			}
 			else if (fluid != null && (hitblock != fluid.getBlock() || (hitblock == fluid.getBlock() && l != 0)))

@@ -1,7 +1,9 @@
 package com.bafomdad.realfilingcabinet.events;
 
 import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -63,12 +65,11 @@ public class EventHandlerServer {
 			return;
 		
 		ItemStack mainhand = event.getEntityPlayer().getHeldItemMainhand();
-		ItemStack offhand = event.getEntityPlayer().getHeldItemOffhand();
 		
 		if (event.getEntityPlayer().isSneaking() && event.getWorld().getTileEntity(event.getPos()) != null && event.getWorld().getTileEntity(event.getPos()) instanceof TileEntityRFC)
 		{
 			TileEntityRFC tileRFC = (TileEntityRFC)event.getWorld().getTileEntity(event.getPos());
-			if (mainhand != null || !tileRFC.isOpen || (event.getFace() != EnumFacing.DOWN || event.getFace() != EnumFacing.UP))
+			if (mainhand != null || !tileRFC.isOpen)
 				return;
 			
 			if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
@@ -107,7 +108,7 @@ public class EventHandlerServer {
 					{
 						if (folder.getItemDamage() == 2)
 						{
-							if (estack.hasTagCompound())
+							if (estack.hasTagCompound() && !NBTUtils.getBoolean(folder, StringLibs.RFC_IGNORENBT, false))
 								return;
 							
 							if (estack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem())
@@ -126,12 +127,16 @@ public class EventHandlerServer {
 								}
 								event.setCanceled(true);
 								event.getItem().setDead();
+								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId()));
 								break;
 							}
 						}
 						ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
 						if (folderStack != null && ItemStack.areItemsEqual(folderStack, estack))
 						{
+							if (folder.getItemDamage() == 5 && !ItemStack.areItemStackTagsEqual(folderStack, estack)) {
+								return;
+							}
 							if (folder.getItemDamage() == 1) {
 								EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.stackSize, false);
 							}
@@ -140,6 +145,7 @@ public class EventHandlerServer {
 							
 							event.setCanceled(true);
 							event.getItem().setDead();
+							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId()));
 							break;
 						}
 					}

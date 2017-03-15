@@ -125,8 +125,8 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 	}
 
 	@Override
-	public boolean canBeEnderUpgraded(ItemStack stack) {
+	public ItemStack isFolderEmpty(ItemStack stack) {
 
-		return false;
+		return null;
 	}
 }
