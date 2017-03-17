@@ -38,7 +38,10 @@ public class StorageUtils {
 					}
 				}
 			}
-			if (loopinv != null && simpleMatch(stack, loopinv))
+			if (loopinv != null && (tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 5 && ItemStack.areItemStackTagsEqual(stack, loopinv)))
+				return i;
+			
+			if (loopinv != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() != 5 && simpleMatch(stack, loopinv))
 				return i;
 		}
 		return -1;
@@ -229,6 +232,16 @@ public class StorageUtils {
 				{
 					ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 					long count = ItemFolder.getFileSize(folder);
+					if (folder.getItemDamage() == 5) {
+						if (ItemStack.areItemStackTagsEqual(loopinv, stack)) {
+							player.inventory.addItemStackToInventory(stack.copy());
+							if (!UpgradeHelper.isCreative(tile))
+								ItemFolder.remove(folder, 1);
+							tile.markBlockForUpdate();
+							break;
+						}
+						else continue;
+					}
 					if (crouching) {
 						long extract = Math.min(stack.getMaxStackSize(), count);
 						ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());

@@ -26,6 +26,7 @@ public class RFCRecipes {
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 1), new Object[] { "P  ", "PA ", "PPP", 'P', Items.PAPER, 'A', Items.IRON_PICKAXE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 3), new Object[] { "PB ", "PWL", "PPP", 'P', Items.PAPER, 'B', Items.BUCKET, 'W', Items.WATER_BUCKET, 'L', Items.LAVA_BUCKET });
+		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 4), new Object[] { "PB ", "PWE", "PPP", 'P', Items.PAPER, 'B', Items.POTIONITEM, 'W', Items.WRITTEN_BOOK, 'E', Items.ENCHANTED_BOOK });
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.whiteoutTape), " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', "slimeball", 'B', new ItemStack(Items.DYE, 1, 15) ));

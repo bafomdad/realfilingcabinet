@@ -137,7 +137,9 @@ public class InventoryEntity extends ItemStackHandler {
 			ItemStack loopinv = getStackFromFolder(i);
 			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 2 && stack.getItem() == loopinv.getItem()))
 				return i;
-			if (loopinv != null && StorageUtils.simpleMatch(stack, loopinv))
+			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 5 && ItemStack.areItemStackTagsEqual(stack, loopinv)))
+				return i;
+			if (loopinv != null && (getStackInSlot(i).getItemDamage() != 5 && StorageUtils.simpleMatch(stack, loopinv)))
 				return i;
 		}
 		return -1;
