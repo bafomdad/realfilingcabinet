@@ -113,7 +113,7 @@ public class GuiFileList extends Gui {
 							list.add(name + " - " + TextHelper.format(count) + " [" + ItemFolder.getRemSize(folder) + " / " + ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage() + "]");
 						if (folder.getItemDamage() == 4)
 							list.add(name + " - " + count + "mB");
-						else
+						else if (folder.getItemDamage() != 2 && folder.getItemDamage() != 4)
 							list.add(name + " - " + TextHelper.format(count));
 					}
 					else {
