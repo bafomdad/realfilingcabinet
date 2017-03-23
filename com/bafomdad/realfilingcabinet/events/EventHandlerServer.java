@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -93,6 +94,9 @@ public class EventHandlerServer {
 	
 	@SubscribeEvent
 	public void onPickupItems(EntityItemPickupEvent event) {
+		
+		if (!ConfigRFC.pickupStuff)
+			return;
 		
 		ItemStack estack = event.getItem().getEntityItem();
 		
