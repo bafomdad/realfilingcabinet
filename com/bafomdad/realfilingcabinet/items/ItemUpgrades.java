@@ -64,11 +64,11 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
 		if (upgrade.getItemDamage() == 2) {
+			boolean flag = false;
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != null && stack.getItem() instanceof IFolder)
-					break;
-				else if (stack == null) {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder1")));
+				if (stack != null && stack.getItem() instanceof ItemManaFolder || (stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) 
+				{
+					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
 					return false;
 				}
 			}
