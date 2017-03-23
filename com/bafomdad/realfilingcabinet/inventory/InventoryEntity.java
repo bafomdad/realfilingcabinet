@@ -10,10 +10,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
-import com.bafomdad.realfilingcabinet.utils.DurabilityUtils;
-import com.bafomdad.realfilingcabinet.utils.MobUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class InventoryEntity extends ItemStackHandler {
@@ -135,11 +135,15 @@ public class InventoryEntity extends ItemStackHandler {
 		
 		for (int i = 0; i < getSlots(); i++) {
 			ItemStack loopinv = getStackFromFolder(i);
-			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 2 && stack.getItem() == loopinv.getItem()))
-				return i;
+			if (loopinv != null && getStackInSlot(i).getItemDamage() == 2 && stack.getItem() == loopinv.getItem()) {
+				if (stack.hasTagCompound() && NBTUtils.getBoolean(getStackInSlot(i), StringLibs.RFC_IGNORENBT, false))
+					return i;
+				else if (!stack.hasTagCompound())
+					return i;
+			}
 			if (loopinv != null && (getStackInSlot(i).getItemDamage() == 5 && ItemStack.areItemStackTagsEqual(stack, loopinv)))
 				return i;
-			if (loopinv != null && (getStackInSlot(i).getItemDamage() != 5 && StorageUtils.simpleMatch(stack, loopinv)))
+			if (loopinv != null && ((getStackInSlot(i).getItemDamage() != 5 && getStackInSlot(i).getItemDamage() != 2) && StorageUtils.simpleMatch(stack, loopinv)))
 				return i;
 		}
 		return -1;

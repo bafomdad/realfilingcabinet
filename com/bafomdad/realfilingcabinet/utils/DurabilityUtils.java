@@ -14,9 +14,6 @@ public class DurabilityUtils {
 		if (stack == null)
 			return false;
 		
-		if (stack.hasTagCompound())
-			return false;
-		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() == RFCItems.folder) {

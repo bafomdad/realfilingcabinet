@@ -78,8 +78,10 @@ public class StorageUtils {
 					}
 				}
 			}
-			if ((tile.getInventory().getTrueStackInSlot(i) != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 2) && DurabilityUtils.matchDurability(tile, stack))
-			{
+			if ((tile.getInventory().getTrueStackInSlot(i) != null && tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 2)) {
+				if (!DurabilityUtils.matchDurability(tile, stack))
+					continue;
+				
 				player.setHeldItem(EnumHand.MAIN_HAND, null);
 				tile.markBlockForUpdate();
 				break;
@@ -130,15 +132,11 @@ public class StorageUtils {
 					if (!consume)
 						consume = true;
 				}
-//				if (loopinv.hasTagCompound())
-//					continue;
-				
 				for (int j = 0; j < tile.getInventory().getSlots(); j++) {
 					ItemStack tilestack = tile.getInventory().getTrueStackInSlot(j);
 					if (tilestack != null && ItemFolder.getObject(tilestack) instanceof ItemStack)
 					{
 						ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
-						
 						if (tilestack != null && tilestack.getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv))
 						{
 							player.inventory.setInventorySlotContents(i, null);
@@ -154,7 +152,7 @@ public class StorageUtils {
 							consume = true;
 							break;
 						}
-						if (ItemStack.areItemsEqual(folderstack, loopinv))
+						if (tilestack != null && tilestack.getItemDamage() != 5 && ItemStack.areItemsEqual(folderstack, loopinv))
 						{
 							ItemFolder.add(tilestack, loopinv.stackSize);
 							player.inventory.setInventorySlotContents(i, null);
