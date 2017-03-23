@@ -56,6 +56,9 @@ public class EntityAISlurp extends EntityAIBase {
 						{
 							if (block instanceof BlockLiquid && l == 0)
 							{
+								if (!cabinet.worldObj.isAirBlock(pos.up()))
+									continue;
+								
 								if (block == Blocks.WATER)
 								{
 									FluidStack stack = new FluidStack(FluidRegistry.WATER, 1000);
@@ -77,6 +80,9 @@ public class EntityAISlurp extends EntityAIBase {
 							}
 							else if (block instanceof IFluidBlock && l == 0)
 							{
+								if (!cabinet.worldObj.isAirBlock(pos.up()))
+									continue;
+								
 								FluidStack stack = new FluidStack(((IFluidBlock)block).getFluid(), 1000);
 								if (getMatchingFluidFolder(stack) != null) {
 									fluid = stack;
