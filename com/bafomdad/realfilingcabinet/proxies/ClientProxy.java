@@ -5,12 +5,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCEntities;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.renders.GuiFileList;
 
 public class ClientProxy extends CommonProxy {
@@ -27,6 +29,8 @@ public class ClientProxy extends CommonProxy {
 		RFCBlocks.initModels();
 		RFCItems.initModels();
 		RFCEntities.initModels();
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
+			BotaniaRFC.initClient();
 	}
 	
 	@Override

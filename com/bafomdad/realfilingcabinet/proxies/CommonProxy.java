@@ -6,10 +6,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.*;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.items.ItemMysteryFolder;
 import com.bafomdad.realfilingcabinet.network.RFCPacketHandler;
 import com.bafomdad.realfilingcabinet.world.TutorialGenerator;
@@ -22,6 +25,8 @@ public class CommonProxy {
 		RFCItems.init();
 		RFCEntities.init();
 		RFCPacketHandler.init();
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
+			BotaniaRFC.initCommon();
 	}
 	
 	public void init(FMLInitializationEvent event) {

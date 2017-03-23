@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import scala.actors.threadpool.Arrays;
+import vazkii.botania.api.BotaniaAPI;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.crafting.*;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,6 +26,7 @@ public class RFCRecipes {
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 8, 0), new Object[] { "P  ", "P  ", "PPP", 'P', Items.PAPER });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 1), new Object[] { "P  ", "PA ", "PPP", 'P', Items.PAPER, 'A', Items.IRON_PICKAXE });
 		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 3), new Object[] { "PB ", "PWL", "PPP", 'P', Items.PAPER, 'B', Items.BUCKET, 'W', Items.WATER_BUCKET, 'L', Items.LAVA_BUCKET });
+		GameRegistry.addRecipe(new ItemStack(RFCItems.emptyFolder, 4, 4), new Object[] { "PB ", "PWE", "PPP", 'P', Items.PAPER, 'B', Items.POTIONITEM, 'W', Items.WRITTEN_BOOK, 'E', Items.ENCHANTED_BOOK });
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockRFC), "III", "ICI", "III", 'I', Blocks.IRON_BARS, 'C', "chest" ));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCItems.whiteoutTape), " P ",  "PSP", "BP ", 'P', Items.PAPER, 'S', "slimeball", 'B', new ItemStack(Items.DYE, 1, 15) ));
@@ -48,11 +52,17 @@ public class RFCRecipes {
 		if (ConfigRFC.lifeUpgrade)
 			GameRegistry.addRecipe(new ItemStack(RFCItems.upgrades, 1, 6), new Object[] { "EDE", "DFD", "EDE", 'E', Items.EMERALD, 'D', Items.DIAMOND, 'F', RFCBlocks.blockRFC });
 		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
+			BotaniaAPI.registerManaInfusionRecipe(new ItemStack(BotaniaRFC.manaFolder), new ItemStack(RFCItems.emptyFolder, 1, 0), 2000);
+			BotaniaAPI.registerManaInfusionRecipe(new ItemStack(BotaniaRFC.manaCabinet), new ItemStack(RFCBlocks.blockRFC), 9000);
+		}
 		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
 		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};
+		List<ItemStack> inputs3 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 4)); }};
 		
 		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 0), inputs1));
 		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 2), inputs2));
+		GameRegistry.addRecipe(new FolderStorageRecipe(new ItemStack(RFCItems.folder, 1, 5), inputs3));
 		GameRegistry.addRecipe(new FolderExtractRecipe());
 		GameRegistry.addRecipe(new FolderMergeRecipe());
 		GameRegistry.addRecipe(new FolderTapeRecipe());

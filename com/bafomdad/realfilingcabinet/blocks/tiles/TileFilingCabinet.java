@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 
 public abstract class TileFilingCabinet extends TileEntity {
 	
+	public float offset, renderOffset;
+	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		

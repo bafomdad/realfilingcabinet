@@ -44,6 +44,7 @@ import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
+import com.bafomdad.realfilingcabinet.items.ItemManaFolder;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
@@ -138,12 +139,6 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		}
         return false;
     }
-    
-//	@Override
-//    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-//    	
-//        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-//    }
 	
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack stack) {
@@ -297,9 +292,10 @@ public class BlockRFC extends Block implements IFilingCabinet {
 			}
 			if (stack.getItem() instanceof IFolder && tileRFC.isOpen)
 			{
-				if (stack.getItemDamage() == 1 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
+				if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null)
 				{
-					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+					if (stack.getItemDamage() == 1)
+						player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					return;
 				}
 				if (stack.getItemDamage() == 4 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null)
@@ -319,9 +315,8 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote)
 				{
 					if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null && !FluidUtils.canAcceptFluidContainer(stack))
-					{
 						return;
-					}
+
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++)
 					{
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);

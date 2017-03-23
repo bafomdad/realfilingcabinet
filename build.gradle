@@ -24,8 +24,7 @@ sourceSets
 //		java { srcDirs = ["$projectDir/api"] }
 //	}
 }
-
-version = "1.11.2-1.2.21"
+version = "1.11.2-${mod_version}"
 group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
@@ -33,6 +32,9 @@ minecraft {
     version = "1.11.2-13.20.0.2226"
 	mappings = "snapshot_20161220"
 	makeObfSourceJar = false
+	
+	replace "@VERSION@", "${mod_version}"
+    replaceIn "RealFilingCabinet.java"
 }
 jar {
 	exclude "build/*"

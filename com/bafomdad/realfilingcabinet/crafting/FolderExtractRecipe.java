@@ -14,6 +14,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,7 +55,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.EMPTY)
+				if (!stack.isEmpty())
 				{
 					boolean flag = false;
 					Iterator iter = list.iterator();
@@ -86,7 +87,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != ItemStack.EMPTY)
+			if (!stack.isEmpty())
 			{
 				folder = i;
 			}
@@ -110,6 +111,12 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 						if (stack.getItemDamage() == 1) {
 							foldy = stack;
 							canSync = true;
+						}
+						if (stack.getItemDamage() == 5) {
+							NBTTagCompound itemtag = ItemFolder.getItemTag(stack);
+							ItemStack copystack = new ItemStack(folderStack.getItem(), (int)extract, meta);
+							copystack.setTagCompound(itemtag);
+							return copystack;
 						}
 						return new ItemStack(folderStack.getItem(), (int)extract, meta);
 					}

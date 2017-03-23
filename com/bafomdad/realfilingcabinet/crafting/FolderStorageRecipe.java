@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
+import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -97,6 +98,11 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 				ItemFolder.setObject(newFolder, stack1);
 				return newFolder;
 			}
+			else if (folder.getItemDamage() == 4 && stack1.hasTagCompound()) {
+				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 5);
+				ItemFolder.setObject(newFolder, stack1);
+				return newFolder;
+			}
 		}
 		return ItemStack.EMPTY;
 //		return new ItemStack(RFCItems.emptyFolder, 1, Math.max(recipeOutput.getItemDamage() - 1, 0));
@@ -104,10 +110,15 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 	
 	private boolean allowableIngredient(ItemStack stack) {
 		
-		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || stack.getItem() == Item.getItemFromBlock(RFCBlocks.blockRFC))
+		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || Block.getBlockFromItem(stack.getItem()) instanceof IFilingCabinet)
 			return false;
 		
-		if (stack.hasTagCompound())
+//		if (stack.hasTagCompound())
+//			return false;
+		
+		if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
+			return true;
+		else if (stack.getItem().isRepairable() && stack.getItemDamage() != 0)
 			return false;
 		
 		return true;

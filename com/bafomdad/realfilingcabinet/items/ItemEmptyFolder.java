@@ -32,7 +32,7 @@ import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
 public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
-	public String[] folderType = new String[] { "normal", "dura", "mob", "fluid" };
+	public String[] folderType = new String[] { "normal", "dura", "mob", "fluid", "nbt" };
 	
 	public ItemEmptyFolder() {
 		

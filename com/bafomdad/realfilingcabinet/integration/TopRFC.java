@@ -1,9 +1,12 @@
 package com.bafomdad.realfilingcabinet.integration;
 
+import java.text.NumberFormat;
+
 import javax.annotation.Nullable;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -22,6 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.entity.Entity;
@@ -55,14 +59,20 @@ public class TopRFC {
 				public void addProbeInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, IBlockState state, IProbeHitData data) {
 
 					if (state.getBlock() instanceof IFilingCabinet) {
-						TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(data.getPos());
-						if (tile != null) 
+						TileEntity tile = world.getTileEntity(data.getPos());
+						if (tile != null && tile instanceof TileEntityRFC) 
 						{
-							for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-								addFolderInfo(info, tile, i);
+							TileEntityRFC tileRFC = (TileEntityRFC)tile;
+							for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
+								addFolderInfo(info, tileRFC, i);
 							}
 							if (player.isSneaking())
-								addExtraInfo(info, tile);
+								addExtraInfo(info, tileRFC);
+						}
+						else if (tile != null && tile instanceof TileManaCabinet) 
+						{
+							TileManaCabinet tileMana = (TileManaCabinet)tile;
+							addManaInfo(info, tileMana);
 						}
 					}
 				}
@@ -160,6 +170,18 @@ public class TopRFC {
 			else
 				lockFormat = TextFormatting.RESET + "No";
 			info.horizontal().text(TextFormatting.GRAY + "Locked: " + lockFormat);
+		}
+		
+		public void addManaInfo(IProbeInfo info, TileManaCabinet tile) {
+			
+			double count = tile.getTotalInternalManaPool();
+			double calc = 0.0;
+			if (count > 0)
+				calc = count / 1000000;
+			NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+			String percentOut = percentFormatter.format(calc);
+			String name = percentOut + " of a full mana pool";
+			info.horizontal().text(name);
 		}
 		
 		public void addCabinetInfo(IProbeInfo info, EntityCabinet cabinet) {

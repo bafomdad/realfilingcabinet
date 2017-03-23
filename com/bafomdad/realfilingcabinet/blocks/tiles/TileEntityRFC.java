@@ -51,7 +51,6 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	public String upgrades = "";
 	
 	// Rendering variables
-	public float offset, renderOffset;
 	public static final float offsetSpeed = 0.1F;
 	public boolean isOpen = false;
 
@@ -289,7 +288,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
 			ItemStack keyCopy = player.inventory.mainInventory.get(i);
-			if (keyCopy == ItemStack.EMPTY)
+			if (keyCopy.isEmpty())
 				continue;
 			if (keyCopy.getItem() == RFCItems.keys && keyCopy.getItemDamage() == 1) {
 				if (keyCopy.hasTagCompound() && keyCopy.getTagCompound().hasKey(StringLibs.RFC_COPY)) {
