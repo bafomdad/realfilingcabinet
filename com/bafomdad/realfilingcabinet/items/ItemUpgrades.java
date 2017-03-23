@@ -63,23 +63,15 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
 		if (upgrade.getItemDamage() == 2) {
+			boolean flag = false;
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != ItemStack.EMPTY)
-					break;
-				else {
+				if (!stack.isEmpty() && stack.getItem() instanceof ItemManaFolder || (stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) 
+				{
 					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
 					return false;
 				}
 			}
 		}
-//		if (upgrade.getItemDamage() == 5) {
-//			for (ItemStack stack : tile.getInventory().getStacks()) {
-//				if (stack != ItemStack.EMPTY) {
-//					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorFluid")));
-//					return false;
-//				}
-//			}
-//		}
 		return true;
 	}
 }

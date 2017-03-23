@@ -7,10 +7,13 @@ item.realfilingcabinet.folder_ender.name=Ender Folder
 item.realfilingcabinet.folder_dura.name=Durability Folder
 item.realfilingcabinet.folder_mob.name=Mob Folder
 item.realfilingcabinet.folder_fluid.name=Fluid Folder
+item.realfilingcabinet.folder_nbt.name=NBT Folder
+item.realfilingcabinet.manafolder.name=Mana Folder
 item.realfilingcabinet.emptyfolder_normal.name=Filing Folder (Empty)
 item.realfilingcabinet.emptyfolder_dura.name=Durability Folder (Empty)
 item.realfilingcabinet.emptyfolder_mob.name=Mob Folder (Empty)
 item.realfilingcabinet.emptyfolder_fluid.name=Fluid Folder (Empty)
+item.realfilingcabinet.emptyfolder_nbt.name=NBT Folder (Empty)
 item.realfilingcabinet.whiteouttape.name=White Out Tape
 item.realfilingcabinet.magnifyingglass.name=Magnifying Glass
 item.realfilingcabinet.upgrade_creative.name=Creative Upgrade
@@ -29,9 +32,10 @@ item.realfilingcabinet.mysteryfolder.name=Mystery Folder
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet
+tile.realfilingcabinet.manacabinet.name=Mana Cabinet
 
 # ENTITIES
-entity.realfilingcabinet.cabinet.name=Filing Cabinet
+entity.cabinet.name=Filing Cabinet
 
 # TOOLTIPS
 tooltip.realfilingcabinet.mystery1=It is a mystery.
@@ -45,9 +49,25 @@ tooltip.realfilingcabinet.itemblockrfc=<Shift for more info>
 tooltip.realfilingcabinet.itemfilter=This goes in a item frame
 tooltip.realfilingcabinet.placemode.on=Place Mode: ON
 tooltip.realfilingcabinet.placemode.off=Place Mode: OFF
+tooltip.realfilingcabinet.ignorenbt.true=Ignores NBT: True
+tooltip.realfilingcabinet.ignorenbt.false=Ignores NBT: False
+
+tooltip.realfilingcabinet.mana0=Not much mana to use yet
+tooltip.realfilingcabinet.mana120=Enough for a blast from a mana blaster
+tooltip.realfilingcabinet.mana500=Enough to infuse mana powder
+tooltip.realfilingcabinet.mana2500=Enough to infuse pasture seed
+tooltip.realfilingcabinet.mana3000=Enough to infuse manasteel
+tooltip.realfilingcabinet.mana6000=Enough to infuse mana pearl
+tooltip.realfilingcabinet.mana10000=Enough to infuse mana diamond
+tooltip.realfilingcabinet.mana15000=Enough to infuse force relay
+tooltip.realfilingcabinet.mana20000=Enough to infuse mana cookie
+tooltip.realfilingcabinet.mana500000=Enough to create terrasteel
+tooltip.realfilingcabinet.mana1000000=At least one mana pool full
+tooltip.realfilingcabinet.mana10000000=At least 10 mana pools full
+tooltip.realfilingcabinet.mana100000000=At least 100 mana pools full
+tooltip.realfilingcabinet.mana1000000000=All filled up, this is 1000 mana pools full
 
 # MESSAGES
-message.realfilingcabinet.errorEnder=This cabinet must have one or more folders in it before applying this upgrade
-message.realfilingcabinet.errorFluid=This cabinet must contain no folders in it before applying this upgrade
+message.realfilingcabinet.errorEnder=This cabinet must only contain basic folders before applying this upgrade
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
 message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!
