@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.items;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
+import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
@@ -38,11 +39,11 @@ public class ItemMagnifyingGlass extends Item {
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         
     	Block block = world.getBlockState(pos).getBlock();
-    	if (player.isSneaking() && block == RFCBlocks.blockRFC) {
+    	if (player.isSneaking() && block instanceof IFilingCabinet) {
     		if (!world.isRemote)
         		world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockRFC.FACING, player.getHorizontalFacing().getOpposite()), 2);
 
-    		return EnumActionResult.SUCCESS;
+    		player.swingArm(hand);
     	}
     	return EnumActionResult.PASS;
     }
