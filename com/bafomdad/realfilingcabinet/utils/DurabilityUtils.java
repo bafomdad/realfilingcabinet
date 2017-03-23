@@ -3,6 +3,7 @@ package com.bafomdad.realfilingcabinet.utils;
 import net.minecraft.item.ItemStack;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -13,16 +14,15 @@ public class DurabilityUtils {
 		if (stack == null)
 			return false;
 		
-		if (stack.hasTagCompound())
-			return false;
-		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() == RFCItems.folder) {
 				if (folder.getItemDamage() == 2 && ItemFolder.getObject(folder) != null)
 				{
-					if (stack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem())
-					{
+					if (stack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem()) {
+						if (stack.hasTagCompound() && !NBTUtils.getBoolean(folder, StringLibs.RFC_IGNORENBT, false))
+							return false;
+						
 						int remSize = stack.getItemDamage();
 						int storedRem = ItemFolder.getRemSize(folder);
 						
@@ -48,15 +48,14 @@ public class DurabilityUtils {
 		if (stack == null)
 			return false;
 		
-		if (stack.hasTagCompound())
-			return false;
-		
 		ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
 		if (folder != null && folder.getItem() == RFCItems.folder) {
 			if (folder.getItemDamage() == 2 && ItemFolder.getObject(folder) != null)
 			{
-				if (stack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem())
-				{
+				if (stack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem()) {
+					if (stack.hasTagCompound() && !NBTUtils.getBoolean(folder, StringLibs.RFC_IGNORENBT, false))
+						return false;
+					
 					if (!simulate)
 					{
 						int remSize = stack.getItemDamage();
