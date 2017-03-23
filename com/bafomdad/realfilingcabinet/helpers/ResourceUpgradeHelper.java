@@ -17,7 +17,7 @@ public class ResourceUpgradeHelper {
 	private static final Map<ResourceLocation, String> upgradeTextures = new HashMap<ResourceLocation, String>();
 	private static final Map<ResourceLocation, String> upgradeMobTextures = new HashMap<ResourceLocation, String>();
 	
-	private static final ResourceLocation MOB_DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetTexture.png".toLowerCase());
+	private static final ResourceLocation MOB_DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinettexture.png");
 	private static final ResourceLocation DEFAULT = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/filingcabinet.png");
 	private static final ResourceLocation HALLOWEEN = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/pumpkincabinet.png");
 	private static final ResourceLocation CHRISTMAS = new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/candycanecabinet.png");
