@@ -31,7 +31,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "vazkii.botania.api.mana.IManaPool", modid = "Botania"),
+	@Optional.Interface(iface = "vazkii.botania.api.mana.spark.ISparkAttachable", modid = "Botania")
+})
 public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILockableCabinet, IManaPool, ISparkAttachable {
 
 	private ItemStackHandler inv = new ItemStackHandler(8);
