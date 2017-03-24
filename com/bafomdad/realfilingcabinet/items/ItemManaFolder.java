@@ -124,4 +124,10 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 		
 		return ItemStack.EMPTY;
 	}
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
+		
+		return oldstack.getItem() != newstack.getItem();
+	}
 }

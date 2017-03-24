@@ -26,8 +26,19 @@ public class BotaniaRFC {
 	public static Item manaFolder;
 	public static Block manaCabinet;
 	
-	static 
-	{	
+	public static void initCommon() {
+		
+		manaFolder = new ItemManaFolder();
+		manaCabinet = new BlockManaCabinet();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static void initClient() {
+		
+		ModelLoader.setCustomModelResourceLocation(manaFolder, 0, new ModelResourceLocation(manaFolder.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(manaCabinet), 0, new ModelResourceLocation(manaCabinet.getRegistryName(), "inventory"));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileManaCabinet.class, new RenderManaCabinet());
+		
 		manaSuffixes.put(0, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana0"));
 		manaSuffixes.put(120, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana120"));
 		manaSuffixes.put(500, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana500"));
@@ -42,20 +53,6 @@ public class BotaniaRFC {
 		manaSuffixes.put(10000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
 		manaSuffixes.put(100000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
 		manaSuffixes.put(1000000000, TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mana10000000"));
-	}
-	
-	public static void initCommon() {
-		
-		manaFolder = new ItemManaFolder();
-		manaCabinet = new BlockManaCabinet();
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public static void initClient() {
-		
-		ModelLoader.setCustomModelResourceLocation(manaFolder, 0, new ModelResourceLocation(manaFolder.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(manaCabinet), 0, new ModelResourceLocation(manaCabinet.getRegistryName(), "inventory"));
-		ClientRegistry.bindTileEntitySpecialRenderer(TileManaCabinet.class, new RenderManaCabinet());
 	}
 	
 	public static String formatMana(int value) {
