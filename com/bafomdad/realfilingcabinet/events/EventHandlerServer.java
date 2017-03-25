@@ -148,7 +148,7 @@ public class EventHandlerServer {
 							}
 						}
 						ItemStack folderStack = (ItemStack)ItemFolder.getObject(folder);
-						if (folderStack.isEmpty() && ItemStack.areItemsEqual(folderStack, estack))
+						if (!folderStack.isEmpty() && ItemStack.areItemsEqual(folderStack, estack))
 						{
 							if (folder.getItemDamage() == 5 && !ItemStack.areItemStackTagsEqual(folderStack, estack))
 								return;
