@@ -35,9 +35,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
-import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
@@ -54,7 +52,14 @@ public class ItemFolder extends Item implements IFolder {
 	
 	public static int extractSize = 0;
 	
-	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob", "fluid", "nbt" };
+	public enum FolderType {
+		NORMAL,
+		ENDER,
+		DURA,
+		MOB,
+		FLUID,
+		NBT;
+	}
 
 	public ItemFolder() {
 		
@@ -68,17 +73,17 @@ public class ItemFolder extends Item implements IFolder {
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + folderTypes[stack.getItemDamage()];
+		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
 		
 		String name = getFileName(stack);
-		if (!name.isEmpty())
-		{
+		if (!name.isEmpty()) {
+			
 			long count = getFileSize(stack);
-			if (stack.getItemDamage() == 4)
-			{
+			if (stack.getItemDamage() == 4) {
+				
 				if (getObject(stack) != null && getObject(stack) instanceof FluidStack)
 					name = ((FluidStack)getObject(stack)).getLocalizedName();
 				list.add(count + "mb " + name);
@@ -89,8 +94,8 @@ public class ItemFolder extends Item implements IFolder {
 				
 				return;
 			}
-			if (stack.getItemDamage() == 3)
-			{
+			if (stack.getItemDamage() == 3) {
+				
 				Entity entity = EntityList.createEntityByIDFromName(name, player.worldObj);
 				if (entity != null)
 					list.add(count + " " + entity.getName());
@@ -101,8 +106,8 @@ public class ItemFolder extends Item implements IFolder {
 			
 			list.add(TextHelper.format(count) + " " + name);
 			
-			if (stack.getItemDamage() == 2) 
-			{
+			if (stack.getItemDamage() == 2) {
+				
 				list.add("Durability: " + ItemFolder.getRemSize(stack) + " / " + ((ItemStack)getObject(stack)).getMaxDamage());
 				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_IGNORENBT, false);
 				String ignoreNBT = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.true") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.false");
@@ -120,14 +125,13 @@ public class ItemFolder extends Item implements IFolder {
 		if (count > 0)
 			extract = Math.min(((ItemStack)getObject(stack)).getMaxStackSize(), count);
 		
-		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true)) {
+		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true))
 			return null;
-		}
+
 		ItemStack copy = stack.copy();
 		if (stack.getItemDamage() == 2 && count == 0)
-		{
 			setRemSize(copy, 0);
-		}
+		
 		remove(copy, extract);
 		extractSize = (int)extract;
 
@@ -215,9 +219,9 @@ public class ItemFolder extends Item implements IFolder {
 		if (folder == null)
 			return null;
 		
-		if (folder.getItem() == RFCItems.manaFolder) {
+		if (folder.getItem() == RFCItems.manaFolder)
 			return folder.getDisplayName();
-		}
+		
 		if (folder.getItemDamage() == 3) {
 			if (!str.isEmpty())
 				return str;
@@ -236,14 +240,24 @@ public class ItemFolder extends Item implements IFolder {
 			}
 		}
 		ItemStack copystack = null;
+		/* This bit of code here is to protect against vanilla minecraft being a silly dilly
+		 * and having itemstacks provide the same name for BOTH items and blocks,
+		 * E.G, cake and other similar. Don't be that silly dilly.
+		 */
+		if (Item.getByNameOrId(str) != null && Block.getBlockFromName(str) != null) {
+			Item item = Item.getByNameOrId(str);
+			return new ItemStack(item, item.getItemStackLimit(), getFileMeta(folder));
+		}
 		if (Item.getByNameOrId(str) != null) {
-			Item item = (Item)Item.getByNameOrId(str);
+			
+			Item item = Item.getByNameOrId(str);
 			int meta = getFileMeta(folder);
 			copystack = new ItemStack(item, 1, meta);
 			if (folder.getItemDamage() == 5)
 				copystack.setTagCompound(getItemTag(folder));
 		}
 		if (Block.getBlockFromName(str) != null) {
+			
 			Block block = Block.getBlockFromName(str);
 			int meta = getFileMeta(folder);
 			copystack = new ItemStack(block, 1, meta);
@@ -255,17 +269,16 @@ public class ItemFolder extends Item implements IFolder {
 
 	public static boolean setObject(ItemStack folder, Object object) {
 
-		if (getObject(folder) == null)
-		{
-			if (object instanceof ItemStack)
-			{
+		if (getObject(folder) == null) {
+			if (object instanceof ItemStack) {
+				
 				ItemStack stack = (ItemStack)object;
-				if (stack.getItem() instanceof Item && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
+				if (stack.getItem() instanceof Item && Item.REGISTRY.getNameForObject(stack.getItem()) != null)
 					NBTUtils.setString(folder, TAG_FILE_NAME, Item.REGISTRY.getNameForObject(stack.getItem()).toString());
-				}
-				else if (stack.getItem() instanceof ItemBlock && Block.REGISTRY.getNameForObject(Block.getBlockFromItem((Item)stack.getItem())) != null) {
+				
+				else if (stack.getItem() instanceof ItemBlock && Block.REGISTRY.getNameForObject(Block.getBlockFromItem((Item)stack.getItem())) != null)
 					NBTUtils.setString(folder, TAG_FILE_NAME, Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString());
-				}
+				
 				NBTUtils.setInt(folder, TAG_FILE_META, ((ItemStack)object).getItemDamage());
 				add(folder, 1);
 				if (folder.getItemDamage() == 2)
@@ -276,8 +289,8 @@ public class ItemFolder extends Item implements IFolder {
 				
 				return true;
 			}
-			if (object instanceof BlockLiquid || object instanceof IFluidBlock) 
-			{
+			if (object instanceof BlockLiquid || object instanceof IFluidBlock) {
+				
 				Block bl = (Block)object;
 				String fluidname = bl.getLocalizedName();
 				if (object instanceof IFluidBlock)
@@ -300,8 +313,8 @@ public class ItemFolder extends Item implements IFolder {
 					if (toBlacklist.contains(entityblacklist))
 						return false;
 				}
-				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild()))
-				{
+				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild())) {
+					
 					String entityName = EntityList.getEntityString((EntityLivingBase)object);
 					NBTUtils.setString(folder, TAG_FILE_NAME, entityName);
 					add(folder, 1);
@@ -344,13 +357,12 @@ public class ItemFolder extends Item implements IFolder {
 		
 		ItemStack folder = player.getHeldItemMainhand();
 		
-		if (folder != null && folder.getItem() == this)
-		{
+		if (folder != null && folder.getItem() == this) {
 			if (folder.getItemDamage() == 3) {
 				if (getObject(folder) != null) {
 					String entityName = EntityList.getEntityString(target);
-					if (getObject(folder).equals(entityName))
-					{
+					if (getObject(folder).equals(entityName)) {
+						
 						add(folder, 1);
 						MobUtils.dropMobEquips(player.worldObj, target);
 						target.setDead();
@@ -367,20 +379,18 @@ public class ItemFolder extends Item implements IFolder {
 		
 		if (getObject(stack) != null) {
 			if (stack.getItemDamage() < 2) {
-				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock)
-				{	
+				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {	
+					
 					long count = ItemFolder.getFileSize(stack);
 					if (stack.getItemDamage() == 1 && !EnderUtils.preValidateEnderFolder(stack))
 						return EnumActionResult.FAIL;
 					
-					if (count > 0)
-					{
+					if (count > 0) {
 						ItemStack stackToPlace = new ItemStack(((ItemStack)getObject(stack)).getItem(), 1, ((ItemStack)getObject(stack)).getItemDamage());
 						stackToPlace.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
 						
 						if (stackToPlace.stackSize == 0) {
-							if (!player.capabilities.isCreativeMode)
-							{
+							if (!player.capabilities.isCreativeMode) {
 								if (stack.getItemDamage() == 1 && !world.isRemote) {
 									EnderUtils.syncToTileAndDecrement(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
 									if (player instanceof FakePlayer)
@@ -394,13 +404,11 @@ public class ItemFolder extends Item implements IFolder {
 					}
 				}
 			}
-			if (stack.getItemDamage() == 3)
-			{
+			if (stack.getItemDamage() == 3) {
 				if (MobUtils.spawnEntityFromFolder(world, player, stack, pos, side))
 					return EnumActionResult.SUCCESS;
 			}
-			if (stack.getItemDamage() == 4)
-			{
+			if (stack.getItemDamage() == 4) {
 				if (!(getObject(stack) instanceof FluidStack))
 					return EnumActionResult.PASS;
 				if (FluidUtils.doPlace(world, player, stack, pos, side))
@@ -422,9 +430,9 @@ public class ItemFolder extends Item implements IFolder {
 			tag.setBoolean(StringLibs.RFC_IGNORENBT, !tag.getBoolean(StringLibs.RFC_IGNORENBT));
 			return ActionResult.newResult(EnumActionResult.SUCCESS, folder);
 		}
-		if (folder.getItemDamage() != 4) {
+		if (folder.getItemDamage() != 4)
 			return ActionResult.newResult(EnumActionResult.PASS, folder);
-		}
+		
 		RayTraceResult rtr = rayTrace(world, player, true);
 		if (rtr == null)
 			return ActionResult.newResult(EnumActionResult.PASS, folder);

@@ -4,15 +4,16 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
@@ -45,9 +46,16 @@ public class TextHelper {
 		return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
 	}
 	
+	// client only
 	public static String localize(String str) {
 		
-		return I18n.translateToLocal(str);
+		return I18n.format(str);
+	}
+	
+	// server only
+	public static String localizeCommands(String str) {
+		
+		return net.minecraft.util.text.translation.I18n.translateToLocalFormatted("commands." + RealFilingCabinet.MOD_ID + "." + str);
 	}
 	
 	public static String folderStr(ItemStack folder) {

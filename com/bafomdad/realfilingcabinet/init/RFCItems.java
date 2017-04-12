@@ -4,6 +4,7 @@ import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.items.*;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -52,8 +53,8 @@ public class RFCItems {
 		for (int i = 0; i < emptyFolder.folderType.length; ++i)
 			ModelLoader.setCustomModelResourceLocation(emptyFolder, i, new ModelResourceLocation(emptyFolder.getRegistryName() + "_" + emptyFolder.folderType[i], "inventory"));
 		
-		for (int i = 0; i < folder.folderTypes.length; ++i)
-			ModelLoader.setCustomModelResourceLocation(folder, i, new ModelResourceLocation(folder.getRegistryName() + "_" + folder.folderTypes[i], "inventory"));
+		for (int i = 0; i < FolderType.values().length; ++i)
+			ModelLoader.setCustomModelResourceLocation(folder, i, new ModelResourceLocation(folder.getRegistryName() + "_" + FolderType.values()[i].toString().toLowerCase(), "inventory"));
 		
 		for (int i = 0; i < upgrades.upgradeTypes.length; ++i)
 			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + upgrades.upgradeTypes[i], "inventory"));

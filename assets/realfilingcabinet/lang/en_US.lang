@@ -75,3 +75,13 @@ message.realfilingcabinet.errorEnder=This cabinet must only contain basic folder
 message.realfilingcabinet.errorLife=Do you want this mana to run away?!?
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
 message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!
+
+# COMMANDS
+commands.realfilingcabinet.errorNumberArg=Last argument is not a number
+commands.realfilingcabinet.errorNoArgs=Not enough arguments
+commands.realfilingcabinet.help=Available command arguments: setcount, setitem
+commands.realfilingcabinet.notEmptyFolder=Held item is either empty or not a empty folder
+commands.realfilingcabinet.notNormalFolder=This folder must be a normal empty folder
+commands.realfilingcabinet.noItemOrBlockFound=Unable to set item or block to folder
+commands.realfilingcabinet.errorManaFolder=Cannot set count to a mana folder
+commands.realfilingcabinet.errorParseLong=Unable to parse Long. Must be a number

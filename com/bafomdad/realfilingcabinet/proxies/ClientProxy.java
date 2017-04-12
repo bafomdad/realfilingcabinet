@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.events.EventHandlerClient;
+import com.bafomdad.realfilingcabinet.gui.GuiFileList;
 import com.bafomdad.realfilingcabinet.helpers.ResourceUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
@@ -14,7 +16,6 @@ import com.bafomdad.realfilingcabinet.init.RFCEntities;
 import com.bafomdad.realfilingcabinet.init.RFCIntegration;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
-import com.bafomdad.realfilingcabinet.renders.GuiFileList;
 
 public class ClientProxy extends CommonProxy {
 
@@ -42,5 +43,6 @@ public class ClientProxy extends CommonProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 		
 		MinecraftForge.EVENT_BUS.register(new GuiFileList(Minecraft.getMinecraft()));
+//		MinecraftForge.EVENT_BUS.register(new EventHandlerClient());
 	}
 }

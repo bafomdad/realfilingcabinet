@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -40,8 +39,8 @@ public class EventHandlerServer {
 		
 		if (event.getEntityPlayer() != null && (event.getTarget() != null && event.getTarget() instanceof EntityItemFrame)) {
 			EntityItemFrame frame = (EntityItemFrame)event.getTarget();
-			if (frame.getDisplayedItem() != null && frame.getDisplayedItem().getItem() == RFCItems.filter)
-			{
+			if (frame.getDisplayedItem() != null && frame.getDisplayedItem().getItem() == RFCItems.filter) {
+				
 				int rotation = frame.getRotation() + 1;
 				if (rotation > 7)
 					rotation = 0;

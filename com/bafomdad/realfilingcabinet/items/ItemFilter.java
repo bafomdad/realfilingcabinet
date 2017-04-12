@@ -2,15 +2,17 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
-import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.TabRFC;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.TabRFC;
+
 public class ItemFilter extends Item {
+	
+	private static String TAG_FILTER = "RFC_tagFilter";
 
 	public ItemFilter() {
 		

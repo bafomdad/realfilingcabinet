@@ -94,7 +94,7 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, damage);
 				ItemFolder.setObject(newFolder, stack1);
 				return newFolder;
-			}
+			}	
 			else if (folder.getItemDamage() == 4 && stack1.hasTagCompound()) {
 				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 5);
 				ItemFolder.setObject(newFolder, stack1);
