@@ -8,6 +8,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
@@ -63,6 +64,9 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	@Override
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
+		if (upgrade.getItemDamage() == 0) {
+			return !UpgradeHelper.isCreative(tile);
+		}
 		if (upgrade.getItemDamage() == 2) {
 			boolean flag = false;
 			for (ItemStack stack : tile.getInventory().getStacks()) {
