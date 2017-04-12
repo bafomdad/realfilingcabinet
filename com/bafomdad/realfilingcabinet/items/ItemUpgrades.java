@@ -7,6 +7,7 @@ import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,6 +63,9 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	@Override
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
+		if (upgrade.getItemDamage() == 0) {
+			return !UpgradeHelper.isCreative(tile);
+		}
 		if (upgrade.getItemDamage() == 2) {
 			boolean flag = false;
 			for (ItemStack stack : tile.getInventory().getStacks()) {

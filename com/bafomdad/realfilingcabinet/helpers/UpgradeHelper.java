@@ -89,6 +89,8 @@ public class UpgradeHelper {
 		if (key != null && key.equals(StringLibs.TAG_CREATIVE))
 		{
 			tile.isCreative = true;
+			if (!player.capabilities.isCreativeMode)
+				upgrade.shrink(1);
 			tile.markDirty();
 			return;
 		}

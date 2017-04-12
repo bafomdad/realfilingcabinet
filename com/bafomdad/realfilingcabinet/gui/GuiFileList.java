@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.renders;
+package com.bafomdad.realfilingcabinet.gui;
 
 import java.util.ArrayList;
 import java.util.List;

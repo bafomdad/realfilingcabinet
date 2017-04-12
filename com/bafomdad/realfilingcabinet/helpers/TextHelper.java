@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -39,9 +40,16 @@ public class TextHelper {
 		return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
 	}
 	
+	// client only
 	public static String localize(String str) {
 		
 		return I18n.format(str);
+	}
+	
+	// server only
+	public static String localizeCommands(String str) {
+		
+		return net.minecraft.util.text.translation.I18n.translateToLocalFormatted("commands." + RealFilingCabinet.MOD_ID + "." + str);
 	}
 	
 	public static String folderStr(ItemStack folder) {

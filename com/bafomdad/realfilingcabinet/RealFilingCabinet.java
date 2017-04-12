@@ -7,10 +7,14 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import org.apache.logging.log4j.Logger;
 
+import com.bafomdad.realfilingcabinet.commands.CommandRFC;
 import com.bafomdad.realfilingcabinet.events.EventHandlerServer;
+import com.bafomdad.realfilingcabinet.gui.GuiHandlerRFC;
 import com.bafomdad.realfilingcabinet.proxies.CommonProxy;
 
 @Mod(modid=RealFilingCabinet.MOD_ID, name=RealFilingCabinet.MOD_NAME, version=RealFilingCabinet.VERSION, dependencies="required-after:forge@[13.19.1.2188,)")
@@ -36,6 +40,8 @@ public class RealFilingCabinet {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerRFC());
+		
 		config = new ConfigRFC();
 		config.loadconfig(event);
 		logger = event.getModLog();
@@ -55,5 +61,11 @@ public class RealFilingCabinet {
 		
 		proxy.postInit(event);
 		MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
+	}
+	
+	@Mod.EventHandler
+	public void serverLoad(FMLServerStartingEvent event) {
+		
+		event.registerServerCommand(new CommandRFC());
 	}
 }

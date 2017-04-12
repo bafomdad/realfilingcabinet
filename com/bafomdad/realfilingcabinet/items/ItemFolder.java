@@ -121,7 +121,7 @@ public class ItemFolder extends Item implements IFolder {
 			extract = Math.min(((ItemStack)getObject(stack)).getMaxStackSize(), count);
 		
 		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true)) {
-			return null;
+			return ItemStack.EMPTY;
 		}
 		ItemStack copy = stack.copy();
 		if (stack.getItemDamage() == 2 && count == 0)
