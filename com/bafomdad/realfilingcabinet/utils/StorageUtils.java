@@ -176,11 +176,11 @@ public class StorageUtils {
 	public static void extractStackManually(TileEntityRFC tile, EntityPlayer player, boolean crouching) {
 		
 		ItemStack stack = tile.getFilter();
-		if (stack != ItemStack.EMPTY) {
+		if (!stack.isEmpty()) {
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
-				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null)
-				{
+				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null) {
+					
 					ItemStack container = player.getHeldItemMainhand();
 					if (container != ItemStack.EMPTY && container.getItem() == Items.BUCKET)
 					{
@@ -198,14 +198,17 @@ public class StorageUtils {
 					}
 					else return;
 				}
-				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
-				{
+				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null) {
+					
 					OreDictUtils.recreateOreDictionary(stack);
 					if (OreDictUtils.hasOreDict()) {
 						if (!loopinv.isEmpty() && OreDictUtils.areItemsEqual(stack, loopinv))
 						{
 							ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 							long count = ItemFolder.getFileSize(folder);
+							if (count == 0)
+								continue;
+							
 							if (crouching) {
 								long extract = Math.min(stack.getMaxStackSize(), count);
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
@@ -216,8 +219,7 @@ public class StorageUtils {
 								tile.markBlockForUpdate();
 								break;
 							}
-							else
-							{
+							else {
 								ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 								if (!player.inventory.addItemStackToInventory(stackExtract))
 									player.dropItem(stackExtract, true);
@@ -229,10 +231,13 @@ public class StorageUtils {
 						}
 					}
 				}
-				if (!loopinv.isEmpty() && simpleMatch(loopinv, stack))
-				{
+				if (!loopinv.isEmpty() && simpleMatch(loopinv, stack)) {
+					
 					ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 					long count = ItemFolder.getFileSize(folder);
+					if (count == 0)
+						continue;
+					
 					if (folder.getItemDamage() == 5) {
 						if (ItemStack.areItemStackTagsEqual(loopinv, stack)) {
 							player.inventory.addItemStackToInventory(stack.copy());
@@ -252,8 +257,7 @@ public class StorageUtils {
 						tile.markBlockForUpdate();
 						break;
 					}
-					else
-					{
+					else {
 						ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 						if (!player.inventory.addItemStackToInventory(stackExtract))
 							player.dropItem(stackExtract, true);
