@@ -117,7 +117,7 @@ public class InventoryRFC extends ItemStackHandler {
 	
 	public ItemStack getTrueStackInSlot(int slot) {
 		
-		if (slot >= 0)
+		if (slot >= 0 && slot < getSlots())
 			return stacks[slot];
 		
 		return null;

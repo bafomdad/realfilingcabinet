@@ -24,9 +24,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemUpgrades extends Item implements IUpgrades {
-	
-	public String[] upgradeTypes = new String[] { "creative", "crafting", "ender", "oredict", "mob", "fluid", "life" };
 
+	public enum UpgradeType {
+		CREATIVE,
+		CRAFTING,
+		ENDER,
+		OREDICT,
+		MOB,
+		FLUID,
+		LIFE;
+	}
+	
 	public ItemUpgrades() {
 		
 		setRegistryName("upgrade");
@@ -40,13 +48,13 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + upgradeTypes[stack.getItemDamage()];
+		return getUnlocalizedName() + "_" + UpgradeType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		
-		for (int i = 0; i < upgradeTypes.length; ++i)
+		for (int i = 0; i < UpgradeType.values().length; ++i)
 			list.add(new ItemStack(item, 1, i));
 	}
 	
@@ -64,20 +72,18 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	@Override
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
-		if (upgrade.getItemDamage() == 0) {
+		if (upgrade.getItemDamage() == UpgradeType.CREATIVE.ordinal()) {
 			return !UpgradeHelper.isCreative(tile);
 		}
-		if (upgrade.getItemDamage() == 2) {
-			boolean flag = false;
+		if (upgrade.getItemDamage() == UpgradeType.ENDER.ordinal()) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (stack != null && stack.getItem() instanceof ItemManaFolder || (stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) 
-				{
+				if (stack != null && stack.getItem() instanceof ItemManaFolder || (stack != null && stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) {
 					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
 					return false;
 				}
 			}
 		}
-		if (upgrade.getItemDamage() == 6) {
+		if (upgrade.getItemDamage() == UpgradeType.LIFE.ordinal()) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
 				if (stack != null && stack.getItem() == RFCItems.manaFolder) {
 					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
