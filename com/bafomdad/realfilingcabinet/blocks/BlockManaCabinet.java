@@ -61,17 +61,16 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
     @Override
     public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
     	
-    	if (side == EnumFacing.DOWN || side.getIndex() == state.getValue(FACING).getIndex()) {
+    	if (side == EnumFacing.DOWN || side.getIndex() == state.getValue(FACING).getIndex())
     		return false;
-    	}
+
     	return true;
     }
     
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
     	
-    	if (hand == EnumHand.MAIN_HAND)
-    	{
+    	if (hand == EnumHand.MAIN_HAND) {
         	TileEntity tile = world.getTileEntity(pos);
         	if (tile != null && tile instanceof TileManaCabinet)
         		rightClick(tile, player, facing, hitX, hitY, hitZ);
@@ -86,8 +85,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 		
 		world.setBlockState(pos, state.withProperty(FACING, entity.getHorizontalFacing().getOpposite()), 2);
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile != null && tile instanceof TileManaCabinet)
-		{
+		if (tile != null && tile instanceof TileManaCabinet) {
 			if (stack.hasTagCompound())
 				((TileManaCabinet)tile).readInv(stack.getTagCompound());
 		}
@@ -117,13 +115,11 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack) {
 		
-		if (tile instanceof TileManaCabinet)
-		{
+		if (tile instanceof TileManaCabinet) {
 			ItemStack s = new ItemStack(this);
 			NBTTagCompound tag = new NBTTagCompound();
 			((TileManaCabinet)tile).writeInv(tag, true);
-			if (!tag.hasNoTags())
-			{
+			if (!tag.hasNoTags()) {
 				s.setTagCompound(tag);
 				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
 				return;
@@ -145,10 +141,8 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 			if (!tileMana.getCabinetOwner().equals(player.getUniqueID()) && !tileMana.hasKeyCopy(player, tileMana.getCabinetOwner()))
 				return;
 		}
-		if (!player.isSneaking() && !stack.isEmpty())
-		{
-			if (stack.getItem() instanceof ItemKeys)
-			{
+		if (!player.isSneaking() && !stack.isEmpty()) {
+			if (stack.getItem() instanceof ItemKeys) {
 				if (!tileMana.isCabinetLocked()) {
 					if (stack.getItemDamage() == 0)
 						tileMana.setOwner(player.getUniqueID());
@@ -167,8 +161,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 				}
 				return;
 			}
-			if (stack.getItem() instanceof IManaItem && tileMana.isOpen)
-			{
+			if (stack.getItem() instanceof IManaItem && tileMana.isOpen) {
 				for (int i = 0; i < tileMana.getInv().getSlots(); i++) {
 					ItemStack tileStack = tileMana.getInv().getStackInSlot(i);
 					if (tileStack.isEmpty())
@@ -182,10 +175,8 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 				return;
 			}
 		}
-		if (!player.isSneaking() && stack.isEmpty())
-		{
-			if (!tileMana.getWorld().isRemote)
-			{
+		if (!player.isSneaking() && stack.isEmpty()) {
+			if (!tileMana.getWorld().isRemote) {
 				if (tileMana.isOpen)
 					tileMana.isOpen = false;
 				else
@@ -194,13 +185,11 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 			}
 			tileMana.markBlockForUpdate();
 		}
-		if (player.isSneaking() && stack.isEmpty() && tileMana.isOpen)
-		{
-			for (int i = tileMana.getInv().getSlots() - 1; i >= 0; i--)
-			{
+		if (player.isSneaking() && stack.isEmpty() && tileMana.isOpen) {
+			for (int i = tileMana.getInv().getSlots() - 1; i >= 0; i--) {
 				ItemStack folder = tileMana.getInv().getStackInSlot(i);
-				if (!folder.isEmpty())
-				{
+				if (!folder.isEmpty()) {
+					
 					tileMana.getInv().setStackInSlot(i, ItemStack.EMPTY);
 					player.setHeldItem(EnumHand.MAIN_HAND, folder);
 					tileMana.markBlockForUpdate();

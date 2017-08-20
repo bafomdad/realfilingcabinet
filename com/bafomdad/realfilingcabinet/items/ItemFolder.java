@@ -53,7 +53,14 @@ public class ItemFolder extends Item implements IFolder {
 	
 	public static int extractSize = 0;
 	
-	public String[] folderTypes = new String[] { "normal", "ender", "dura", "mob", "fluid", "nbt" };
+	public enum FolderType {
+		NORMAL,
+		ENDER,
+		DURA,
+		MOB,
+		FLUID,
+		NBT;
+	}
 
 	public ItemFolder() {
 		
@@ -67,7 +74,7 @@ public class ItemFolder extends Item implements IFolder {
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + folderTypes[stack.getItemDamage()];
+		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {

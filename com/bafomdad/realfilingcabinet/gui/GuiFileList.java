@@ -77,7 +77,7 @@ public class GuiFileList extends Gui {
 								for (int i = 0; i < list.size(); i++)
 								{
 									GL11.glDisable(GL11.GL_LIGHTING);
-									this.drawCenteredString(mc.fontRendererObj, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
+									this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 								}
 							}
 						}
@@ -88,7 +88,7 @@ public class GuiFileList extends Gui {
 						{
 							List<String> list = getManaList((TileManaCabinet)tile);
 							if (!list.isEmpty())
-								this.drawCenteredString(mc.fontRendererObj, list.get(0), width / 2, 5 + 10, Integer.parseInt("FFFFFF", 16));
+								this.drawCenteredString(mc.fontRenderer, list.get(0), width / 2, 5 + 10, Integer.parseInt("FFFFFF", 16));
 						}
 					}
 				}

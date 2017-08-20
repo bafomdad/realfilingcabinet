@@ -105,10 +105,10 @@ public class EnderUtils {
 		
 		for (WorldServer world : server.worlds) {
 			for (Object obj : world.loadedTileEntityList) {
-				if (obj instanceof TileEntityRFC)
-				{
+				if (obj instanceof TileEntityRFC) {
 					if (world.provider.getDimension() == dim && pos.equals(((TileEntityRFC)obj).getPos()) && UpgradeHelper.getUpgrade((TileEntityRFC)obj, StringLibs.TAG_ENDER) != null)
-						return (TileEntityRFC)world.getTileEntity(pos);
+						if (world.isBlockLoaded(pos))
+							return (TileEntityRFC)world.getTileEntity(pos);
 				}
 			}
 		}

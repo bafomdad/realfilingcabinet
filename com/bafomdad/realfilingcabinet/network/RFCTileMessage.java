@@ -45,7 +45,7 @@ public class RFCTileMessage implements IMessage {
 		@Override
 		public IMessage onMessage(RFCTileMessage message, MessageContext ctx) {
 
-			TileEntityRFC tile = (TileEntityRFC)ctx.getServerHandler().playerEntity.world.getTileEntity(message.getPos());
+			TileEntityRFC tile = (TileEntityRFC)ctx.getServerHandler().player.world.getTileEntity(message.getPos());
 			if (tile != null)
 			{
 				tile.isOpen = message.open;

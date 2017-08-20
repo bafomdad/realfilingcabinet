@@ -69,6 +69,7 @@ tooltip.realfilingcabinet.mana1000000000=All filled up, this is 1000 mana pools 
 
 # MESSAGES
 message.realfilingcabinet.errorEnder=This cabinet must only contain basic folders before applying this upgrade
+message.realfilingcabinet.errorLife=Do you want this mana to run away?!?
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
 message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!
 

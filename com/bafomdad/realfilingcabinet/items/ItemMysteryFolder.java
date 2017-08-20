@@ -26,18 +26,9 @@ import com.bafomdad.realfilingcabinet.init.RFCItems;
 public class ItemMysteryFolder extends Item {
 	
 	private static List<ItemStack> rando = new ArrayList<ItemStack>();
-
-	public ItemMysteryFolder() {
-		
-		setRegistryName("mysteryfolder");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".mysteryfolder");
-		setMaxStackSize(1);
-		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
-	}
 	
-	public static void fillRandoList() {
-		
+	static 
+	{
 		rando.add(new ItemStack(Items.DIAMOND, 1, 0));
 		rando.add(new ItemStack(Items.APPLE, 1, 0));
 		rando.add(new ItemStack(Blocks.COBBLESTONE, 1, 0));
@@ -47,6 +38,15 @@ public class ItemMysteryFolder extends Item {
 		rando.add(new ItemStack(Blocks.PRISMARINE, 1, 0));
 		rando.add(new ItemStack(Items.RABBIT_FOOT, 1, 0));
 		rando.add(new ItemStack(Blocks.TORCH, 1, 0));
+	}
+
+	public ItemMysteryFolder() {
+		
+		setRegistryName("mysteryfolder");
+		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".mysteryfolder");
+		setMaxStackSize(1);
+		setCreativeTab(TabRFC.instance);
+		GameRegistry.register(this);
 	}
 	
 	@Override

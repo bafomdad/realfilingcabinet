@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import vazkii.botania.api.mana.IManaItem;
 import vazkii.botania.api.mana.IManaTooltipDisplay;
@@ -36,6 +37,12 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 		
 		int count = getManaSize(stack);
 		list.add(BotaniaRFC.formatMana(count));
+	}
+	
+	@Override
+	public int getEntityLifespan(ItemStack stack, World world) {
+		
+		return Integer.MAX_VALUE;
 	}
 	
 	public static void setManaSize(ItemStack stack, int count) {
