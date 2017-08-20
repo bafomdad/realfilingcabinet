@@ -114,18 +114,15 @@ public class EnderUtils {
 	public static TileEntityRFC findLoadedTileEntityInWorld(BlockPos pos, int dim) {
 		
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		if (server == null)
-			return null;
-		
-		if (pos.getY() == -1)
+		if (server == null || pos.getY() == -1)
 			return null;
 		
 		for (WorldServer world : server.worldServers) {
 			for (Object obj : world.loadedTileEntityList) {
-				if (obj instanceof TileEntityRFC)
-				{
+				if (obj instanceof TileEntityRFC) {
 					if (world.provider.getDimension() == dim && pos.equals(((TileEntityRFC)obj).getPos()) && UpgradeHelper.getUpgrade((TileEntityRFC)obj, StringLibs.TAG_ENDER) != null)
-						return (TileEntityRFC)world.getTileEntity(pos);
+						if (world.isBlockLoaded(pos))
+							return (TileEntityRFC)world.getTileEntity(pos);
 				}
 			}
 		}
