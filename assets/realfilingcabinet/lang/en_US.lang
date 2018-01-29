@@ -30,11 +30,13 @@ item.realfilingcabinet.debugger.name=Debugging Tool
 item.realfilingcabinet.manafolder.name=Mana Folder
 item.realfilingcabinet.manaupgrade.name=Mana Upgrade
 item.realfilingcabinet.mysteryfolder.name=Mystery Folder
+item.realfilingcabinet.aspectfolder.name=Aspect Folder
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet
 tile.realfilingcabinet.beecabinet.name=Bee Cabinet
 tile.realfilingcabinet.manacabinet.name=Mana Cabinet
+tile.realfilingcabinet.aspectcabinet.name=Aspect Cabinet
 
 # ENTITIES
 entity.realfilingcabinet.cabinet.name=Filing Cabinet

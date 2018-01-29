@@ -25,7 +25,7 @@ public class CommandRFC extends CommandBase {
 	}
 
 	@Override
-	public String getCommandName() {
+	public String getName() {
 
 		return "/rfc";
 	}
@@ -37,13 +37,13 @@ public class CommandRFC extends CommandBase {
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) {
 
-		return getCommandName();
+		return getName();
 	}
 	
 	@Override
-	public List<String> getCommandAliases() {
+	public List<String> getAliases() {
 		
 		return aliases;
 	}
@@ -60,16 +60,16 @@ public class CommandRFC extends CommandBase {
 						int meta = Integer.parseInt(args[2]);
 						CommandFolderItem.setItem((EntityPlayer)sender, args[1], meta);
 					} catch (Exception e) {
-						sender.addChatMessage(new TextComponentString(TextHelper.localizeCommands("errorNumberArg")));
+						sender.sendMessage(new TextComponentString(TextHelper.localizeCommands("errorNumberArg")));
 					}
 				}
 				else
 					CommandFolderItem.setItem((EntityPlayer)sender, args[1], 0);
 			}
 			else if (args.length < 2)
-				sender.addChatMessage(new TextComponentString(TextHelper.localizeCommands("errorNoArgs")));
+				sender.sendMessage(new TextComponentString(TextHelper.localizeCommands("errorNoArgs")));
 		}
 		else
-			sender.addChatMessage(new TextComponentString(TextHelper.localizeCommands("help")));
+			sender.sendMessage(new TextComponentString(TextHelper.localizeCommands("help")));
 	}
 }

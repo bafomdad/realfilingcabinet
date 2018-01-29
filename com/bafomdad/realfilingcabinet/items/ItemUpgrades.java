@@ -78,7 +78,7 @@ public class ItemUpgrades extends Item implements IUpgrades {
 		if (upgrade.getItemDamage() == UpgradeType.ENDER.ordinal()) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
 				if (stack != null && stack.getItem() instanceof ItemManaFolder || (stack != null && stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
+					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
 					return false;
 				}
 			}
@@ -86,7 +86,7 @@ public class ItemUpgrades extends Item implements IUpgrades {
 		if (upgrade.getItemDamage() == UpgradeType.LIFE.ordinal()) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
 				if (stack != null && stack.getItem() == RFCItems.manaFolder) {
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
+					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
 					return false;
 				}
 			}

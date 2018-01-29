@@ -117,7 +117,7 @@ public class EnderUtils {
 		if (server == null || pos.getY() == -1)
 			return null;
 		
-		for (WorldServer world : server.worldServers) {
+		for (WorldServer world : server.worlds) {
 			for (Object obj : world.loadedTileEntityList) {
 				if (obj instanceof TileEntityRFC) {
 					if (world.provider.getDimension() == dim && pos.equals(((TileEntityRFC)obj).getPos()) && UpgradeHelper.getUpgrade((TileEntityRFC)obj, StringLibs.TAG_ENDER) != null)

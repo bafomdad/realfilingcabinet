@@ -26,17 +26,21 @@ sourceSets
 //	}
 }
 
-version = "1.10.2-1.3.8"
+version = "1.10.2-1.4.3"
 group = "com.bafomdad.realfilingcabinet"
 archivesBaseName = "realfilingcabinet"
 
 minecraft {
-    version = "1.10.2-12.18.1.2053"
-	mappings = "snapshot_20160519"
+    //version = "1.10.2-12.18.1.2053"
+	version = "1.10.2-12.18.3.2185"
+	mappings = "stable_29"
 	makeObfSourceJar = false
 }
 dependencies {
-
+	compile files(
+		'Thaumcraft-1.10.2-6.0.BETA2-deobf.jar'
+	)
+	deobfCompile "vazkii.botania:Botania:r1.9-338"
 }
 jar {
 	exclude "build/*"

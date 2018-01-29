@@ -165,7 +165,7 @@ public class AutocraftingUtils {
 		TileEntityRFC tile = ((InventoryRFC)inv).getTile();
 		
 		EntityItem ei = new EntityItem(tile.getWorld(), tile.getPos().getX() + 0.5, tile.getPos().getY() + 1.5, tile.getPos().getZ() + 0.5, container);
-		tile.getWorld().spawnEntityInWorld(ei);
+		tile.getWorld().spawnEntity(ei);
 	}
 
 	public static ItemStack[] getRecipeItems(IRecipe recipe) {

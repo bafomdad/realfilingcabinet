@@ -98,7 +98,7 @@ public class ItemMagnifyingGlass extends Item {
 								String name = TextHelper.folderStr(stacky);
 								long storedSize = ItemFolder.getFileSize(stacky);
 								
-								player.addChatMessage(new TextComponentString(name + " - " + storedSize));
+								player.sendMessage(new TextComponentString(name + " - " + storedSize));
 							}
 						}
 					}

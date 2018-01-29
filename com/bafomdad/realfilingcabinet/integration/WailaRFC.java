@@ -89,7 +89,7 @@ public class WailaRFC {
 			TileEntityRFC tileRFC = (TileEntityRFC)accessor.getTileEntity();
 			if (tileRFC.getCabinetOwner() != null)
 			{
-				EntityPlayer onlinePlayer = accessor.getPlayer().worldObj.getPlayerEntityByUUID(tileRFC.getCabinetOwner());
+				EntityPlayer onlinePlayer = accessor.getPlayer().world.getPlayerEntityByUUID(tileRFC.getCabinetOwner());
 				if (onlinePlayer != null)
 					owner = "Locked, owned by: " + onlinePlayer.getName();
 				else

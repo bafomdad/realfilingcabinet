@@ -64,11 +64,6 @@ public class UpgradeHelper {
 			return null;
 		
 		String str = tile.upgrades;
-		if (!(RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) && str.equals(StringLibs.TAG_MANA))
-		{
-			tile.upgrades = "";
-			return null;
-		}
 		if (str.equals(tag))
 			return str;
 		

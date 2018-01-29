@@ -31,7 +31,4 @@ public class StringLibs {
 	
 	// ENTITY
 	public static String RFC_MOBUPGRADE = "RFC_mobUpgrade";
-	
-	// INTEGRATION
-	public static String TAG_MANA = "TAG_manaUpgrade";
 }

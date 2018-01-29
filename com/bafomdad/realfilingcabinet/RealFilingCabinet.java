@@ -23,7 +23,7 @@ public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
 	public static final String MOD_NAME = "Real Filing Cabinet";
-	public static final String VERSION = "1.3.8";
+	public static final String VERSION = "1.4.3";
 	
 	@SidedProxy(clientSide="com.bafomdad.realfilingcabinet.proxies.ClientProxy", serverSide="com.bafomdad.realfilingcabinet.proxies.CommonProxy")
 	public static CommonProxy proxy;
@@ -39,6 +39,7 @@ public class RealFilingCabinet {
 	public static boolean wailaLoaded = Loader.isModLoaded("Waila");
 	public static boolean topLoaded = Loader.isModLoaded("theoneprobe");
 	public static boolean enderioLoaded = Loader.isModLoaded("EnderIO") || Loader.isModLoaded("Ender IO");
+	public static boolean tcLoaded = Loader.isModLoaded("thaumcraft");
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -59,6 +60,7 @@ public class RealFilingCabinet {
 	public void init(FMLInitializationEvent event) {
 
 		proxy.init(event);
+		proxy.registerColors();
 	}
 	
 	@Mod.EventHandler

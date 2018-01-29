@@ -1,6 +1,10 @@
 package com.bafomdad.realfilingcabinet.proxies;
 
+import thaumcraft.api.aspects.Aspect;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -16,6 +20,7 @@ import com.bafomdad.realfilingcabinet.init.RFCEntities;
 import com.bafomdad.realfilingcabinet.init.RFCIntegration;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
+import com.bafomdad.realfilingcabinet.items.ItemAspectFolder;
 
 public class ClientProxy extends CommonProxy {
 
@@ -26,14 +31,7 @@ public class ClientProxy extends CommonProxy {
 		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/craftingcabinet.png"), StringLibs.TAG_CRAFT);
 		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/oredictcabinet.png"), StringLibs.TAG_OREDICT);
 		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/mobcabinet.png"), StringLibs.TAG_MOB);
-		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/fluidcabinet.png"), StringLibs.TAG_FLUID);
-		
-//		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetMobTexture.png"), StringLibs.TAG_MOB);
-//		ResourceUpgradeHelper.registerMobUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/entity/cabinetFluidTexture.png"), StringLibs.TAG_FLUID);
-		
-		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
-			ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/manacabinet.png"), StringLibs.TAG_MANA);
-		
+		ResourceUpgradeHelper.registerUpgradeResource(new ResourceLocation(RealFilingCabinet.MOD_ID, "textures/model/fluidcabinet.png"), StringLibs.TAG_FLUID);	
 		RFCBlocks.initModels();
 		RFCItems.initModels();
 		RFCEntities.initModels();
@@ -44,5 +42,28 @@ public class ClientProxy extends CommonProxy {
 		
 		MinecraftForge.EVENT_BUS.register(new GuiFileList(Minecraft.getMinecraft()));
 //		MinecraftForge.EVENT_BUS.register(new EventHandlerClient());
+	}
+	
+	@Override
+	public void registerColors() {
+		
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
+			ItemColors ic = Minecraft.getMinecraft().getItemColors();
+			ic.registerItemColorHandler(new IItemColor() {
+				
+				@Override
+				public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+					
+					if (stack != null && stack.getItem() == RFCItems.aspectFolder) {
+						if (tintIndex == 1) {
+							Aspect asp = ItemAspectFolder.getAspectFromFolder(stack);
+							if (asp != null)
+								return asp.getColor();
+						}
+					}
+					return 0xffffff;
+				}
+			}, RFCItems.aspectFolder);
+		}
 	}
 }

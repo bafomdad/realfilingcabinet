@@ -5,11 +5,14 @@ import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
+import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -25,6 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -56,18 +60,19 @@ public class TopRFC {
 				public void addProbeInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, IBlockState state, IProbeHitData data) {
 
 					if (state.getBlock() instanceof IFilingCabinet) {
-						TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(data.getPos());
-						if (tile != null) 
-						{
-							if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_MANA) != null)
-							{
-								addManaInfo(info, tile);
+						TileEntity tile = world.getTileEntity(data.getPos());
+						if (tile != null) {
+							if (tile instanceof TileManaCabinet)
+								addManaInfo(info, (TileManaCabinet)tile);
+							
+							else if (tile instanceof TileEntityRFC) {
+								TileEntityRFC tileRFC = (TileEntityRFC)tile;
+								for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
+									addFolderInfo(info, tileRFC, i);
+								}
+								if (player.isSneaking())
+									addExtraInfo(info, tileRFC);
 							}
-							for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-								addFolderInfo(info, tile, i);
-							}
-							if (player.isSneaking())
-								addExtraInfo(info, tile);
 						}
 					}
 				}
@@ -172,7 +177,7 @@ public class TopRFC {
 			info.horizontal().text(TextFormatting.GRAY + "Locked: " + lockFormat);
 		}
 		
-		public void addManaInfo(IProbeInfo info, TileEntityRFC tile) {
+		public void addManaInfo(IProbeInfo info, TileManaCabinet tile) {
 			
 			double count = tile.getTotalInternalManaPool();
 			double calc = 0.0;
@@ -217,7 +222,7 @@ public class TopRFC {
 							{
 								long storedSize = ItemFolder.getFileSize(folder);
 								String name = ItemFolder.getFileName(folder);
-								Entity entity = EntityList.createEntityByIDFromName(name, cabinet.worldObj);
+								Entity entity = EntityList.createEntityByIDFromName(name, cabinet.world);
 								if (entity != null)
 									info.horizontal().text(entity.getName() + " - " + storedSize);
 								else

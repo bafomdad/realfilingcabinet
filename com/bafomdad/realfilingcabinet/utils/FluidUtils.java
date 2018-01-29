@@ -57,20 +57,20 @@ public class FluidUtils {
                     {
                         world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, (double)pos.getX() + Math.random(), (double)pos.getY() + Math.random(), (double)pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
                     }
-                    if (!player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+                    if (!player.world.isRemote && !player.capabilities.isCreativeMode)
                     	ItemFolder.remove(stack, 1000);
 					return true;
 				}
-				if (!player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				
 				world.setBlockState(pos, liquid.getDefaultState(), 3);
-				world.notifyBlockOfStateChange(pos, world.getBlockState(pos).getBlock());
+				world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
 				return true;
 			}
 			else if (fluid != null && (hitblock != fluid.getBlock() || (hitblock == fluid.getBlock() && l != 0)))
 			{
-				if (!player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				
 				world.setBlockState(pos, fluid.getBlock().getDefaultState(), 3);

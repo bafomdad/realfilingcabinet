@@ -45,7 +45,7 @@ public class EventHandlerServer {
 				if (rotation > 7)
 					rotation = 0;
 				
-				TileEntity tile = frame.worldObj.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
+				TileEntity tile = frame.world.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
 				if (tile != null && tile instanceof TileEntityRFC) {
 					TileEntityRFC tileRFC = (TileEntityRFC)tile;
 					ItemStack stack = tileRFC.getInventory().getStackFromFolder(rotation);

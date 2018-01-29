@@ -45,7 +45,7 @@ public class TutorialGenerator implements IWorldGenerator {
 	public void generateTutorial(WorldServer world, BlockPos pos) {
 		
 		MinecraftServer server = world.getMinecraftServer();
-		Template template = world.getStructureTemplateManager().func_189942_b(server, TUTORIAL_STRUCTURE);
+		Template template = world.getStructureTemplateManager().get(server, TUTORIAL_STRUCTURE);
 		PlacementSettings settings = new PlacementSettings();
 		settings.setRotation(Rotation.NONE);
 		

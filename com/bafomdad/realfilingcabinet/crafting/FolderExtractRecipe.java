@@ -148,7 +148,7 @@ public class FolderExtractRecipe extends ShapelessRecipes implements IRecipe {
 				}
 			}
 		}
-		if (!event.player.worldObj.isRemote && canSync)
+		if (!event.player.world.isRemote && canSync)
 		{
 			if (foldy != null)
 			{

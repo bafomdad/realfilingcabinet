@@ -13,12 +13,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.lwjgl.opengl.GL11;
@@ -27,9 +24,8 @@ import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
-import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -57,19 +53,17 @@ public class GuiFileList extends Gui {
 			int width = scaled.getScaledWidth();
 			int height = scaled.getScaledHeight();
 			
-			EntityPlayer player = mc.thePlayer;
+			EntityPlayer player = mc.player;
 			RayTraceResult mop = mc.objectMouseOver;
 			
 			if (mop != null) {
-				IBlockState state = mop.typeOfHit == RayTraceResult.Type.BLOCK ? mc.theWorld.getBlockState(mop.getBlockPos()) : null;
+				IBlockState state = mop.typeOfHit == RayTraceResult.Type.BLOCK ? mc.world.getBlockState(mop.getBlockPos()) : null;
 				Block block = state == null ? null : state.getBlock();
 				ItemStack magnifyingGlass = player.getHeldItemMainhand();
 				
-				if (ConfigRFC.magnifyingGlassGui && block instanceof BlockRFC && magnifyingGlass != null && (magnifyingGlass.getItem() == RFCItems.magnifyingGlass))
-				{
-					TileEntity tile = player.worldObj.getTileEntity(mop.getBlockPos());
-					if (tile != null && tile instanceof TileEntityRFC)
-					{
+				if (ConfigRFC.magnifyingGlassGui && block instanceof BlockRFC && magnifyingGlass != null && (magnifyingGlass.getItem() == RFCItems.magnifyingGlass)) {
+					TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
+					if (tile instanceof TileEntityRFC) {
 						List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
 						if (!list.isEmpty())
 						{
@@ -80,6 +74,11 @@ public class GuiFileList extends Gui {
 							}
 						}
 					}
+					else if (tile instanceof TileManaCabinet) {
+						List<String> list = getManaList((TileManaCabinet)tile);
+						if (!list.isEmpty())
+							this.drawCenteredString(mc.fontRendererObj, list.get(0), width / 2, 5 + 10, Integer.parseInt("FFFFFF", 16));
+					}
 				}
 			}
 			profiler.endSection();
@@ -89,20 +88,8 @@ public class GuiFileList extends Gui {
 	private List getFileList(InventoryRFC inv, boolean crouching) {
 		
 		List<String> list = new ArrayList();
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
+		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getTrueStackInSlot(i);
-			if (UpgradeHelper.getUpgrade(inv.getTile(), StringLibs.TAG_MANA) != null)
-			{
-				double count = inv.getTile().getTotalInternalManaPool();
-				double calc = 0.0;
-				if (count > 0)
-					calc = count / 1000000;
-				NumberFormat percentFormatter = NumberFormat.getPercentInstance();
-				String percentOut = percentFormatter.format(calc);
-				list.add(percentOut + " of a full mana pool");
-				return list;
-			}
 			if (folder != null && folder.getItem() instanceof IFolder) {
 				if (ItemFolder.getObject(folder) != null) {
 					String name = TextHelper.folderStr(folder);
@@ -127,6 +114,21 @@ public class GuiFileList extends Gui {
 				}
 			}
 		}
+		return list;
+	}
+	
+	private List getManaList(TileManaCabinet tile) {
+		
+		List<String> list = new ArrayList();
+		
+		double count = tile.getTotalInternalManaPool();
+		double calc = 0.0;
+		if (count > 0)
+			calc = count / 1000000;
+		NumberFormat percentFormatter = NumberFormat.getPercentInstance();
+		String percentOut = percentFormatter.format(calc);
+		list.add(percentOut + " of a full mana pool");
+		
 		return list;
 	}
 }

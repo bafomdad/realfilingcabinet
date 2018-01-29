@@ -26,6 +26,7 @@ public class ItemBlockRFC extends ItemBlock {
 		super(block);
 	}
 	
+	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
 		
 		if (stack.hasTagCompound())

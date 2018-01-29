@@ -102,16 +102,14 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
-		if (!player.worldObj.isRemote)
-		{
-			if (stack.getItemDamage() == 2)
-			{
+		if (!player.world.isRemote) {
+			if (stack.getItemDamage() == 2) {
 				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 				if (ItemFolder.setObject(newFolder, target)) {
 					if (!player.inventory.addItemStackToInventory(newFolder))
 						player.dropItem(newFolder, true);
 					stack.stackSize--;
-					MobUtils.dropMobEquips(player.worldObj, target);
+					MobUtils.dropMobEquips(player.world, target);
 					target.setDead();
 				}
 			}

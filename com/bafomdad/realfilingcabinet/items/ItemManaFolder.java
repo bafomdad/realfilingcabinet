@@ -25,7 +25,6 @@ import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaTooltipDisplay {
 	
 	private static final String TAG_MANA_COUNT = "manaCount";
-	private static final String TAG_MAX_MANA_COUNT = "maxManaCount";
 	private static final int maxCount = 1000000000;
 
 	public ItemManaFolder() {
@@ -77,6 +76,7 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 	}
 
 	// BOTANIA IMPLEMENTATION
+	
 	@Override
 	public void addMana(ItemStack stack, int count) {
 
@@ -130,7 +130,7 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 
 		return (float)getManaSize(stack) / (float) getMaxMana(stack);
 	}
-
+	
 	@Override
 	public ItemStack isFolderEmpty(ItemStack stack) {
 

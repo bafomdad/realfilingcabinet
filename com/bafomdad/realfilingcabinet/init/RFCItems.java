@@ -28,7 +28,9 @@ public class RFCItems {
 	
 	// Botania integration
 	public static ItemManaFolder manaFolder;
-	public static ItemManaUpgrade manaUpgrade;
+	
+	// Thaumcraft integration
+	public static ItemAspectFolder aspectFolder;
 	
 	public static void init() {
 		
@@ -44,7 +46,9 @@ public class RFCItems {
 		
 		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
 			manaFolder = new ItemManaFolder();
-			manaUpgrade = new ItemManaUpgrade();
+		}
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
+			aspectFolder = new ItemAspectFolder();
 		}
 	}
 	
@@ -58,7 +62,7 @@ public class RFCItems {
 			ModelLoader.setCustomModelResourceLocation(folder, i, new ModelResourceLocation(folder.getRegistryName() + "_" + FolderType.values()[i].toString().toLowerCase(), "inventory"));
 		
 		for (int i = 0; i < UpgradeType.values().length; ++i)
-			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + UpgradeType.values()[i], "inventory"));
+			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + UpgradeType.values()[i].toString().toLowerCase(), "inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(magnifyingGlass, 0, new ModelResourceLocation(magnifyingGlass.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(whiteoutTape, 0, new ModelResourceLocation(whiteoutTape.getRegistryName(), "inventory"));
@@ -72,7 +76,9 @@ public class RFCItems {
 		
 		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
 			ModelLoader.setCustomModelResourceLocation(manaFolder, 0, new ModelResourceLocation(manaFolder.getRegistryName(), "inventory"));
-			ModelLoader.setCustomModelResourceLocation(manaUpgrade, 0, new ModelResourceLocation(manaUpgrade.getRegistryName(), "inventory"));
+		}
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
+			ModelLoader.setCustomModelResourceLocation(aspectFolder, 0, new ModelResourceLocation(aspectFolder.getRegistryName(), "inventory"));
 		}
 	}
 }

@@ -188,12 +188,12 @@ public class BlockRFC extends Block implements IFilingCabinet {
 				ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
 				if (upgrade != null && upgrade.stackSize == 0)
 					upgrade.stackSize = 1;
-				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
+				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), upgrade));
 			}
 			if (!tag.hasNoTags())
 			{
 				s.setTagCompound(tag);
-				world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
+				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
 				return;
 			}
 		}
@@ -215,12 +215,9 @@ public class BlockRFC extends Block implements IFilingCabinet {
 		TileEntityRFC tileRFC = (TileEntityRFC)tile;
 		
 		if (tileRFC.isCabinetLocked()) {
-			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID()))
-			{
+			if (!tileRFC.getCabinetOwner().equals(player.getUniqueID())) {
 				if (!tileRFC.hasKeyCopy(player, tileRFC.getCabinetOwner()))
-				{
 					return;
-				}
 			}
 		}
 		if (player.isSneaking() && player.getHeldItem(EnumHand.MAIN_HAND) != null && player.getHeldItem(EnumHand.MAIN_HAND).getItem() == RFCItems.magnifyingGlass)

@@ -13,7 +13,10 @@ import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -57,7 +60,17 @@ public class RFCRecipes {
 		
 		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration) {
 			BotaniaAPI.registerManaInfusionRecipe(new ItemStack(RFCItems.manaFolder), new ItemStack(RFCItems.emptyFolder, 1, 0), 2000);
-			GameRegistry.addRecipe(new ItemStack(RFCItems.manaUpgrade), "SMS", "MFM", "SMS", 'S', Blocks.STONE, 'M', new ItemStack(RFCItems.manaFolder), 'F', RFCBlocks.blockRFC );
+			BotaniaAPI.registerManaInfusionRecipe(new ItemStack(RFCBlocks.manaCabinet), new ItemStack(RFCBlocks.blockRFC), 9000);
+		}
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
+			GameRegistry.addRecipe(new FolderAspectRecipe());
+			RecipeSorter.register("FolderAspectRecipe", FolderAspectRecipe.class, Category.SHAPELESS, "");
+			Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("thaumcraft", "phial"));
+			if (item != null) {
+				ItemStack phial = new ItemStack(item, 1, 0);
+				GameRegistry.addRecipe(new ItemStack(RFCItems.aspectFolder, 4, 0), "P  ", "Pp ", "PPP", 'P', Items.PAPER, 'p', phial);
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(RFCBlocks.blockAC), "LLL", "LFL", "LpL", 'L', "logWood", 'F', RFCBlocks.blockRFC, 'p', phial));
+			}
 		}
 		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
 		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};

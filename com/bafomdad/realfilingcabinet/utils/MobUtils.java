@@ -49,7 +49,7 @@ public class MobUtils {
 				if (entity != null)
 				{
 					boolean spawn = false;
-					if (!player.worldObj.isRemote) {
+					if (!player.world.isRemote) {
 						pos = pos.offset(side);
 						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager))
 						{
@@ -59,7 +59,7 @@ public class MobUtils {
 		                    entityliving.renderYawOffset = entityliving.rotationYaw;
 		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
 							entityliving.setProfession(0);
-		                    world.spawnEntityInWorld(entity);
+		                    world.spawnEntity(entity);
 		                    entityliving.playLivingSound();
 		                    
 		                    spawn = true;
@@ -70,7 +70,7 @@ public class MobUtils {
 		                    entityliving.rotationYawHead = entityliving.rotationYaw;
 		                    entityliving.renderYawOffset = entityliving.rotationYaw;
 		                    entityliving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
-		                    world.spawnEntityInWorld(entity);
+		                    world.spawnEntity(entity);
 		                    entityliving.playLivingSound();
 		                    
 		                    spawn = true;
@@ -100,7 +100,7 @@ public class MobUtils {
 			
 			EntityItem ei = new EntityItem(world, entity.posX, entity.posY, entity.posZ, toDrop);
 			if (!world.isRemote)
-				world.spawnEntityInWorld(ei);
+				world.spawnEntity(ei);
 		}
 	}
 

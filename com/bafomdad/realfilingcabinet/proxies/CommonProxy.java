@@ -43,13 +43,12 @@ public class CommonProxy {
 		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 4), StringLibs.TAG_MOB);
 		MobUpgradeHelper.registerMobUpgrade(new ItemStack(RFCItems.upgrades, 1, 5), StringLibs.TAG_FLUID);
 		
-		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
-			UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.manaUpgrade, 1, 0), StringLibs.TAG_MANA);
-		
 		GameRegistry.registerWorldGenerator(new TutorialGenerator(), 1);
 	}
 	
 	public void postInit(FMLPostInitializationEvent event) {}
 	
 	public void initAllModels() {}
+	
+	public void registerColors() {}
 }

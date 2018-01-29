@@ -19,11 +19,11 @@ public class CommandFolderItem {
 		
 		ItemStack folder = player.getHeldItemMainhand();
 		if (folder == null || (folder != null && !(folder.getItem() instanceof ItemEmptyFolder))) {
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("notEmptyFolder")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("notEmptyFolder")));
 			return;
 		}
 		if (folder.getItemDamage() != 0) {
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("notNormalFolder")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("notNormalFolder")));
 			return;
 		}
 		if (Item.getByNameOrId(object) != null) {
@@ -43,6 +43,6 @@ public class CommandFolderItem {
 			return;
 		}
 		else
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("noItemOrBlockFound")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("noItemOrBlockFound")));
 	}
 }

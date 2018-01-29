@@ -22,8 +22,4 @@ public final class LogRFC {
 		
 		LOGGER.error(RealFilingCabinet.MOD_NAME + ": " + msg);
 	}
-	
-	private LogRFC() {
-		
-	}
 }

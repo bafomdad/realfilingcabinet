@@ -16,20 +16,20 @@ public class CommandFolderCount {
 		
 		ItemStack folder = player.getHeldItemMainhand();
 		if (folder == null || (folder != null &&  !(folder.getItem() instanceof IFolder))) {
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("notEmptyFolder")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("notEmptyFolder")));
 			return;
 		}
 		if (folder.getItem() instanceof ItemManaFolder) {
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("errorManaFolder")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("errorManaFolder")));
 			return;
 		}	
 		try {
 			long size = Long.parseLong(count);
-			if (!player.worldObj.isRemote)
+			if (!player.world.isRemote)
 				ItemFolder.setFileSize(folder, size);
 			
 		} catch (Exception e) {
-			player.addChatMessage(new TextComponentString(TextHelper.localizeCommands("errorParseLong")));
+			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("errorParseLong")));
 		}
 	}
 }

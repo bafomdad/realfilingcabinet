@@ -1,6 +1,6 @@
 package com.bafomdad.realfilingcabinet.renders;
 
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -78,7 +78,7 @@ public class ModelFilingCabinet extends ModelBase {
 		setRotation(DrawerBottom, 0F, 0F, 0F);
 	}
 	//
-	public void render(TileEntityRFC te, float f) {
+	public void render(TileFilingCabinet te, float f) {
 		
 		float prevStep = te.renderOffset;
 		te.renderOffset = te.offset;

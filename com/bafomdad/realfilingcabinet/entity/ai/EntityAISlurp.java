@@ -40,23 +40,23 @@ public class EntityAISlurp extends EntityAIBase {
 		if (!pathFinder.noPath() || MobUpgradeHelper.getMobUpgrade(cabinet, StringLibs.TAG_FLUID) == null)
 			return false;
 		
-		if (cabinet.worldObj != null) {
+		if (cabinet.world != null) {
 			FluidStack fluid = null;
 			for (int x1 = -range; x1 < range; x1++) {
 				for (int y1 = -2; y1 < 2; y1++) {
 					for (int z1 = -range; z1 < range; z1++) {
-						int x = x1 + MathHelper.floor_double(cabinet.posX);
-						int y = y1 + MathHelper.floor_double(cabinet.posY);
-						int z = z1 + MathHelper.floor_double(cabinet.posZ);
+						int x = x1 + MathHelper.floor(cabinet.posX);
+						int y = y1 + MathHelper.floor(cabinet.posY);
+						int z = z1 + MathHelper.floor(cabinet.posZ);
 						
 						BlockPos pos = new BlockPos(x, y, z);
-						Block block = cabinet.worldObj.getBlockState(pos).getBlock();
-						int l = cabinet.worldObj.getBlockState(pos).getBlock().getMetaFromState(cabinet.worldObj.getBlockState(pos));
+						Block block = cabinet.world.getBlockState(pos).getBlock();
+						int l = cabinet.world.getBlockState(pos).getBlock().getMetaFromState(cabinet.world.getBlockState(pos));
 						if (block != null)
 						{
 							if (block instanceof BlockLiquid && l == 0)
 							{
-								if (!cabinet.worldObj.isAirBlock(pos.up()))
+								if (!cabinet.world.isAirBlock(pos.up()))
 									continue;
 								
 								if (block == Blocks.WATER)
@@ -80,7 +80,7 @@ public class EntityAISlurp extends EntityAIBase {
 							}
 							else if (block instanceof IFluidBlock && l == 0)
 							{
-								if (!cabinet.worldObj.isAirBlock(pos.up()))
+								if (!cabinet.world.isAirBlock(pos.up()))
 									continue;
 								
 								FluidStack stack = new FluidStack(((IFluidBlock)block).getFluid(), 1000);
@@ -127,13 +127,13 @@ public class EntityAISlurp extends EntityAIBase {
 	public void updateTask() {
 		
 		super.updateTask();
-		if (!cabinet.worldObj.isRemote) {
+		if (!cabinet.world.isRemote) {
 			if (targetFluid != null && cabinet.getDistance(targetPos.getX(), targetPos.getY(), targetPos.getZ()) < 2.0){
 				ItemStack folderToPut = getMatchingFluidFolder(targetFluid);
 				if (folderToPut != null)
 				{
 					targetFluid = null;
-					cabinet.worldObj.setBlockToAir(targetPos);
+					cabinet.world.setBlockToAir(targetPos);
 					cabinet.playSound(SoundEvents.ENTITY_GENERIC_DRINK, 0.2F, (float)Math.random() * 0.5F);
 					ItemFolder.add(folderToPut, 1000);
 				}

@@ -32,6 +32,7 @@ public class ConfigRFC {
 	
 	// INTEGRATION
 	public static boolean botaniaIntegration;
+	public static boolean tcIntegration;
 	
 	public static void loadconfig(FMLPreInitializationEvent event) {
 		
@@ -56,6 +57,7 @@ public class ConfigRFC {
 		debugLogger = config.get("debug", "enableDebugLogger", false, "Will output stuff to console for debugging purposes").getBoolean();
 		
 		botaniaIntegration = config.get("integration", "enableBotaniaIntegration", true, "Will add a folder and upgrade when it detects that Botania is installed.").getBoolean();
+		tcIntegration = config.get("integration", "enableThaumcraftIntegration", true, "Will add a folder and a cabinet when it detects that Thaumcraft is installed.").getBoolean();
 		
 		config.save();
 	}

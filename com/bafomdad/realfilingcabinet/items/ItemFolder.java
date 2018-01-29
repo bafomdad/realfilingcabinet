@@ -96,7 +96,7 @@ public class ItemFolder extends Item implements IFolder {
 			}
 			if (stack.getItemDamage() == 3) {
 				
-				Entity entity = EntityList.createEntityByIDFromName(name, player.worldObj);
+				Entity entity = EntityList.createEntityByIDFromName(name, player.world);
 				if (entity != null)
 					list.add(count + " " + entity.getName());
 				return;
@@ -364,7 +364,7 @@ public class ItemFolder extends Item implements IFolder {
 					if (getObject(folder).equals(entityName)) {
 						
 						add(folder, 1);
-						MobUtils.dropMobEquips(player.worldObj, target);
+						MobUtils.dropMobEquips(player.world, target);
 						target.setDead();
 						return true;
 					}

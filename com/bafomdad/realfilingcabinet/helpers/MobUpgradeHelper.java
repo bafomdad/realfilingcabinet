@@ -47,7 +47,7 @@ public class MobUpgradeHelper {
 	
 	public static void setUpgrade(EntityPlayer player, EntityCabinet cabinet, ItemStack upgrade) {
 		
-		if (cabinet.worldObj.isRemote || !(upgrade.getItem() instanceof IUpgrades))
+		if (cabinet.world.isRemote || !(upgrade.getItem() instanceof IUpgrades))
 			return;
 		
 		if (hasMobUpgrade(cabinet))

@@ -23,12 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import vazkii.botania.api.mana.IManaItem;
-import vazkii.botania.api.mana.IManaPool;
-import vazkii.botania.api.mana.spark.ISparkAttachable;
-import vazkii.botania.api.mana.spark.ISparkEntity;
 
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
@@ -43,11 +38,7 @@ import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import com.google.common.base.Predicates;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "vazkii.botania.api.mana.IManaPool", modid = "Botania"),
-		@Optional.Interface(iface = "vazkii.botania.api.mana.spark.ISparkAttachable", modid = "Botania")
-})
-public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet, IManaPool, ISparkAttachable {
+public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet {
 
 	private InventoryRFC inv = new InventoryRFC(this, 8);
 	private FluidRFC fluidinv = new FluidRFC(this);
@@ -64,7 +55,6 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	public String upgrades = "";
 	
 	// Rendering variables
-	public float offset, renderOffset;
 	public static final float offsetSpeed = 0.1F;
 	public boolean isOpen = false;
 
@@ -83,11 +73,11 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		}
 		if (UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE) != null)
 		{
-			if (!worldObj.isRemote)
+			if (!world.isRemote)
 			{
-				EntityCabinet cabinet = new EntityCabinet(worldObj);
-				IBlockState state = worldObj.getBlockState(getPos());
-				float angle = state.getActualState(worldObj, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
+				EntityCabinet cabinet = new EntityCabinet(world);
+				IBlockState state = world.getBlockState(getPos());
+				float angle = state.getActualState(world, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
 				cabinet.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 				cabinet.setRotationYawHead(angle);
 				
@@ -108,9 +98,9 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 				if (!cabinet.isLegit())
 					cabinet.setLegit();
 				
-				worldObj.spawnEntityInWorld(cabinet);
+				world.spawnEntity(cabinet);
 			}
-			worldObj.setBlockToAir(getPos());
+			world.setBlockToAir(getPos());
 		}
 	}
 	
@@ -206,10 +196,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		boolean bool = false;
 		
-		if (worldObj.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID)) {
+		if (world.getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID)) {
 			bool = true;
 		}
-		lastClickTime = worldObj.getTotalWorldTime();
+		lastClickTime = world.getTotalWorldTime();
 		lastClickUUID = player.getPersistentID();
 		
 		return bool;
@@ -221,7 +211,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
 		for (EntityItemFrame frame : frames) {
 			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
-			IBlockState state = worldObj.getBlockState(getPos());
+			IBlockState state = world.getBlockState(getPos());
 			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
 			
 			return frame != null && orientation == rfcOrientation;
@@ -235,7 +225,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
 		for (EntityItemFrame frame : frames) {
 			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
-			IBlockState state = worldObj.getBlockState(getPos());
+			IBlockState state = world.getBlockState(getPos());
 			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
 			if (frame != null && frame.getDisplayedItem() != null && (orientation == rfcOrientation)) {
 				if (frame.getDisplayedItem().getItem() == RFCItems.filter)
@@ -283,7 +273,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		{
 			this.owner = owner;
 			
-			if (worldObj != null && !worldObj.isRemote) {
+			if (world != null && !world.isRemote) {
 				
 				markDirty();
 				this.markBlockForUpdate();
@@ -322,134 +312,4 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		return this.rfcHash;
 	}
-	
-	// BOTANIA IMPLEMENTATION
-	long MAX_MANA_INTERNAL = ItemManaFolder.getMaxManaFolder() * 8;
-	int MAX_VANILLA_MANA_POOL = 1000000;
-	
-	public long getTotalInternalManaPool() {
-		
-		long total = 0;
-		for (ItemStack stack : this.inv.getStacks())
-		{
-			if (stack != null && stack.getItem() instanceof IManaItem)
-			{
-				total += ItemManaFolder.getManaSize(stack);
-			}
-		}
-		return total;
-	}
-	
-	public int getManaFromFolder() {
-		
-		for (ItemStack stack : this.inv.getStacks())
-		{
-			if (stack != null && stack.getItem() instanceof IManaItem)
-			{
-				return ItemManaFolder.getManaSize(stack);
-			}
-		}
-		return -1;
-	}
-	
-	public int getCurrentManaCap() {
-		
-		int folderCount = 0;
-		for (ItemStack stack : this.inv.getStacks())
-		{
-			if (stack != null && stack.getItem() instanceof IManaItem)
-				folderCount++;
-		}
-		return folderCount;
-	}
-	
-	public void addManaToFolder(int mana) {
-		
-		for (ItemStack stack : this.inv.getStacks())
-		{
-			if (stack != null && stack.getItem() instanceof IManaItem)
-			{
-				if (mana > 0 && ItemManaFolder.isManaFolderFull(stack))
-					continue;
-				
-				ItemManaFolder.addManaToFolder(stack, mana);
-				break;
-			}
-		}
-	}
-	
-	@Override
-	public boolean canRecieveManaFromBursts() {
-
-		return UpgradeHelper.getUpgrade(this, StringLibs.TAG_MANA) != null && getManaFromFolder() != -1 && !UpgradeHelper.isCreative(this);
-	}
-
-	@Override
-	public boolean isFull() {
-
-		return getTotalInternalManaPool() == MAX_MANA_INTERNAL || getManaFromFolder() == -1 || UpgradeHelper.isCreative(this);
-	}
-
-	@Override
-	public void recieveMana(int mana) {
-
-		int manaToAdd = Math.min(ItemManaFolder.getMaxManaFolder(), mana);
-		this.addManaToFolder(manaToAdd);
-	}
-
-	@Override
-	public int getCurrentMana() {
-
-		return getManaFromFolder();
-	}
-
-	@Override
-	public boolean areIncomingTranfersDone() {
-
-		return false;
-	}
-
-	@Override
-	public void attachSpark(ISparkEntity spark) {}
-
-	@Override
-	public boolean canAttachSpark(ItemStack stack) {
-
-		return UpgradeHelper.getUpgrade(this, StringLibs.TAG_MANA) != null;
-	}
-
-	@Override
-	public ISparkEntity getAttachedSpark() {
-
-		List sparks = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.up(), pos.up().add(1, 1, 1)), Predicates.instanceOf(ISparkEntity.class));
-		if (sparks.size() == 1) {
-			Entity e = (Entity)sparks.get(0);
-			return (ISparkEntity)e;
-		}
-		return null;
-	}
-
-	@Override
-	public int getAvailableSpaceForMana() {
-
-		if (getTotalInternalManaPool() == this.MAX_MANA_INTERNAL)
-			return 0;
-		
-		return 1000;
-	}
-
-	@Override
-	public EnumDyeColor getColor() {
-
-		return null;
-	}
-
-	@Override
-	public boolean isOutputtingPower() {
-
-		return false;
-	}
-
-	@Override
-	public void setColor(EnumDyeColor arg0) {}
 }

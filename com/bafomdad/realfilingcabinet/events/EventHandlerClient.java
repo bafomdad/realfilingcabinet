@@ -16,11 +16,11 @@ public class EventHandlerClient {
 	@SubscribeEvent
 	public void renderItemFilter(RenderItemInFrameEvent event) {
 		
-		if (event.getEntityItemFrame().worldObj.getTotalWorldTime() % 60 == 0) {
+		if (event.getEntityItemFrame().world.getTotalWorldTime() % 60 == 0) {
 			if (event.getItem().getItem() == RFCItems.filter) {
 				EntityItemFrame frame = event.getEntityItemFrame();
 				System.out.println(frame.getDisplayedItem());
-				TileEntity tile = frame.worldObj.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
+				TileEntity tile = frame.world.getTileEntity(new BlockPos(frame.posX, frame.posY - 1, frame.posZ));
 				if (tile != null && tile instanceof TileEntityRFC) {
 					TileEntityRFC tileRFC = (TileEntityRFC)tile;
 					ItemStack toDisplay = tileRFC.getFilter();

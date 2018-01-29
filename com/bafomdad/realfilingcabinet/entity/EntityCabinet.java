@@ -104,8 +104,8 @@ public class EntityCabinet extends EntityTameable {
 		if (source == DamageSource.outOfWorld)
 			return false;
 		
-		if (source.getEntity() instanceof EntityPlayer && source.getEntity().isSneaking()) {
-			EntityPlayer player = (EntityPlayer)source.getEntity();
+		if (source.getSourceOfDamage() instanceof EntityPlayer && source.getSourceOfDamage().isSneaking()) {
+			EntityPlayer player = (EntityPlayer)source.getSourceOfDamage();
 			if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == RFCItems.magnifyingGlass)
 				return false;
 		}
@@ -118,13 +118,13 @@ public class EntityCabinet extends EntityTameable {
 		if (this.isEntityInvulnerable(source))
 			return false;
 		
-		if (!this.worldObj.isRemote && !this.isLegit()) {
+		if (!this.world.isRemote && !this.isLegit()) {
 			this.setDead();
 			return false;
 		}
 		if (!upgrades.isEmpty()) {
-			if (source.getEntity() instanceof EntityPlayer)
-				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getEntity(), this);
+			if (source.getSourceOfDamage() instanceof EntityPlayer)
+				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getSourceOfDamage(), this);
 			return false;
 		}
 		this.setTile(source);
@@ -134,7 +134,7 @@ public class EntityCabinet extends EntityTameable {
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, @Nullable ItemStack stack) {
 		
-		if (hand == EnumHand.MAIN_HAND && !this.worldObj.isRemote) {
+		if (hand == EnumHand.MAIN_HAND && !this.world.isRemote) {
 			if (stack != null && stack.getItem() instanceof IUpgrades)
 			{
 				MobUpgradeHelper.setUpgrade(player, this, stack);
@@ -249,15 +249,15 @@ public class EntityCabinet extends EntityTameable {
 	
 	private void setTile(DamageSource source) {
 		
-		if (source.getEntity() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer)source.getEntity();
+		if (source.getSourceOfDamage() instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)source.getSourceOfDamage();
 			IBlockState state = RFCBlocks.blockRFC.getDefaultState().withProperty(BlockRFC.FACING, this.getHorizontalFacing().getOpposite());
-			BlockPos pos = new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ));
-			if (!worldObj.isRemote)
+			BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
+			if (!world.isRemote)
 			{
-				if (worldObj.isAirBlock(pos)) {
-					worldObj.setBlockState(pos, state);
-					TileEntityRFC tile = (TileEntityRFC)worldObj.getTileEntity(pos);
+				if (world.isAirBlock(pos)) {
+					world.setBlockState(pos, state);
+					TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
 					if (tile != null)
 					{
 						for (int i = 0; i < inventory.getSlots(); i++) {
@@ -270,13 +270,13 @@ public class EntityCabinet extends EntityTameable {
 							tile.setOwner(this.getOwnerId());
 						}
 					}
-					if (!((EntityPlayer)source.getEntity()).inventory.addItemStackToInventory(new ItemStack(RFCItems.upgrades, 1, 6)))
-						((EntityPlayer)source.getEntity()).dropItem(new ItemStack(RFCItems.upgrades, 1, 6), true);
+					if (!((EntityPlayer)source.getSourceOfDamage()).inventory.addItemStackToInventory(new ItemStack(RFCItems.upgrades, 1, 6)))
+						((EntityPlayer)source.getSourceOfDamage()).dropItem(new ItemStack(RFCItems.upgrades, 1, 6), true);
 					
 					this.setDead();
 				}
 				else
-					player.addChatMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")));
+					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")));
 			}
 		}
 	}

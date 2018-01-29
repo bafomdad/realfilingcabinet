@@ -43,7 +43,7 @@ public class ItemDebugger extends Item {
     			return EnumActionResult.FAIL;
     		
     		String str = FMLCommonHandler.instance().getEffectiveSide().toString() + " : " + tile.upgrades;
-    		player.addChatMessage(new TextComponentString(str));
+    		player.sendMessage(new TextComponentString(str));
     		return EnumActionResult.SUCCESS;
     	}
     	ItemStack debugger = player.getHeldItem(EnumHand.OFF_HAND);
@@ -52,7 +52,7 @@ public class ItemDebugger extends Item {
     		if (thing != null && !world.isRemote)
     		{
     			String str = "Unlocalized name for item in main hand: " + thing.getUnlocalizedName();
-    			player.addChatMessage(new TextComponentString(str));
+    			player.sendMessage(new TextComponentString(str));
     		}
     	}
     	return EnumActionResult.PASS;

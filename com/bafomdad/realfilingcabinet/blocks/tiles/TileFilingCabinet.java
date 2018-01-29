@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 
 public class TileFilingCabinet extends TileEntity {
 	
+	public float offset, renderOffset;
+	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		
@@ -44,13 +46,13 @@ public class TileFilingCabinet extends TileEntity {
 	
 	public void markBlockForUpdate() {
 		
-		IBlockState state = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, state, state, 3);
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 3);
 	}
 	
 	public void markBlockForRenderUpdate() {
 		
-		worldObj.markBlockRangeForRenderUpdate(pos, pos);
+		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	@Override

@@ -48,7 +48,7 @@ public class ItemKeys extends Item {
 		
 		if (stack.getItemDamage() == 1 && (stack.hasTagCompound() && stack.getTagCompound().hasKey(StringLibs.RFC_COPY)))
 		{
-			EntityPlayer onlinePlayer = player.worldObj.getPlayerEntityByUUID(UUID.fromString(NBTUtils.getString(stack, StringLibs.RFC_COPY, "")));
+			EntityPlayer onlinePlayer = player.world.getPlayerEntityByUUID(UUID.fromString(NBTUtils.getString(stack, StringLibs.RFC_COPY, "")));
 			if (onlinePlayer != null)
 				list.add("Original Owner: " + onlinePlayer.getName());
 			else
