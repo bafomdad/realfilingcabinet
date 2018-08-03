@@ -1,0 +1,42 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "oreDictUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 3
+  },
+  "pattern": [
+    "GOG",
+    "SFB",
+    "GJG"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:planks",
+      "data": 2
+    },
+    "S": {
+      "item": "minecraft:planks",
+      "data": 1
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "J": {
+      "item": "minecraft:planks",
+      "data": 3
+    },
+    "O": {
+      "item": "minecraft:planks",
+      "data": 0
+    }
+  }
+}

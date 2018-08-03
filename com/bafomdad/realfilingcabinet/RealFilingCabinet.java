@@ -17,12 +17,15 @@ import com.bafomdad.realfilingcabinet.events.EventHandlerServer;
 import com.bafomdad.realfilingcabinet.gui.GuiHandlerRFC;
 import com.bafomdad.realfilingcabinet.proxies.CommonProxy;
 
-@Mod(modid=RealFilingCabinet.MOD_ID, name=RealFilingCabinet.MOD_NAME, version=RealFilingCabinet.VERSION, dependencies="required-after:forge@[13.19.1.2188,)")
+@Mod(modid=RealFilingCabinet.MOD_ID, name=RealFilingCabinet.MOD_NAME, version=RealFilingCabinet.VERSION, dependencies = "after:forge@[" + RealFilingCabinet.FORGE_VER + ",);")
 public class RealFilingCabinet {
 
 	public static final String MOD_ID = "realfilingcabinet";
 	public static final String MOD_NAME = "Real Filing Cabinet";
 	public static final String VERSION = "@VERSION@";
+	public static final String FORGE_VER = "14.21.0.2363";
+	
+	public static final String STORAGEDRAWERS = "storageDrawers";
 	
 	@SidedProxy(clientSide="com.bafomdad.realfilingcabinet.proxies.ClientProxy", serverSide="com.bafomdad.realfilingcabinet.proxies.CommonProxy")
 	public static CommonProxy proxy;
@@ -30,20 +33,18 @@ public class RealFilingCabinet {
 	@Mod.Instance(MOD_ID)
 	public static RealFilingCabinet instance;
 	
-	public static ConfigRFC config;
 	public static Logger logger;
 	
 	public static boolean botaniaLoaded = Loader.isModLoaded("botania");
 	public static boolean topLoaded = Loader.isModLoaded("theoneprobe");
-	public static boolean enderioLoaded = Loader.isModLoaded("enderio");
+	public static boolean wailaLoaded = Loader.isModLoaded("waila");
+	public static boolean tcLoaded = Loader.isModLoaded("thaumcraft");
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerRFC());
-		
-		config = new ConfigRFC();
-		config.loadconfig(event);
+		NewConfigRFC.preInit(event);
 		logger = event.getModLog();
 		
 		proxy.preInit(event);
@@ -54,6 +55,7 @@ public class RealFilingCabinet {
 	public void init(FMLInitializationEvent event) {
 
 		proxy.init(event);
+		proxy.registerColors();
 	}
 	
 	@Mod.EventHandler

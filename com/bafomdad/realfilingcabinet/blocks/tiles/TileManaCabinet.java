@@ -48,8 +48,7 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 	@Override
 	public void update() {
 		
-		if (isOpen)
-		{
+		if (isOpen) {
 			offset -= offsetSpeed;
 			if (offset <= -0.75F)
 				offset = -0.75F;
@@ -100,8 +99,7 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 	public void readInv(NBTTagCompound nbt) {
 		
 		NBTTagList invList = nbt.getTagList("inventory", 10);
-		for (int i = 0; i < invList.tagCount(); i++)
-		{
+		for (int i = 0; i < invList.tagCount(); i++) {
 			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
 			int slot = itemTag.getByte("Slot");
 			if (slot >= 0 && slot < getInv().getSlots()) {
@@ -153,12 +151,9 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 	@Override
 	public boolean setOwner(UUID owner) {
 
-		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner)))
-		{
+		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner))) {
 			this.owner = owner;
-			
-			if (world != null && !world.isRemote) {
-				
+			if (world != null && !world.isRemote) {	
 				markDirty();
 				this.markBlockForUpdate();
 			}
@@ -211,8 +206,11 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 		
 		for (int i = 0; i < this.getInv().getSlots(); i++) {
 			ItemStack stack = this.getInv().getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem)
-				return ItemManaFolder.getManaSize(stack);
+			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem) {
+				int manaSize = ItemManaFolder.getManaSize(stack);
+				if (manaSize >= 0)
+					return manaSize;
+			}
 		}
 		return -1;
 	}
@@ -221,9 +219,11 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 		
 		for (int i = 0; i < this.getInv().getSlots(); i++){
 			ItemStack stack = this.getInv().getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem)
-			{
+			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem) {
 				if (mana > 0 && ItemManaFolder.isManaFolderFull(stack))
+					continue;
+				
+				if (mana < 0 && ItemManaFolder.getManaSize(stack) <= 0)
 					continue;
 				
 				ItemManaFolder.addManaToFolder(stack, mana);

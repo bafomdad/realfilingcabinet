@@ -1,17 +1,15 @@
 package com.bafomdad.realfilingcabinet.init;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
+import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
 import com.bafomdad.realfilingcabinet.items.*;
-import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
-import com.bafomdad.realfilingcabinet.items.ItemUpgrades.UpgradeType;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RFCItems {
 
@@ -24,8 +22,15 @@ public class RFCItems {
 	public static ItemKeys keys;
 	public static ItemDebugger debugger;
 	public static ItemMysteryFolder mysteryFolder;
+	public static ItemSuitcase suitcase;
+	
+	// Thaumcraft integration
+	public static ItemAspectFolder aspectFolder;
 	
 	public static void init() {
+		
+		if (RealFilingCabinet.botaniaLoaded && ConfigRFC.botaniaIntegration)
+			BotaniaRFC.initItem();
 		
 		emptyFolder = new ItemEmptyFolder();
 		folder = new ItemFolder();
@@ -36,27 +41,9 @@ public class RFCItems {
 		keys = new ItemKeys();
 		debugger = new ItemDebugger();
 		mysteryFolder = new ItemMysteryFolder();
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public static void initModels() {
+		suitcase = new ItemSuitcase();
 		
-		for (int i = 0; i < emptyFolder.folderType.length; ++i)
-			ModelLoader.setCustomModelResourceLocation(emptyFolder, i, new ModelResourceLocation(emptyFolder.getRegistryName() + "_" + emptyFolder.folderType[i], "inventory"));
-		
-		for (int i = 0; i < FolderType.values().length; ++i)
-			ModelLoader.setCustomModelResourceLocation(folder, i, new ModelResourceLocation(folder.getRegistryName() + "_" + FolderType.values()[i], "inventory"));
-		
-		for (int i = 0; i < UpgradeType.values().length; ++i)
-			ModelLoader.setCustomModelResourceLocation(upgrades, i, new ModelResourceLocation(upgrades.getRegistryName() + "_" + UpgradeType.values()[i], "inventory"));
-		
-		ModelLoader.setCustomModelResourceLocation(magnifyingGlass, 0, new ModelResourceLocation(magnifyingGlass.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(whiteoutTape, 0, new ModelResourceLocation(whiteoutTape.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(filter, 0, new ModelResourceLocation(filter.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(debugger, 0, new ModelResourceLocation(debugger.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(mysteryFolder, 0, new ModelResourceLocation(mysteryFolder.getRegistryName(), "inventory"));
-		
-		ModelLoader.setCustomModelResourceLocation(keys, 0, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[0], "inventory"));
-		ModelLoader.setCustomModelResourceLocation(keys, 1, new ModelResourceLocation(keys.getRegistryName() + "_" + keys.keyTypes[1], "inventory"));
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration)
+			aspectFolder = new ItemAspectFolder();
 	}
 }

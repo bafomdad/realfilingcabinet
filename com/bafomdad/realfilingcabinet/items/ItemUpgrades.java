@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
@@ -9,6 +10,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -17,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +33,8 @@ public class ItemUpgrades extends Item implements IUpgrades {
 		OREDICT,
 		MOB,
 		FLUID,
-		LIFE;
+		LIFE,
+		SMELTING;
 	}
 	
 	public ItemUpgrades() {
@@ -41,7 +45,6 @@ public class ItemUpgrades extends Item implements IUpgrades {
 		setMaxDamage(0);
 		setMaxStackSize(16);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
@@ -50,11 +53,32 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
 		
-		for (int i = 0; i < UpgradeType.values().length; ++i)
-			list.add(new ItemStack(item, 1, i));
+		if (stack.getItemDamage() == UpgradeType.CRAFTING.ordinal() && !ConfigRFC.craftingUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.ENDER.ordinal() && !ConfigRFC.enderUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.OREDICT.ordinal() && !ConfigRFC.oreDictUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.MOB.ordinal() && !ConfigRFC.mobUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.FLUID.ordinal() && !ConfigRFC.fluidUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.LIFE.ordinal() && !ConfigRFC.lifeUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+		if (stack.getItemDamage() == UpgradeType.SMELTING.ordinal() && !ConfigRFC.smeltingUpgrade)
+			list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		
+		if (isInCreativeTab(tab)) {
+			for (int i = 0; i < UpgradeType.values().length; ++i)
+				list.add(new ItemStack(this, 1, i));
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -71,21 +95,23 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	@Override
 	public boolean canApply(TileEntityRFC tile, ItemStack upgrade, EntityPlayer player) {
 
-		if (upgrade.getItemDamage() == UpgradeType.CREATIVE.ordinal()) {
+		switch (upgrade.getItemDamage()) {
+			case 1: if (!ConfigRFC.craftingUpgrade) return false;
+			case 2: if (!ConfigRFC.enderUpgrade) return false;
+			case 3: if (!ConfigRFC.oreDictUpgrade) return false;
+			case 4: if (!ConfigRFC.mobUpgrade) return false;
+			case 5: if (!ConfigRFC.fluidUpgrade) return false;
+			case 6: if (!ConfigRFC.lifeUpgrade) return false;
+			case 7: if (!ConfigRFC.smeltingUpgrade) return false; 
+		}
+		
+		if (upgrade.getItemDamage() == 0) {
 			return !UpgradeHelper.isCreative(tile);
 		}
-		if (upgrade.getItemDamage() == UpgradeType.ENDER.ordinal()) {
+		if (upgrade.getItemDamage() == 2) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (!stack.isEmpty() && stack.getItem() instanceof ItemManaFolder || (!stack.isEmpty() && stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) {
-					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")));
-					return false;
-				}
-			}
-		}
-		if (upgrade.getItemDamage() == UpgradeType.LIFE.ordinal()) {
-			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (!stack.isEmpty() && stack.getItem() instanceof ItemManaFolder) {
-					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorLife")));
+				if (!stack.isEmpty() && /*stack.getItem() instanceof ItemManaFolder ||*/ (stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) {
+					player.sendStatusMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")), true);
 					return false;
 				}
 			}

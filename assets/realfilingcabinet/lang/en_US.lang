@@ -24,15 +24,19 @@ item.realfilingcabinet.upgrade_durability.name=Durability Upgrade
 item.realfilingcabinet.upgrade_mob.name=Mob Upgrade
 item.realfilingcabinet.upgrade_fluid.name=Fluid Upgrade
 item.realfilingcabinet.upgrade_life.name=Life Upgrade
+item.realfilingcabinet.upgrade_smelting.name=Smelting Upgrade
 item.realfilingcabinet.filter.name=Filing Cabinet Filter
 item.realfilingcabinet.rfckey_master.name=Master Key
 item.realfilingcabinet.rfckey_copy.name=Key Copy
 item.realfilingcabinet.debugger.name=Debugging Tool
 item.realfilingcabinet.mysteryfolder.name=Mystery Folder
+item.realfilingcabinet.aspectfolder.name=Phialing Folder
+item.realfilingcabinet.suitcase.name=Suitcase
 
 # BLOCKS
 tile.realfilingcabinet.filingcabinet.name=Filing Cabinet
 tile.realfilingcabinet.manacabinet.name=Mana Cabinet
+tile.realfilingcabinet.aspectcabinet.name=Phialing Cabinet
 
 # ENTITIES
 entity.cabinet.name=Filing Cabinet
@@ -51,6 +55,7 @@ tooltip.realfilingcabinet.placemode.on=Place Mode: ON
 tooltip.realfilingcabinet.placemode.off=Place Mode: OFF
 tooltip.realfilingcabinet.ignorenbt.true=Ignores NBT: True
 tooltip.realfilingcabinet.ignorenbt.false=Ignores NBT: False
+tooltip.realfilingcabinet.mobinteract=Left click to capture mob, right click to spawn mob
 
 tooltip.realfilingcabinet.mana0=Not much mana to use yet
 tooltip.realfilingcabinet.mana120=Enough for a blast from a mana blaster
@@ -69,9 +74,9 @@ tooltip.realfilingcabinet.mana1000000000=All filled up, this is 1000 mana pools 
 
 # MESSAGES
 message.realfilingcabinet.errorEnder=This cabinet must only contain basic folders before applying this upgrade
-message.realfilingcabinet.errorLife=Do you want this mana to run away?!?
 message.realfilingcabinet.debugger=Unlocalized name for item in main hand
 message.realfilingcabinet.notAir=[Filing Cabinet]: I cannot set myself down here!
+message.realfilingcabinet.disabled=!!Disabled!!
 
 # COMMANDS
 commands.realfilingcabinet.errorNumberArg=Last argument is not a number

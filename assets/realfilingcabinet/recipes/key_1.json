@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:key",
+    "data": 1
+  },
+  "pattern": [
+    "  C",
+    " C ",
+    "B  "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:brick"
+    },
+    "C": {
+      "item": "minecraft:clay_ball"
+    }
+  }
+}

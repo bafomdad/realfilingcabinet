@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -76,25 +77,25 @@ public class FluidRFC implements IFluidHandler {
 	public FluidStack drain(int maxDrain, boolean doDrain) {
 		
 		ItemStack stack = tile.getFilter();
-		if (tile.hasItemFrame() && stack == ItemStack.EMPTY)
+		if (tile.hasItemFrame() && stack.isEmpty())
 			return null;
 		
-		else if (tile.hasItemFrame() && stack != ItemStack.EMPTY)
-		{
+		else if (tile.hasItemFrame() && !stack.isEmpty()) {
 			FluidStack fluid = FluidUtil.getFluidContained(stack);
 			if (fluid == null)
 				return null;
 			
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				FluidStack loopfluid = FluidUtils.getFluidFromFolder(tile, i);
-				if (loopfluid != null && loopfluid.isFluidEqual(fluid))
-				{
+				if (loopfluid != null && loopfluid.isFluidEqual(fluid)) {
 					this.takeFluidSnapshot(loopfluid);
 					FluidTank tank = new FluidTank(loopfluid, maxDrain);
 					FluidStack f = tank.drain(maxDrain, doDrain);
-					if (f != null && f.amount > 0 && doDrain)
-					{
+					if (f != null && f.amount > 0 && doDrain) {
 						if (snapshot != null && snapshot.isFluidEqual(f) && doDrain && !UpgradeHelper.isCreative(tile)) {
+							if (snapshot.getFluid() == FluidRegistry.WATER && snapshot.amount >= 3000 && ConfigRFC.infiniteWaterSource)
+								return f;
+							
 							ItemFolder.remove(tile.getInventory().getTrueStackInSlot(i), snapshot.amount - loopfluid.amount);
 						}
 					}

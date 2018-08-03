@@ -11,6 +11,7 @@ public class RFCPacketHandler {
 	
 	public static void init() {
 		
-		INSTANCE.registerMessage(RFCTileMessage.Handler.class, RFCTileMessage.class, packetId++, Side.SERVER);
+		INSTANCE.registerMessage(PacketMouse.Handler.class, PacketMouse.class, packetId++, Side.SERVER);
+//		INSTANCE.registerMessage(RFCTileMessage.Handler.class, RFCTileMessage.class, packetId++, Side.SERVER);
 	}
 }

@@ -3,6 +3,7 @@ package com.bafomdad.realfilingcabinet.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,8 +28,7 @@ public class ItemMysteryFolder extends Item {
 	
 	private static List<ItemStack> rando = new ArrayList<ItemStack>();
 	
-	static 
-	{
+	static {
 		rando.add(new ItemStack(Items.DIAMOND, 1, 0));
 		rando.add(new ItemStack(Items.APPLE, 1, 0));
 		rando.add(new ItemStack(Blocks.COBBLESTONE, 1, 0));
@@ -46,11 +46,10 @@ public class ItemMysteryFolder extends Item {
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".mysteryfolder");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
+	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
 		
 		list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mystery1"));
 		list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mystery2"));

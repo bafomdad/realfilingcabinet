@@ -9,9 +9,9 @@ public class StringLibs {
 	public static String TAG_CRAFT = "TAG_craftingUpgrade";
 	public static String TAG_OREDICT = "TAG_oredictUpgrade";
 	public static String TAG_MOB = "TAG_mobUpgrade";
-	public static String TAG_DURABILITY = "TAG_durabilityUpgrade";
 	public static String TAG_FLUID = "TAG_fluidUpgrade";
 	public static String TAG_LIFE = "TAG_lifeUpgrade";
+	public static String TAG_SMELT = "TAG_smeltingUpgrade";
 	
 	// ENDER FOLDER
 	public static String RFC_SLOTINDEX = "RFC_slotindex";

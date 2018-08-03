@@ -45,11 +45,12 @@ public class RFCTileMessage implements IMessage {
 		@Override
 		public IMessage onMessage(RFCTileMessage message, MessageContext ctx) {
 
+			if (ctx.getServerHandler().player.world.isBlockLoaded(message.getPos())) return null;
+			
 			TileEntityRFC tile = (TileEntityRFC)ctx.getServerHandler().player.world.getTileEntity(message.getPos());
 			if (tile != null)
-			{
 				tile.isOpen = message.open;
-			}
+			
 			return null;
 		}
 

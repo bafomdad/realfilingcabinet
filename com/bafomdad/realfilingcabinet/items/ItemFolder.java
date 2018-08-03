@@ -2,8 +2,11 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +33,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
@@ -51,6 +54,8 @@ public class ItemFolder extends Item implements IFolder {
 	private static final String TAG_REM_SIZE = "leftoverSize";
 	private static final String TAG_ITEMTAG = "itemTagCompound";
 	
+	private static ItemStack ITEM_STORED = ItemStack.EMPTY;
+	
 	public static int extractSize = 0;
 	
 	public enum FolderType {
@@ -69,7 +74,6 @@ public class ItemFolder extends Item implements IFolder {
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setMaxStackSize(1);
-		GameRegistry.register(this);
 	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
@@ -77,15 +81,15 @@ public class ItemFolder extends Item implements IFolder {
 		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
+	@Override
+	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
 		
 		String name = getFileName(stack);
-		if (!name.isEmpty())
-		{
+		if (!name.isEmpty()) {
 			long count = getFileSize(stack);
-			if (stack.getItemDamage() == 4)
-			{
-				if (getObject(stack) != null && getObject(stack) instanceof FluidStack)
+			if (stack.getItemDamage() == FolderType.FLUID.ordinal()) {
+				
+				if (getObject(stack) instanceof FluidStack)
 					name = ((FluidStack)getObject(stack)).getLocalizedName();
 				list.add(count + "mb " + name);
 				
@@ -95,21 +99,25 @@ public class ItemFolder extends Item implements IFolder {
 				
 				return;
 			}
-			if (stack.getItemDamage() == 3)
-			{
+			if (stack.getItemDamage() == FolderType.MOB.ordinal()) {
+				
 				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
-				Entity entity = EntityList.createEntityByIDFromName(res, player.world);
+				Entity entity = EntityList.createEntityByIDFromName(res, player);
 				if (entity != null)
 					list.add(count + " " + entity.getName());
+				list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mobinteract"));
+				
+				if (!ConfigRFC.mobUpgrade)
+					list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
 				return;
 			}
 			if (getObject(stack) instanceof ItemStack)
 				name = ((ItemStack)getObject(stack)).getDisplayName();
 			
-			list.add(TextHelper.format(count) + " " + name);
+			list.add((Keyboard.isKeyDown(42)) || (Keyboard.isKeyDown(54)) ? count + " " + name : TextHelper.format(count) + " " + name);
 			
-			if (stack.getItemDamage() == 2)
-			{
+			if (stack.getItemDamage() == FolderType.DURA.ordinal()) {
+				
 				list.add("Durability: " + ItemFolder.getRemSize(stack) + " / " + ((ItemStack)getObject(stack)).getMaxDamage());
 				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_IGNORENBT, false);
 				String ignoreNBT = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.true") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.false");
@@ -154,6 +162,11 @@ public class ItemFolder extends Item implements IFolder {
 	public static int getFileMeta(ItemStack stack) {
 		
 		return NBTUtils.getInt(stack, TAG_FILE_META, 0);
+	}
+	
+	public static void setFileMeta(ItemStack stack, int meta) {
+		
+		NBTUtils.setInt(stack, TAG_FILE_META, meta);
 	}
 	
 	public static void setFileSize(ItemStack stack, long count) {
@@ -209,6 +222,21 @@ public class ItemFolder extends Item implements IFolder {
 		
 		NBTUtils.setCompound(stack, TAG_ITEMTAG, tag);
 	}
+	
+	public static ItemStack getItem(ItemStack stack) {
+		
+		return ITEM_STORED;
+	}
+	
+	public static void setItem(ItemStack stack, ItemStack toStore, boolean copy) {
+		
+		if (copy)
+			ITEM_STORED = toStore.copy();
+		
+		ITEM_STORED = toStore;
+		setFileMeta(stack, toStore.getItemDamage());
+		setFileSize(stack, 1);
+	}
 
 	public static Object getObject(ItemStack folder) {
 
@@ -218,7 +246,7 @@ public class ItemFolder extends Item implements IFolder {
 			if (!str.isEmpty())
 				return str;
 		}
-		if (folder.getItemDamage() == 4) {
+		if (folder.getItemDamage() == FolderType.FLUID.ordinal()) {
 			if (!str.isEmpty() && FluidRegistry.getFluid(str) != null) {
 				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
 				return new FluidStack(FluidRegistry.getFluid(str), (int)extract);
@@ -253,10 +281,8 @@ public class ItemFolder extends Item implements IFolder {
 
 	public static boolean setObject(ItemStack folder, Object object) {
 
-		if (getObject(folder) == null)
-		{
-			if (object instanceof ItemStack)
-			{
+		if (getObject(folder) == null) {
+			if (object instanceof ItemStack) {
 				ItemStack stack = (ItemStack)object;
 				if (stack.getItem() instanceof Item && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
 					NBTUtils.setString(folder, TAG_FILE_NAME, Item.REGISTRY.getNameForObject(stack.getItem()).toString());
@@ -266,16 +292,15 @@ public class ItemFolder extends Item implements IFolder {
 				}
 				NBTUtils.setInt(folder, TAG_FILE_META, ((ItemStack)object).getItemDamage());
 				add(folder, 1);
-				if (folder.getItemDamage() == 2)
+				if (folder.getItemDamage() == FolderType.DURA.ordinal())
 					addRem(folder, 0);
 				
-				if (folder.getItemDamage() == 5)
+				if (folder.getItemDamage() == FolderType.NBT.ordinal())
 					setItemTag(folder, ((ItemStack)object).getTagCompound());
 				
 				return true;
 			}
-			if (object instanceof BlockLiquid || object instanceof IFluidBlock) 
-			{
+			if (object instanceof BlockLiquid || object instanceof IFluidBlock) {
 				Block bl = (Block)object;
 				String fluidname = bl.getLocalizedName();
 				if (object instanceof IFluidBlock)
@@ -299,8 +324,7 @@ public class ItemFolder extends Item implements IFolder {
 						return false;
 				}
 				
-				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild()))
-				{
+				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild())) {
 					ResourceLocation entityName = EntityList.getKey((Entity)object);
 					NBTUtils.setString(folder, TAG_FILE_NAME, entityName.toString());
 					add(folder, 1);
@@ -311,42 +335,40 @@ public class ItemFolder extends Item implements IFolder {
 		return false;
 	}
 	
-	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
-		
-		if (target.isChild() && !(target instanceof EntityZombie))
-			return false;
-		
-		if (target instanceof EntityCabinet)
-			return false;
-		
-		if (target instanceof IEntityOwnable && ((IEntityOwnable)target).getOwner() != null)
-			return false;
-		
-		String entityblacklist = target.getClass().getSimpleName();
-		for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
-			if (toBlacklist.contains(entityblacklist))
-				return false;
-		}
-		
-		ItemStack folder = player.getHeldItemMainhand();
-		if (!folder.isEmpty() && folder.getItem() == this)
-		{
-			if (folder.getItemDamage() == 3) {
-				if (getObject(folder) != null) {
-					ResourceLocation res = EntityList.getKey(target);
-					if (getObject(folder).equals(res.toString()))
-					{
-						add(folder, 1);
-						MobUtils.dropMobEquips(player.world, target);
-						target.setDead();
-					}
-				}
-			}
-			return true;
-		}
-		return false;
-	}
+//	@Override
+//	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
+//		
+//		if (target.isChild() && !(target instanceof EntityZombie))
+//			return false;
+//		
+//		if (target instanceof EntityCabinet)
+//			return false;
+//		
+//		if (target instanceof IEntityOwnable && ((IEntityOwnable)target).getOwner() != null)
+//			return false;
+//		
+//		String entityblacklist = target.getClass().getSimpleName();
+//		for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
+//			if (toBlacklist.contains(entityblacklist))
+//				return false;
+//		}
+//		ItemStack folder = player.getHeldItemMainhand();
+//		if (!folder.isEmpty() && folder.getItem() == this && folder.getItemDamage() == FolderType.MOB.ordinal()) {
+//			if (!ConfigRFC.mobUpgrade) return false;
+//			
+//			if (getObject(folder) != null) {
+//				ResourceLocation res = EntityList.getKey(target);
+//				if (getObject(folder).equals(res.toString()))
+//				{
+//					add(folder, 1);
+//					MobUtils.dropMobEquips(player.world, target);
+//					target.setDead();
+//				}
+//			}
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -369,8 +391,7 @@ public class ItemFolder extends Item implements IFolder {
 						
 						if (ear == EnumActionResult.SUCCESS) {
 							if (!player.capabilities.isCreativeMode) {
-								if (stack.getItemDamage() == 1 && !world.isRemote) 
-								{
+								if (stack.getItemDamage() == 1 && !world.isRemote) {
 									EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
 									if (player instanceof FakePlayer)
 										EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));
@@ -383,13 +404,11 @@ public class ItemFolder extends Item implements IFolder {
 					}
 				}
 			}
-			if (stack.getItemDamage() == 3)
-			{
+			if (stack.getItemDamage() == 3) {
 				if (MobUtils.spawnEntityFromFolder(world, player, stack, pos, side))
 					return EnumActionResult.SUCCESS;
 			}
-			if (stack.getItemDamage() == 4)
-			{
+			if (stack.getItemDamage() == 4) {
 				if (!(getObject(stack) instanceof FluidStack))
 					return EnumActionResult.PASS;
 				
@@ -403,16 +422,16 @@ public class ItemFolder extends Item implements IFolder {
 	@Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
-		ItemStack stack = player.getHeldItemMainhand();
+		ItemStack stack = player.getHeldItem(hand);
 		if (!stack.isEmpty() && stack.getItem() != this)
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
-		
+
 		if (stack.getItemDamage() == 2) {
 			NBTTagCompound tag = stack.getTagCompound();
 			tag.setBoolean(StringLibs.RFC_IGNORENBT, !tag.getBoolean(StringLibs.RFC_IGNORENBT));
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
-		if (stack != ItemStack.EMPTY && stack.getItemDamage() != 4)
+		if (!stack.isEmpty() && stack.getItemDamage() != 4)
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 		
 		RayTraceResult rtr = rayTrace(world, player, true);
@@ -437,8 +456,7 @@ public class ItemFolder extends Item implements IFolder {
         
 		if (entityLiving instanceof EntityPlayer && entityLiving.isSneaking()) {
 			if (!stack.isEmpty() && stack.getItem() == this) {
-				if (stack.getItemDamage() == 4)
-				{	
+				if (stack.getItemDamage() == 4) {	
 					NBTTagCompound tag = stack.getTagCompound();
 					tag.setBoolean(StringLibs.RFC_PLACEMODE, !tag.getBoolean(StringLibs.RFC_PLACEMODE));
 					return true;

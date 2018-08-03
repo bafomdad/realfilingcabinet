@@ -20,7 +20,6 @@ public class ItemWhiteoutTape extends Item {
 		setMaxStackSize(1);
 		setMaxDamage(25);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {

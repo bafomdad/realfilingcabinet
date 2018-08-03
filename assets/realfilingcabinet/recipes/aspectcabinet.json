@@ -1,0 +1,30 @@
+{
+  "conditions": [
+    {
+	  "type": "forge:mod_loaded",
+	  "modid": "thaumcraft"
+	}
+  ],
+  "result": {
+    "item": "realfilingcabinet:aspectcabinet"
+  },
+  "pattern": [
+    "LLL",
+    "LFL",
+    "LPL"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "thaumcraft:phial",
+	  "data": 0
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+	"L": {
+	  "type": "forge:ore_dict",
+      "ore": "logWood"
+	}
+  }
+}

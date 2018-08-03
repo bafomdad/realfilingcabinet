@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,25 +30,18 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".manafolder");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
+	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
 		
 		int count = getManaSize(stack);
 		list.add(BotaniaRFC.formatMana(count));
 	}
 	
-	@Override
-	public int getEntityLifespan(ItemStack stack, World world) {
-		
-		return Integer.MAX_VALUE;
-	}
-	
 	public static void setManaSize(ItemStack stack, int count) {
 		
-		NBTUtils.setInt(stack, TAG_MANA_COUNT, count);
+		NBTUtils.setInt(stack, TAG_MANA_COUNT, Math.max(0, count));
 	}
 	
 	public static int getManaSize(ItemStack stack) {

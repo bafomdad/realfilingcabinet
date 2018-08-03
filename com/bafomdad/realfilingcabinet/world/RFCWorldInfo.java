@@ -1,7 +1,7 @@
 package com.bafomdad.realfilingcabinet.world;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.WorldSavedData;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -41,8 +41,7 @@ public class RFCWorldInfo extends WorldSavedData {
 	
 	public void setStructureGenerated(boolean generated) {
 		
-		if (generated != structureGenerated)
-		{
+		if (generated != structureGenerated) {
 			structureGenerated = generated;
 			this.markDirty();
 		}
@@ -50,12 +49,10 @@ public class RFCWorldInfo extends WorldSavedData {
 	
 	public static RFCWorldInfo getInstance() {
 		
-		WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-		if (world != null)
-		{
+		WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
+		if (world != null) {
 			WorldSavedData handler = world.getMapStorage().getOrLoadData(RFCWorldInfo.class, ID);
-			if (handler == null)
-			{
+			if (handler == null) {
 				handler = new RFCWorldInfo();
 				world.getMapStorage().setData(ID, handler);
 			}

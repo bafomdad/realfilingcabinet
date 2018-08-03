@@ -1,0 +1,12 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "realfilingcabinet:aspectcabinet"
+	},
+    "variants": {
+        "facing=west": { "model": "realfilingcabinet:aspectcabinet" },
+        "facing=south": { "model": "realfilingcabinet:aspectcabinet" },
+        "facing=east": { "model": "realfilingcabinet:aspectcabinet" },
+        "facing=north": { "model": "realfilingcabinet:aspectcabinet" }
+    }
+}

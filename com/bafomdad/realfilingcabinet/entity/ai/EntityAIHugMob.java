@@ -40,7 +40,7 @@ public class EntityAIHugMob extends EntityAIBase {
 			double closestDistance = Double.MAX_VALUE;
 			for (EntityLivingBase mob : mobs) {
 				if (!mob.isDead && mob.onGround) {
-					double dist = mob.getDistanceToEntity(cabinet);
+					double dist = mob.getDistance(cabinet);
 					if (dist < closestDistance && cabinet.getInventory().canInsertMob(mob, false)) {
 						BlockPos pos = BlockPos.fromLong(cabinet.homePos);
 						if (cabinet.hasHome() && cabinet.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10.0D)
@@ -63,13 +63,13 @@ public class EntityAIHugMob extends EntityAIBase {
 	@Override
 	public void resetTask() {
 		
-		pathFinder.clearPathEntity();
+		pathFinder.clearPath();
 		targetMob = null;
 		cabinet.setYay(false);
 	}
 	
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		
 		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetMob.isDead && MobUpgradeHelper.getMobUpgrade(cabinet, StringLibs.TAG_MOB) != null;
 	}
@@ -86,7 +86,7 @@ public class EntityAIHugMob extends EntityAIBase {
 		
 		super.updateTask();
 		if (!cabinet.world.isRemote) {
-			if (targetMob != null && cabinet.getDistanceToEntity(targetMob) < 1.5) {
+			if (targetMob != null && cabinet.getDistance(targetMob) < 1.5) {
 				boolean flag = cabinet.getInventory().canInsertMob(targetMob, true);
 				if (flag)
 				{

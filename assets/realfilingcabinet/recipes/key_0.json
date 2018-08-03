@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:key",
+    "data": 0
+  },
+  "pattern": [
+    "  N",
+    " N ",
+    "I  "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "N": {
+      "item": "minecraft:gold_nugget"
+    }
+  }
+}

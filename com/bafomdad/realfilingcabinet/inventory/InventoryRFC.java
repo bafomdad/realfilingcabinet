@@ -2,6 +2,8 @@ package com.bafomdad.realfilingcabinet.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
@@ -40,20 +42,18 @@ public class InventoryRFC extends ItemStackHandler {
 		if (tile.isCabinetLocked() || slot == 8)
 			return stack;
 		
-        if (stack == ItemStack.EMPTY || stack.getCount() == 0)
+        if (stack.isEmpty() || stack.getCount() == 0)
             return ItemStack.EMPTY;
 
         validateSlotIndex(slot);
 
-        if (stacks.get(slot) != ItemStack.EMPTY && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate))
-        {
+        if (!stacks.get(slot).isEmpty() && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate)) {
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
         	return ItemStack.EMPTY;
         }
-        if (StorageUtils.simpleFolderMatch(tile, stack) != -1)
-        {
+        if (StorageUtils.simpleFolderMatch(tile, stack) != -1) {
         	slot = StorageUtils.simpleFolderMatch(tile, stack);
         	if (!simulate) {
         		ItemFolder.add(stacks.get(slot), stack.getCount());
@@ -69,20 +69,17 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		LogRFC.debug("Extraction slot: " + slot + " / Extraction amount: " + amount + " / " + simulate);
 		
-		if (ItemFolder.getObject(stacks.get(slot)) instanceof ItemStack)
-		{
+		if (ItemFolder.getObject(stacks.get(slot)) instanceof ItemStack) {
 			ItemStack stackFolder = this.getStackFromFolder(slot);
-			if (stackFolder == ItemStack.EMPTY || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
+			if (stackFolder.isEmpty() || tile.isCabinetLocked() || UpgradeHelper.getUpgrade(tile, StringLibs.TAG_CRAFT) != null)
 				return ItemStack.EMPTY;
 			
-			if (tile.hasItemFrame() && tile.getFilter() == ItemStack.EMPTY)
+			if (tile.hasItemFrame() && tile.getFilter().isEmpty())
 				return ItemStack.EMPTY;
 			
-			if (tile.getFilter() != ItemStack.EMPTY)
-			{
+			if (!tile.getFilter().isEmpty()) {
 				int i = StorageUtils.simpleFolderMatch(tile, tile.getFilter());
-				if (i != -1 && slot == i)
-				{
+				if (i != -1 && slot == i) {
 					stackFolder = this.getStackFromFolder(i);
 					long filterCount = ItemFolder.getFileSize(getTrueStackInSlot(i));
 					if (filterCount == 0)
@@ -138,17 +135,15 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		validateSlotIndex(slot);
 		
-		if ((stacks.get(slot) != ItemStack.EMPTY && !(stacks.get(slot).getItem() instanceof IFolder)) || slot == 8)
+		if ((!stacks.get(slot).isEmpty() && !(stacks.get(slot).getItem() instanceof IFolder)) || slot == 8)
 			return ItemStack.EMPTY;
 		
 		ItemStack stackFolder = getStackFromFolder(slot);
-		if (stackFolder != ItemStack.EMPTY)
-		{
+		if (!stackFolder.isEmpty()) {
 			long count = ItemFolder.getFileSize(getTrueStackInSlot(slot));
 			if (count == 0)
 				return ItemStack.EMPTY;
 			
-//			long extract = Math.min(stackFolder.getMaxStackSize(), count);
 			long extract = Math.min(Integer.MAX_VALUE - 1, count);
 			stackFolder.setCount((int)extract);
 		}
@@ -158,17 +153,20 @@ public class InventoryRFC extends ItemStackHandler {
 	public ItemStack getStackFromFolder(int slot) {
 		
 		ItemStack folder = getTrueStackInSlot(slot);
-		if (ItemFolder.getObject(folder) == ItemStack.EMPTY)
+		if (ItemFolder.getObject(folder) == null)
 			return ItemStack.EMPTY;
 		
-		if (folder != ItemStack.EMPTY && folder.getItem() instanceof IFolder)
-		{
-			if (ItemFolder.getObject(folder) instanceof ItemStack)
-			{
+		if (!folder.isEmpty() && folder.getItem() instanceof IFolder) {
+			if (ItemFolder.getObject(folder) instanceof ItemStack) {
 				ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
-				if (stack != ItemStack.EMPTY) {
+				if (!stack.isEmpty()) {
 					return stack.copy();
 				}
+			}
+			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null && ItemFolder.getObject(folder) instanceof FluidStack) {
+				ItemStack bucket = FluidUtil.getFilledBucket((FluidStack)ItemFolder.getObject(folder));
+				if (!bucket.isEmpty())
+					return bucket.copy();
 			}
 		}
 		return ItemStack.EMPTY;

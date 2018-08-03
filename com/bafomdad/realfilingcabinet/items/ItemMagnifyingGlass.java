@@ -40,7 +40,6 @@ public class ItemMagnifyingGlass extends Item {
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".magnifyingglass");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 		this.addPropertyOverride(new ResourceLocation("booltime"), new IItemPropertyGetter() {
 			
 			@Override
@@ -88,19 +87,16 @@ public class ItemMagnifyingGlass extends Item {
 		if (target != null && target instanceof EntityCabinet) {
 			
 			EntityCabinet cabinet = (EntityCabinet)target;
-			if (!player.isSneaking())
-			{
-				if (cabinet.getInventory() != null)
-				{
+			if (!player.isSneaking()) {
+				if (cabinet.getInventory() != null) {
 					for (int i = 0; i < cabinet.getInventory().getSlots(); i++) {
 						ItemStack stacky = cabinet.getInventory().getStackInSlot(i);
 						if (stacky != null && stacky.getItem() == RFCItems.folder) {
-							if (ItemFolder.getObject(stacky) != null)
-							{
+							if (ItemFolder.getObject(stacky) != null) {
 								String name = TextHelper.folderStr(stacky);
 								long storedSize = ItemFolder.getFileSize(stacky);
 								
-								player.sendMessage(new TextComponentString(name + " - " + storedSize));
+								player.sendStatusMessage(new TextComponentString(name + " - " + storedSize), true);
 							}
 						}
 					}

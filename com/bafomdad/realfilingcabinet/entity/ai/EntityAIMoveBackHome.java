@@ -44,7 +44,7 @@ public class EntityAIMoveBackHome extends EntityAIBase {
 	}
 	
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		
 		return cabinet.isEntityAlive() && cabinet.getDistance(dest.getX(), dest.getY(), dest.getZ()) > 1.0D;
 	}

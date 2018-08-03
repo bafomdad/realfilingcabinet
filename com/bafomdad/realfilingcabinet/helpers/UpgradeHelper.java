@@ -12,6 +12,7 @@ import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemUpgrades;
 
 public class UpgradeHelper {
 	
@@ -24,7 +25,7 @@ public class UpgradeHelper {
 	 */
 	public static void registerUpgrade(ItemStack stack, String tag) {
 		
-		if (stack.getItem() instanceof IUpgrades && !tag.isEmpty())
+		if (!stack.isEmpty() && stack.getItem() instanceof IUpgrades && !tag.isEmpty())
 			upgrades.put(stack, tag);
 		else throw new IllegalArgumentException("[RealFilingCabinet]: Register upgrades: ItemStack is not an instance of IUpgrades, or the string tag is empty");
 	}
@@ -86,24 +87,22 @@ public class UpgradeHelper {
 
 		String key = stringTest(upgrade);
 		
-		if (key != null && key.equals(StringLibs.TAG_CREATIVE))
-		{
+		if (key != null && key.equals(StringLibs.TAG_CREATIVE))  {
 			tile.isCreative = true;
 			if (!player.capabilities.isCreativeMode)
 				upgrade.shrink(1);
 			tile.markDirty();
 			return;
 		}
-		
 		if (hasUpgrade(tile))
 			return;
 			
-		if (key != null)
-		{
+		if (key != null) {
+			
 			tile.upgrades = key;
 			if (!player.capabilities.isCreativeMode)
 				upgrade.shrink(1);
-			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == 2)
+			if (upgrade.getItem() == RFCItems.upgrades && upgrade.getItemDamage() == ItemUpgrades.UpgradeType.ENDER.ordinal())
 				tile.setHash(tile);
 			tile.markDirty();
 		}
@@ -120,8 +119,8 @@ public class UpgradeHelper {
 			return;
 
 		ItemStack creative = creativeTest(tile);
-		if (creative != ItemStack.EMPTY)
-		{
+		if (!creative.isEmpty()) {
+			
 			tile.isCreative = false;
 			if (!player.inventory.addItemStackToInventory(creative))
 				player.dropItem(creative.getItem(), 1);
@@ -129,8 +128,8 @@ public class UpgradeHelper {
 			return;
 		}
 		ItemStack upgrade = stackTest(tile);
-		if (upgrade != ItemStack.EMPTY)
-		{
+		if (!upgrade.isEmpty()) {
+			
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
 			if (!player.inventory.addItemStackToInventory(newStack))
 				player.dropItem(newStack.getItem(), 1);
@@ -157,11 +156,10 @@ public class UpgradeHelper {
 		if (str.isEmpty())
 			return ItemStack.EMPTY;
 		
-		for (Map.Entry<ItemStack, String> entry : upgrades.entrySet())
-		{
+		for (Map.Entry<ItemStack, String> entry : upgrades.entrySet()) {
 			String value = entry.getValue();
 			if (value.equals(str))
-				return entry.getKey();
+				return entry.getKey().copy();
 		}
 		return ItemStack.EMPTY;
 	}

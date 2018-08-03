@@ -36,15 +36,13 @@ public class ItemDebugger extends Item {
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".debugger");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         
     	Block block = world.getBlockState(pos).getBlock();
-    	if (block == RFCBlocks.blockRFC && hand == EnumHand.MAIN_HAND)
-    	{
+    	if (block == RFCBlocks.blockRFC && hand == EnumHand.MAIN_HAND) {
     		TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
     		if (tile == null)
     			return EnumActionResult.FAIL;
@@ -55,9 +53,8 @@ public class ItemDebugger extends Item {
     	}
     	ItemStack debugger = player.getHeldItem(EnumHand.OFF_HAND);
     	ItemStack thing = player.getHeldItem(EnumHand.MAIN_HAND);
-    	if (debugger != ItemStack.EMPTY && debugger.getItem() == this) {
-    		if (thing != ItemStack.EMPTY && !world.isRemote)
-    		{
+    	if (!debugger.isEmpty() && debugger.getItem() == this) {
+    		if (!thing.isEmpty() && !world.isRemote) {
     			String str = TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".debugger") + ": " + thing.getUnlocalizedName();
     			player.sendMessage(new TextComponentString(str));
     		}

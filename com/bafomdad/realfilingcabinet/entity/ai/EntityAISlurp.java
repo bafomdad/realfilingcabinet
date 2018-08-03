@@ -105,12 +105,12 @@ public class EntityAISlurp extends EntityAIBase {
 	@Override
 	public void resetTask() {
 		
-		pathFinder.clearPathEntity();
+		pathFinder.clearPath();
 		cabinet.setYay(false);
 	}
 	
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		
 		return cabinet.isEntityAlive() && !pathFinder.noPath() && targetFluid != null && MobUpgradeHelper.getMobUpgrade(cabinet, StringLibs.TAG_FLUID) != null;
 	}

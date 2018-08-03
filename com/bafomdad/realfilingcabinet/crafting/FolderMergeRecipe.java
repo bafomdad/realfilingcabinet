@@ -1,9 +1,11 @@
 package com.bafomdad.realfilingcabinet.crafting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
@@ -12,11 +14,15 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
-public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
+public class FolderMergeRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	
 	public static List inputs = new ArrayList();
+	final String name;
 	
 	static
 	{
@@ -24,9 +30,10 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 		inputs.add(new ItemStack(RFCItems.folder, 1, 0));
 	}
 
-	public FolderMergeRecipe() {
+	public FolderMergeRecipe(String name) {
 		
-		super(new ItemStack(RFCItems.folder, 1, 0), inputs);
+		this.name = name;
+		this.setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, name));
 	}
 	
 	@Override
@@ -38,17 +45,16 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.EMPTY)
-				{
+				if (!stack.isEmpty()) {
+					
 					boolean flag = false;
 					Iterator iter = list.iterator();
 					
-					while (iter.hasNext())
-					{
+					while (iter.hasNext()) {
 						ItemStack stack1 = (ItemStack)iter.next();
 						
-						if (stack.getItem() == stack1.getItem() && (stack1.getItemDamage() == 32767 || stack.getItemDamage() == stack1.getItemDamage()))
-						{
+						if (stack.getItem() == stack1.getItem() && (stack1.getItemDamage() == 32767 || stack.getItemDamage() == stack1.getItemDamage())) {
+							
 							flag = true;
 							list.remove(stack1);
 							break;
@@ -71,7 +77,7 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 		for (int i = 0; i < ic.getSizeInventory(); i++) {
 			
 			ItemStack stack = ic.getStackInSlot(i);
-			if (stack != ItemStack.EMPTY)
+			if (!stack.isEmpty())
 			{
 				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == 0) {
 					if (hostFolder == -1)
@@ -101,5 +107,27 @@ public class FolderMergeRecipe extends ShapelessRecipes implements IRecipe {
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+
+		return width >= 3 && height >= 3;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput() {
+
+		return new ItemStack(RFCItems.folder);
+	}
+
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting ic) {
+
+        NonNullList<ItemStack> ret = NonNullList.withSize(ic.getSizeInventory(), ItemStack.EMPTY);
+        for (int i = 0; i < ret.size(); i++) {
+        	ret.set(i, ItemStack.EMPTY);
+        }
+        return ret;
 	}
 }

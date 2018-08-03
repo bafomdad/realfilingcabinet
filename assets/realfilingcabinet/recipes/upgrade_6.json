@@ -1,0 +1,29 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "lifeUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 6
+  },
+  "pattern": [
+    "EDE",
+    "DFD",
+    "EDE"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    }
+  }
+}

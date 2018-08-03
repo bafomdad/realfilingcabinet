@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "realfilingcabinet:emptyfolder",
+    "data": 2,
+    "count": 4
+  },
+  "pattern": [
+    "PGS",
+    "PBR",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "R": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    }
+  }
+}

@@ -37,8 +37,8 @@ public class EntityAIEatItem extends EntityAIBase {
 			double closestDistance = Double.MAX_VALUE;
 			for (EntityItem item : items) {
 				if (!item.isDead && item.onGround) {
-					double dist = item.getDistanceToEntity(cabinet);
-					if (dist < closestDistance && cabinet.getInventory().canInsertItem(item.getEntityItem())) {
+					double dist = item.getDistance(cabinet);
+					if (dist < closestDistance && cabinet.getInventory().canInsertItem(item.getItem())) {
 						BlockPos pos = BlockPos.fromLong(cabinet.homePos);
 						if (cabinet.hasHome() && cabinet.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10.0D)
 							return false;
@@ -60,13 +60,13 @@ public class EntityAIEatItem extends EntityAIBase {
 	@Override
 	public void resetTask() {
 		
-		pathFinder.clearPathEntity();
+		pathFinder.clearPath();
 		targetItem = null;
 		cabinet.setYay(false);
 	}
 	
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		
 		return cabinet.isEntityAlive() && !pathFinder.noPath() && !targetItem.isDead && !MobUpgradeHelper.hasMobUpgrade(cabinet);
 	}
@@ -83,10 +83,10 @@ public class EntityAIEatItem extends EntityAIBase {
 		
 		super.updateTask();
 		if (!cabinet.world.isRemote) {
-			if (targetItem != null && cabinet.getDistanceToEntity(targetItem) < 1.0) {
-				ItemStack stack = cabinet.getInventory().insertItem(0, targetItem.getEntityItem(), true);
+			if (targetItem != null && cabinet.getDistance(targetItem) < 1.0) {
+				ItemStack stack = cabinet.getInventory().insertItem(0, targetItem.getItem(), true);
 				if (stack == null) {
-					cabinet.getInventory().insertItem(0, targetItem.getEntityItem(), false);
+					cabinet.getInventory().insertItem(0, targetItem.getItem(), false);
 					targetItem.setDead();
 					cabinet.setYay(false);
 				}

@@ -9,6 +9,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 
 public class SlotRFC extends Slot {
 	
@@ -26,7 +27,7 @@ public class SlotRFC extends Slot {
     @Override
     public boolean isItemValid(ItemStack stack) {
     	
-    	return stack.getItem() instanceof IFolder;
+    	return stack.getItem() instanceof IFolder && stack.getItemDamage() != FolderType.ENDER.ordinal();
     }
     
     @Override

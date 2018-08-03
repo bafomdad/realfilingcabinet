@@ -6,10 +6,14 @@ import java.util.TreeMap;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.items.ItemEmptyFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextHelper {
@@ -62,8 +66,9 @@ public class TextHelper {
 				return ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
 			if (ItemFolder.getObject(folder) instanceof FluidStack)
 				return ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
-			else if (ItemFolder.getObject(folder) instanceof String)
+			else if (ItemFolder.getObject(folder) instanceof String) {
 				return (String)ItemFolder.getObject(folder);
+			}
 		}
 		return null;
 	}

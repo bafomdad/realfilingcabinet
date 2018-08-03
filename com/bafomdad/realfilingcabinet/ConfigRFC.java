@@ -6,6 +6,8 @@ import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+// This class is now unused, and therefore marked for removing later
+@Deprecated
 public class ConfigRFC {
 
 	// RECIPES
@@ -51,7 +53,7 @@ public class ConfigRFC {
 		
 		debugLogger = config.get("debug", "enableDebugLogger", false, "Will output stuff to console for debugging purposes").getBoolean();
 		
-		botaniaIntegration = config.get("integration", "enableBotaniaIntegration", true, "Will add a folder and new cabinet when it detects that Botania is installed.").getBoolean();
+		botaniaIntegration = config.get("integration", "enableBotaniaIntegration", false, "Will add a folder and new cabinet when it detects that Botania is installed.").getBoolean();
 		
 		config.save();
 	}

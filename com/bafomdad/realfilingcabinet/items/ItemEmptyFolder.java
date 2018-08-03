@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
@@ -32,7 +34,13 @@ import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
 public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
-	public String[] folderType = new String[] { "normal", "dura", "mob", "fluid", "nbt" };
+	public enum FolderType {
+		NORMAL,
+		DURA,
+		MOB,
+		FLUID,
+		NBT;
+	}
 	
 	public ItemEmptyFolder() {
 		
@@ -42,29 +50,32 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + folderType[stack.getItemDamage()];
+		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 		
-		for (int i = 0; i < folderType.length; ++i)
-			list.add(new ItemStack(item, 1, i));
+		if (isInCreativeTab(tab)) {
+			for (int i = 0; i < FolderType.values().length; ++i)
+				list.add(new ItemStack(this, 1, i));
+		}
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {
+	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
 	
 		switch(stack.getItemDamage())
 		{
 			case 1: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder1")); return;
-			case 2: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder2")); return;
+			case 2: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder2")); 
+			if (!ConfigRFC.mobUpgrade)
+				list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled")); return;
 			case 3: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder3")); return;
 			default: list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".emptyfolder0"));
 		}
@@ -111,18 +122,16 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
 		
-		if (!player.world.isRemote)
-		{
-			if (stack.getItemDamage() == 2)
-			{
-				ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
-				if (ItemFolder.setObject(newFolder, target)) {
-					if (!player.inventory.addItemStackToInventory(newFolder))
-						player.dropItem(newFolder, true);
-					stack.shrink(1);
-					MobUtils.dropMobEquips(player.world, target);
-					target.setDead();
-				}
+		if (!player.world.isRemote && stack.getItemDamage() == FolderType.MOB.ordinal()) {
+			if (!ConfigRFC.mobUpgrade) return false;
+			
+			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
+			if (ItemFolder.setObject(newFolder, target)) {
+				if (!player.inventory.addItemStackToInventory(newFolder))
+					player.dropItem(newFolder, true);
+				stack.shrink(1);
+				MobUtils.dropMobEquips(player.world, target);
+				target.setDead();
 			}
 			return true;
 		}

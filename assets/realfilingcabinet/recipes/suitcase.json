@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "realfilingcabinet:suitcase"
+  },
+  "pattern": [
+    "III",
+    "ICI",
+    "III"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "I": {
+      "item": "minecraft:leather"
+    }
+  }
+}

@@ -19,22 +19,31 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.ILockableCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.integration.storagedrawers.CabinetData;
 import com.bafomdad.realfilingcabinet.inventory.FluidRFC;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
+import com.google.common.collect.Lists;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 
-public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet {
+@Optional.Interface(iface = "com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup", modid = RealFilingCabinet.STORAGEDRAWERS, striprefs = true)
+public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILockableCabinet, IDrawerGroup {
 
 	private InventoryRFC inv = new InventoryRFC(this, 8);
 	private FluidRFC fluidinv = new FluidRFC(this);
@@ -49,6 +58,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	private int rfcHash = -1;
 	public boolean isCreative = false;
 	public String upgrades = "";
+	public List<int[]> smeltingJobs = Lists.newArrayList();
+	public int fuelTime = 0;
 	
 	// Rendering variables
 	public static final float offsetSpeed = 0.1F;
@@ -57,8 +68,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	@Override
 	public void update() {
 		
-		if (isOpen)
-		{
+		if (isOpen) {
 			offset -= offsetSpeed;
 			if (offset <= -0.75F)
 				offset = -0.75F;
@@ -67,10 +77,18 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			if (offset >= 0.05F)
 				offset = 0.05F;
 		}
-		if (UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE) != null)
-		{
-			if (!world.isRemote)
-			{
+		if (SmeltingUtils.canSmelt(this)) {
+//			if (!world.isRemote) {
+				SmeltingUtils.incrementSmeltTime(this);
+				if (getWorld().getTotalWorldTime() % 40 == 0) {
+					SmeltingUtils.createSmeltingJob(this);
+					this.markBlockForUpdate();
+				}
+//			}
+			return;
+		}
+		if (UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE) != null) {
+			if (!world.isRemote) {
 				EntityCabinet cabinet = new EntityCabinet(world);
 				IBlockState state = world.getBlockState(getPos());
 				float angle = state.getActualState(world, pos).getValue(BlockHorizontal.FACING).getHorizontalAngle();
@@ -83,12 +101,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 						cabinet.setInventory(i, folder.copy());
 					}
 				}
-				if (this.isCabinetLocked())
-				{
+				if (this.isCabinetLocked()) {
 					UUID uuid = this.getCabinetOwner();
 					cabinet.setOwnerId(uuid);
-				}
-				else
+				} else
 					cabinet.homePos = getPos().toLong();
 				
 				if (!cabinet.isLegit())
@@ -129,6 +145,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			tag.setInteger(StringLibs.RFC_HASH, rfcHash);
 		
 		tag.setString(StringLibs.RFC_UPGRADE, upgrades);
+		
+		SmeltingUtils.writeSmeltNBT(this, tag);
 	}
 	
 	@Override
@@ -144,18 +162,18 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		if (tag.hasKey(StringLibs.RFC_HASH))
 			rfcHash = tag.getInteger(StringLibs.RFC_HASH);
 		upgrades = tag.getString(StringLibs.RFC_UPGRADE);
+		
+		SmeltingUtils.readSmeltNBT(this, tag);
 	}
 	
 	public void readInv(NBTTagCompound nbt) {
 		
 		NBTTagList invList = nbt.getTagList("inventory", 10);
-		for (int i = 0; i < invList.tagCount(); i++)
-		{
+		for (int i = 0; i < invList.tagCount(); i++) {
 			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
 			int slot = itemTag.getByte("Slot");
-			if (slot >= 0 && slot < inv.getSlots()) {
+			if (slot >= 0 && slot < inv.getSlots())
 				inv.getStacks().set(slot, new ItemStack(itemTag));
-			}
 		}
 	}
 	
@@ -164,8 +182,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		boolean write = false;
 		NBTTagList invList = new NBTTagList();
 		for (int i = 0; i < inv.getSlots(); i++) {
-			if (inv.getTrueStackInSlot(i) != ItemStack.EMPTY)
-			{
+			if (!inv.getTrueStackInSlot(i).isEmpty()) {
 				if (toItem)
 					write = true;
 				NBTTagCompound itemTag = new NBTTagCompound();
@@ -223,9 +240,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
 			IBlockState state = getWorld().getBlockState(getPos());
 			EnumFacing rfcOrientation = (EnumFacing)state.getValue(BlockRFC.FACING);
-			if (frame != null && frame.getDisplayedItem() != ItemStack.EMPTY && (orientation == rfcOrientation)) {
-				if (frame.getDisplayedItem().getItem() == RFCItems.filter)
-				{
+			if (frame != null && !frame.getDisplayedItem().isEmpty() && (orientation == rfcOrientation)) {
+				if (frame.getDisplayedItem().getItem() == RFCItems.filter) {
 					int rotation = frame.getRotation();
 					return inv.getStackFromFolder(rotation);
 				}
@@ -240,6 +256,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && UpgradeHelper.getUpgrade(this, StringLibs.TAG_FLUID) != null)
 			return cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		if (cap == DRAWER_GROUP_CAPABILITY && !UpgradeHelper.hasUpgrade(this))
+			return cap == DRAWER_GROUP_CAPABILITY;
 		
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 	}
@@ -252,6 +270,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		}
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(fluidinv);
+		if (cap == DRAWER_GROUP_CAPABILITY)
+			return (T) this;
 		
 		return super.getCapability(cap, side);
 	}
@@ -265,12 +285,10 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	@Override
 	public boolean setOwner(UUID owner) {
 
-		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner)))
-		{
+		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner))) {
 			this.owner = owner;
 			
 			if (getWorld() != null && !getWorld().isRemote) {
-				
 				markDirty();
 				this.markBlockForUpdate();
 			}
@@ -307,5 +325,30 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	public int getHash(TileEntityRFC tile) {
 		
 		return this.rfcHash;
+	}
+
+/**
+ * Storage Drawers Integration begins here
+ */
+	@CapabilityInject(IDrawerGroup.class)
+	static Capability<IDrawerGroup> DRAWER_GROUP_CAPABILITY = null;
+	
+	@Override
+	public int getDrawerCount() {
+
+		return this.inv.getSlots();
+	}
+
+	@Optional.Method(modid = RealFilingCabinet.STORAGEDRAWERS)
+	@Override
+	public IDrawer getDrawer(int slot) {
+
+		return new CabinetData(this, slot);
+	}
+
+	@Override
+	public int[] getAccessibleDrawerSlots() {
+
+		return new int[this.inv.getSlots()];
 	}
 }

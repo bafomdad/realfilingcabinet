@@ -9,21 +9,19 @@ public final class LogRFC {
 
 	public static void debug(String msg) {
 		
-		if (ConfigRFC.debugLogger)
+		if (NewConfigRFC.ConfigRFC.debugLogger)
 			LOGGER.info(msg);
 	}
 	
 	public static void info(String msg) {
 		
-		LOGGER.info(RealFilingCabinet.MOD_NAME + ": " + msg);
+		LOGGER.info(msg);
 	}
 	
 	public static void error(String msg) {
 		
-		LOGGER.error(RealFilingCabinet.MOD_NAME + ": " + msg);
+		LOGGER.error(msg);
 	}
 	
-	private LogRFC() {
-		
-	}
+	private LogRFC() {}
 }

@@ -19,7 +19,6 @@ public class ItemFilter extends Item {
 		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".filter");
 		setMaxStackSize(16);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {

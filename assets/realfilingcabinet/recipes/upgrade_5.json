@@ -1,0 +1,35 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "fluidUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 5
+  },
+  "pattern": [
+    "ZBZ",
+    "LFW",
+    "ZBZ"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "Z": {
+      "item": "minecraft:lapis_block"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  }
+}

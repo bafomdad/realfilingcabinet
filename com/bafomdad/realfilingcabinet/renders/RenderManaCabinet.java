@@ -32,7 +32,7 @@ public class RenderManaCabinet extends TileEntitySpecialRenderer<TileManaCabinet
 	}
 	
 	@Override
-	public void renderTileEntityAt(@Nonnull TileManaCabinet te, double x, double y, double z, float partialTicks, int digProgress) {
+	public void render(@Nonnull TileManaCabinet te, double x, double y, double z, float partialTicks, int digProgress, float whatever) {
 
 		if (te != null && te.getWorld() != null)
 			this.renderManaCabinet(te, x + 0.5F, y + 0.5F, z + 0.5F);

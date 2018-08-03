@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "realfilingcabinet:whiteouttape"
+  },
+  "pattern": [
+    " P ",
+    "PSP",
+    "BP "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:dye",
+      "data": 15
+    },
+    "S": {
+	  "type": "forge:ore_dict",
+      "ore": "slimeball"
+    }
+  }
+}

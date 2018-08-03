@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -27,11 +28,9 @@ public class StorageUtils {
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
-			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null)
-			{
+			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null) {
 				OreDictUtils.recreateOreDictionary(stack);
-				if (OreDictUtils.hasOreDict())
-				{
+				if (OreDictUtils.hasOreDict()) {
 					if (!loopinv.isEmpty() && OreDictUtils.areItemsEqual(stack, loopinv)) {
 						return i;
 					}
@@ -180,18 +179,14 @@ public class StorageUtils {
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
 				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null) {
-					
 					ItemStack container = player.getHeldItemMainhand();
-					if (container != ItemStack.EMPTY && container.getItem() == Items.BUCKET)
-					{
+					if (!container.isEmpty() && container.getItem() == Items.BUCKET) {
 						FluidStack fluid = FluidUtil.getFluidContained(stack);
-						if (fluid != null)
-						{
+						if (fluid != null) {
 							FluidActionResult far = FluidUtil.tryFillContainer(container, tile.getFluidInventory(), Fluid.BUCKET_VOLUME, player, true);
 							if (far.success) {
 								container.shrink(1);
-								if (!player.inventory.addItemStackToInventory(far.getResult()))
-									player.dropItem(far.getResult(), true);
+								ItemHandlerHelper.giveItemToPlayer(player, far.getResult());
 							}
 							return;
 						}
@@ -212,8 +207,7 @@ public class StorageUtils {
 							if (crouching) {
 								long extract = Math.min(stack.getMaxStackSize(), count);
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
-								if (!player.inventory.addItemStackToInventory(stackExtract))
-									player.dropItem(stackExtract, true);
+								ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
 								if (!UpgradeHelper.isCreative(tile))
 									ItemFolder.remove(folder, extract);
 								tile.markBlockForUpdate();
@@ -221,8 +215,7 @@ public class StorageUtils {
 							}
 							else {
 								ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-								if (!player.inventory.addItemStackToInventory(stackExtract))
-									player.dropItem(stackExtract, true);
+								ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
 								if (!UpgradeHelper.isCreative(tile))
 									ItemFolder.remove(folder, 1);
 								tile.markBlockForUpdate();
@@ -250,8 +243,7 @@ public class StorageUtils {
 					if (crouching) {
 						long extract = Math.min(stack.getMaxStackSize(), count);
 						ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
-						if (!player.inventory.addItemStackToInventory(stackExtract))
-							player.dropItem(stackExtract, true);
+						ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
 						if (!UpgradeHelper.isCreative(tile))
 							ItemFolder.remove(folder, extract);
 						tile.markBlockForUpdate();
@@ -259,8 +251,7 @@ public class StorageUtils {
 					}
 					else {
 						ItemStack stackExtract = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
-						if (!player.inventory.addItemStackToInventory(stackExtract))
-							player.dropItem(stackExtract, true);
+						ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
 						if (!UpgradeHelper.isCreative(tile))
 							ItemFolder.remove(folder, 1);
 						tile.markBlockForUpdate();

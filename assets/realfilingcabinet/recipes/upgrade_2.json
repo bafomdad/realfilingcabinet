@@ -1,0 +1,29 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "enderUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 2
+  },
+  "pattern": [
+    "OEO",
+    "EFE",
+    "OEO"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  }
+}

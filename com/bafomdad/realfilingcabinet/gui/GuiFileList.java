@@ -23,7 +23,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import org.lwjgl.opengl.GL11;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockManaCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
@@ -49,8 +49,7 @@ public class GuiFileList extends Gui {
 		
 		Profiler profiler = mc.mcProfiler;
 		
-		if (event.getType() == ElementType.ALL)
-		{
+		if (event.getType() == ElementType.ALL) {
 			profiler.startSection("RFC-hud");
 			
 			ScaledResolution scaled = new ScaledResolution(mc);
@@ -63,19 +62,17 @@ public class GuiFileList extends Gui {
 			if (mop != null) {
 				IBlockState state = mop.typeOfHit == RayTraceResult.Type.BLOCK ? mc.world.getBlockState(mop.getBlockPos()) : null;
 				Block block = state == null ? null : state.getBlock();
-				ItemStack magnifyingGlass = player.getHeldItemMainhand();
+				ItemStack mainhand = player.getHeldItemMainhand();
+				ItemStack offhand = player.getHeldItemOffhand();
+				boolean flag = (!mainhand.isEmpty() && mainhand.getItem() == RFCItems.magnifyingGlass) || (!offhand.isEmpty() && offhand.getItem() == RFCItems.magnifyingGlass);
 				
-				if (ConfigRFC.magnifyingGlassGui && magnifyingGlass != null && (magnifyingGlass.getItem() == RFCItems.magnifyingGlass))
-				{
+				if (ConfigRFC.magnifyingGlassGui && flag) {
 					if (block instanceof BlockRFC) {
 						TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
-						if (tile != null && tile instanceof TileEntityRFC)
-						{
+						if (tile instanceof TileEntityRFC) {
 							List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
-							if (!list.isEmpty())
-							{	
-								for (int i = 0; i < list.size(); i++)
-								{
+							if (!list.isEmpty()) {	
+								for (int i = 0; i < list.size(); i++) {
 									GL11.glDisable(GL11.GL_LIGHTING);
 									this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 								}
@@ -84,8 +81,7 @@ public class GuiFileList extends Gui {
 					}
 					else if (block instanceof BlockManaCabinet) {
 						TileEntity tile = player.world.getTileEntity(mop.getBlockPos());
-						if (tile != null && tile instanceof TileManaCabinet)
-						{
+						if (tile instanceof TileManaCabinet) {
 							List<String> list = getManaList((TileManaCabinet)tile);
 							if (!list.isEmpty())
 								this.drawCenteredString(mc.fontRenderer, list.get(0), width / 2, 5 + 10, Integer.parseInt("FFFFFF", 16));
@@ -100,8 +96,7 @@ public class GuiFileList extends Gui {
 	private List getFileList(InventoryRFC inv, boolean crouching) {
 		
 		List<String> list = new ArrayList();
-		for (int i = 0; i < inv.getSlots(); i++)
-		{
+		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getTrueStackInSlot(i);
 			if (folder != ItemStack.EMPTY && folder.getItem() instanceof IFolder) {
 				if (ItemFolder.getObject(folder) != null) {

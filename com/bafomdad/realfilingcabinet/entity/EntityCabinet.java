@@ -30,6 +30,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrades;
@@ -103,9 +104,9 @@ public class EntityCabinet extends EntityTameable {
 		if (source == DamageSource.OUT_OF_WORLD)
 			return false;
 		
-		if (source.getEntity() instanceof EntityPlayer && source.getEntity().isSneaking()) {
-			EntityPlayer player = (EntityPlayer)source.getEntity();
-			if (player.getHeldItemMainhand() != ItemStack.EMPTY && player.getHeldItemMainhand().getItem() == RFCItems.magnifyingGlass)
+		if (source.getTrueSource() instanceof EntityPlayer && source.getTrueSource().isSneaking()) {
+			EntityPlayer player = (EntityPlayer)source.getTrueSource();
+			if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() == RFCItems.magnifyingGlass)
 				return false;
 		}
 		return true;
@@ -122,8 +123,8 @@ public class EntityCabinet extends EntityTameable {
 			return false;
 		}
 		if (!upgrades.isEmpty()) {
-			if (source.getEntity() instanceof EntityPlayer)
-				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getEntity(), this);
+			if (source.getTrueSource() instanceof EntityPlayer)
+				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getTrueSource(), this);
 			return false;
 		}
 		this.setTile(source);
@@ -135,8 +136,7 @@ public class EntityCabinet extends EntityTameable {
 		
 		ItemStack stack = player.getHeldItemMainhand();
 		if (hand == EnumHand.MAIN_HAND && !this.world.isRemote) {
-			if (stack != ItemStack.EMPTY && stack.getItem() instanceof IUpgrades)
-			{
+			if (!stack.isEmpty() && stack.getItem() instanceof IUpgrades) {
 				MobUpgradeHelper.setUpgrade(player, this, stack);
 				return true;
 			}
@@ -150,14 +150,10 @@ public class EntityCabinet extends EntityTameable {
 		super.readEntityFromNBT(tag);
 		
         NBTTagList nbttaglist = tag.getTagList("Inventory", 10);
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
+        for (int i = 0; i < nbttaglist.tagCount(); ++i){
         	ItemStack itemstack = new ItemStack(nbttaglist.getCompoundTagAt(i));
-
-            if (itemstack != ItemStack.EMPTY)
-            {
+            if (!itemstack.isEmpty())
                 this.inventory.setStackInSlot(i, itemstack.copy());
-            }
         }
         isRealEntity = tag.getBoolean("legitEntity");
         upgrades = tag.getString(StringLibs.RFC_MOBUPGRADE);
@@ -171,14 +167,10 @@ public class EntityCabinet extends EntityTameable {
 		super.writeEntityToNBT(tag);
 		
 		NBTTagList tagList = new NBTTagList();
-        for (int i = 0; i < this.inventory.getSlots(); ++i)
-        {
+        for (int i = 0; i < this.inventory.getSlots(); ++i){
             ItemStack itemstack = this.inventory.getStackInSlot(i);
-
-            if (itemstack != ItemStack.EMPTY)
-            {
+            if (!itemstack.isEmpty())
                 tagList.appendTag(itemstack.writeToNBT(new NBTTagCompound()));
-            }
         }
         tag.setTag("Inventory", tagList);
         tag.setBoolean("legitEntity", isRealEntity);
@@ -243,34 +235,28 @@ public class EntityCabinet extends EntityTameable {
 	
 	private void setTile(DamageSource source) {
 		
-		if (source.getEntity() instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer)source.getEntity();
+		if (source.getTrueSource() instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)source.getTrueSource();
 			IBlockState state = RFCBlocks.blockRFC.getDefaultState().withProperty(BlockRFC.FACING, this.getHorizontalFacing().getOpposite());
 			BlockPos pos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
-			if (!world.isRemote)
-			{
+			if (!world.isRemote) {
 				if (world.isAirBlock(pos)) {
 					world.setBlockState(pos, state);
 					TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
-					if (tile != null)
-					{
+					if (tile != null) {
 						for (int i = 0; i < inventory.getSlots(); i++) {
 							ItemStack folder = inventory.getStackInSlot(i);
-							if (folder != ItemStack.EMPTY)
+							if (!folder.isEmpty())
 								this.setInventory(tile, i, folder);
 						}
 						if (this.getOwner() != null)
-						{
 							tile.setOwner(this.getOwnerId());
-						}
 					}
-					if (!((EntityPlayer)source.getEntity()).inventory.addItemStackToInventory(new ItemStack(RFCItems.upgrades, 1, 6)))
-						((EntityPlayer)source.getEntity()).dropItem(new ItemStack(RFCItems.upgrades, 1, 6), true);
-					
+					ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(RFCItems.upgrades, 1, 6));
 					this.setDead();
 				}
 				else
-					player.sendMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")));
+					player.sendStatusMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")), true);
 			}
 		}
 	}

@@ -11,9 +11,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
@@ -21,14 +24,18 @@ import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
-public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
+public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
 	private List<ItemStack> inputs;
+	private ItemStack output;
+	final String name;
 	
-	public FolderStorageRecipe(ItemStack output, List<ItemStack> inputs) {
+	public FolderStorageRecipe(String name, ItemStack output, List<ItemStack> inputs) {
 		
-		super(output, inputs);
+		this.output = output;
 		this.inputs = inputs;
+		this.name = name;
+		this.setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, name));
 	}
 	
 	@Override
@@ -105,7 +112,6 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 			}
 		}
 		return ItemStack.EMPTY;
-//		return new ItemStack(RFCItems.emptyFolder, 1, Math.max(recipeOutput.getItemDamage() - 1, 0));
 	}
 	
 	private boolean allowableIngredient(ItemStack stack) {
@@ -113,14 +119,29 @@ public class FolderStorageRecipe extends ShapelessRecipes implements IRecipe {
 		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || Block.getBlockFromItem(stack.getItem()) instanceof IFilingCabinet)
 			return false;
 		
-//		if (stack.hasTagCompound())
-//			return false;
-		
 		if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
 			return true;
 		else if (stack.getItem().isRepairable() && stack.getItemDamage() != 0)
 			return false;
 		
 		return true;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+
+		return width >= 3 && height >= 3;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput() {
+
+		return new ItemStack(RFCItems.emptyFolder);
+	}
+
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting ic) {
+
+		return ForgeHooks.defaultRecipeGetRemainingItems(ic);
 	}
 }

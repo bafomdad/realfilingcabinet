@@ -30,7 +30,6 @@ public class ItemKeys extends Item {
 		setMaxDamage(0);
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
-		GameRegistry.register(this);
 	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
@@ -40,10 +39,12 @@ public class ItemKeys extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 		
-		for (int i = 0; i < keyTypes.length; ++i)
-			list.add(new ItemStack(item, 1, i));
+		if (isInCreativeTab(tab)) {
+			for (int i = 0; i < keyTypes.length; ++i)
+				list.add(new ItemStack(this, 1, i));
+		}
 	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean whatisthis) {

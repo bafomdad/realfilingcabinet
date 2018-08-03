@@ -13,6 +13,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -60,17 +61,18 @@ public class TopRFC {
 
 					if (state.getBlock() instanceof IFilingCabinet) {
 						TileEntity tile = world.getTileEntity(data.getPos());
-						if (tile != null && tile instanceof TileEntityRFC) 
-						{
+						if (tile instanceof TileEntityRFC) {
 							TileEntityRFC tileRFC = (TileEntityRFC)tile;
 							for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
 								addFolderInfo(info, tileRFC, i);
 							}
 							if (player.isSneaking())
 								addExtraInfo(info, tileRFC);
+							if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_SMELT) != null) {
+								info.progress(tileRFC.fuelTime, SmeltingUtils.FUEL_TIME);
+							}
 						}
-						else if (tile != null && tile instanceof TileManaCabinet) 
-						{
+						else if (tile instanceof TileManaCabinet) {
 							TileManaCabinet tileMana = (TileManaCabinet)tile;
 							addManaInfo(info, tileMana);
 						}
@@ -90,8 +92,7 @@ public class TopRFC {
 
 					if (entity instanceof EntityCabinet) {
 						EntityCabinet cabinet = (EntityCabinet)entity;
-						if (cabinet != null)
-						{
+						if (cabinet != null) {
 							addCabinetInfo(info, cabinet);
 							if (player.isSneaking())
 								addMobUpgradeInfo(info, cabinet);
@@ -105,36 +106,31 @@ public class TopRFC {
 		public void addFolderInfo(IProbeInfo info, TileEntityRFC tile, int slot) {
 			
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
-			if (folder != ItemStack.EMPTY) {
-				if (ItemFolder.getObject(folder) instanceof ItemStack)
-				{
+			if (!folder.isEmpty()) {
+				if (ItemFolder.getObject(folder) instanceof ItemStack) {
 					String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
 					long storedSize = ItemFolder.getFileSize(folder);
 					
 					String name = stackName + " - " + storedSize;
-					if (folder.getItemDamage() == 2)
-					{
+					name += SmeltingUtils.getSmeltingPercentage(tile, slot);
+					if (folder.getItemDamage() == 2) {
 						int storedRem = ItemFolder.getRemSize(folder);
 						int maxDamage = ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage();
-						name = stackName + " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]"; 
+						name = stackName + " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]";
 					}
 					info.horizontal().text(name);
 				}
-				else if (ItemFolder.getObject(folder) instanceof FluidStack)
-				{
+				else if (ItemFolder.getObject(folder) instanceof FluidStack) {
 					String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
 
 					long storedSize = ItemFolder.getFileSize(folder);
 					String name = fluidName + " - " + storedSize + " mB";
 					info.horizontal().text(name);
 				}
-				else if (ItemFolder.getObject(folder) instanceof String)
-				{
-					if (folder.getItemDamage() == 3)
-					{
+				else if (ItemFolder.getObject(folder) instanceof String) {
+					if (folder.getItemDamage() == 3) {
 						String mobName = (String)ItemFolder.getObject(folder);
-						if (!mobName.isEmpty())
-						{
+						if (!mobName.isEmpty()) {
 							long storedSize = ItemFolder.getFileSize(folder);
 							String name = mobName + " - " + storedSize;
 							info.horizontal().text(name);

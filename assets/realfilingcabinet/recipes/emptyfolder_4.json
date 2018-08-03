@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "realfilingcabinet:emptyfolder",
+    "data": 4,
+    "count": 4
+  },
+  "pattern": [
+    "PB ",
+    "PWE",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:potion"
+    },
+    "E": {
+      "item": "minecraft:enchanted_book"
+    },
+    "W": {
+      "item": "minecraft:written_book"
+    }
+  }
+}

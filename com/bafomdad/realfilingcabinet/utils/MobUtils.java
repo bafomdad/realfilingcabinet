@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,17 +10,21 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.items.ItemHandlerHelper;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
@@ -41,19 +46,15 @@ public class MobUtils {
 		if (!canPlayerChangeStuffHere(world, player, stack, pos, side))
 			return false;
 		
-		if (ItemFolder.getFileSize(stack) > 0)
-		{
-			if (player.canPlayerEdit(pos.offset(side), side, stack)) {
-				
+		if (ItemFolder.getFileSize(stack) > 0) {
+			if (player.canPlayerEdit(pos.offset(side), side, stack)) {	
 				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
 				Entity entity = EntityList.createEntityByIDFromName(res, world);
-				if (entity != null)
-				{
+				if (entity != null) {
 					boolean spawn = false;
 					if (!player.world.isRemote) {
 						pos = pos.offset(side);
-						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager))
-						{
+						if ((entity instanceof EntityVillager && !ConfigRFC.randomVillager)) {
 		                    EntityVillager entityliving = (EntityVillager)entity;
 		                    entity.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
 		                    entityliving.rotationYawHead = entityliving.rotationYaw;
@@ -64,6 +65,18 @@ public class MobUtils {
 		                    entityliving.playLivingSound();
 		                    
 		                    spawn = true;
+						}
+						if (entity instanceof EntitySlime) {
+							EntitySlime slime = (EntitySlime)entity;
+							slime.setLocationAndAngles((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+							NBTTagCompound tag = slime.getEntityData();
+							tag.setInteger("Size", 0);
+							slime.writeEntityToNBT(tag);
+							slime.setHealth(1.0F);
+							world.spawnEntity(slime);
+							slime.playLivingSound();
+							
+							spawn = true;
 						}
 						else {
 							EntityLiving entityliving = (EntityLiving)entity;
@@ -90,13 +103,12 @@ public class MobUtils {
 	public static void dropMobEquips(World world, EntityLivingBase entity) {
 		
 		List<ItemStack> list = loopArmor(entity);
-		if (list.isEmpty() || list == null)
+		if (list == null || list.isEmpty())
 			return;
 		
 		for (int i = 0; i < list.size(); i++) {
 			ItemStack toDrop = list.get(i);
-			if (toDrop.getCount() == 0)
-			{
+			if (toDrop.getCount() == 0) {
 				toDrop.setCount(1);
 				EntityItem ei = new EntityItem(world, entity.posX, entity.posY, entity.posZ, toDrop);
 				
@@ -113,10 +125,8 @@ public class MobUtils {
     	EntityEquipmentSlot[] slots = new EntityEquipmentSlot[] { EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
     	for (int i = 0; i < slots.length; i++) {
     		ItemStack stack = entity.getItemStackFromSlot(slots[i]);
-    		if (stack != ItemStack.EMPTY)
-    		{
+    		if (!stack.isEmpty())
     			invList.add(stack);
-    		}
     	}
     	return invList;
 	}
@@ -126,8 +136,7 @@ public class MobUtils {
 		if (folder.getItemDamage() == 2) {
 			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 			if (ItemFolder.setObject(newFolder, target)) {
-				if (!player.inventory.addItemStackToInventory(newFolder))
-					player.dropItem(newFolder, true);
+				ItemHandlerHelper.giveItemToPlayer(player, newFolder);
 				folder.shrink(1);
 				target.setDead();
 			}
@@ -135,8 +144,7 @@ public class MobUtils {
 		else if (folder.getItemDamage() == 3) {
 			if (ItemFolder.getObject(folder) != null) {
 				ResourceLocation res = EntityList.getKey(target);
-				if (ItemFolder.getObject(folder).equals(res.toString()))
-				{
+				if (ItemFolder.getObject(folder).equals(res.toString())) {
 					MobUtils.dropMobEquips(player.world, target);
 					target.setDead();
 				}

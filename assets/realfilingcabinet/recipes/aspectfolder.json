@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+	  "type": "forge:mod_loaded",
+	  "modid": "thaumcraft"
+	}
+  ],
+  "result": {
+    "item": "realfilingcabinet:folder_aspect",
+	"data": 0,
+	"count": 4
+  },
+  "pattern": [
+    "P  ",
+    "Ph ",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "h": {
+      "item": "thaumcraft:phial",
+	  "data": 0
+    }
+  }
+}

@@ -1,32 +1,40 @@
 package com.bafomdad.realfilingcabinet.crafting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
-public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
+public class FolderTapeRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	
 	public static List inputs = new ArrayList();
+	final String name;
 	
 	static
 	{
 		inputs.add(new ItemStack(RFCItems.whiteoutTape));
 	}
 
-	public FolderTapeRecipe() {
+	public FolderTapeRecipe(String name) {
 		
-		super(new ItemStack(RFCItems.emptyFolder), inputs);
+		this.name = name;
+		this.setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, name));
 	}
 	
 	@Override
@@ -38,7 +46,7 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (stack != ItemStack.EMPTY)
+				if (!stack.isEmpty())
 				{
 					if (stack.getItem() instanceof IFolder || stack.isItemEnchanted())
 						list.add(stack);
@@ -99,10 +107,36 @@ public class FolderTapeRecipe extends ShapelessRecipes implements IRecipe {
 		}
 		else if (tape >= 0 && misc >= 0 && folder <= 0)
 		{
-			ItemStack stack3 = ic.getStackInSlot(misc);
-
-			return new ItemStack(stack3.getItem(), 1, stack3.getItemDamage());
+			ItemStack stack3 = ic.getStackInSlot(misc).copy();
+			stack3.setCount(1);
+			EnchantmentHelper.setEnchantments(Collections.emptyMap(), stack3);
+			return stack3;
 		}
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+
+		return width >= 3 && height >= 3;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput() {
+
+		return new ItemStack(RFCItems.whiteoutTape);
+	}
+
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting ic) {
+
+        NonNullList<ItemStack> ret = NonNullList.withSize(ic.getSizeInventory(), ItemStack.EMPTY);
+        for (int i = 0; i < ret.size(); i++) {
+        	if (ic.getStackInSlot(i).getItem() == RFCItems.whiteoutTape)
+        		ret.set(i, ic.getStackInSlot(i).getItem().getContainerItem(ic.getStackInSlot(i)));
+        	else
+        		ret.set(i, ItemStack.EMPTY);
+        }
+        return ret;
 	}
 }

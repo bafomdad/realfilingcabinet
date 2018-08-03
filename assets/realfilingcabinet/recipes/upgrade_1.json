@@ -1,0 +1,31 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "craftingUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 1
+  },
+  "pattern": [
+    "LCL",
+    "CFC",
+    "LCL"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+	  "type": "forge:ore_dict",
+      "ore": "workbench"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "L": {
+	  "type": "forge:ore_dict",
+      "ore": "logWood"
+    }
+  }
+}

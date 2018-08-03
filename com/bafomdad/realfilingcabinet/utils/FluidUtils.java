@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -36,8 +36,7 @@ public class FluidUtils {
 			return false;
 		
 		long count = ItemFolder.getFileSize(stack);
-		if (count >= 1000)
-		{
+		if (count >= 1000) {
 			pos = pos.offset(facing);
 			Block hitblock = world.getBlockState(pos).getBlock();
 			Block liquid = Block.getBlockFromName(ItemFolder.getFileName(stack));
@@ -47,8 +46,7 @@ public class FluidUtils {
 			if (!hitblock.isReplaceable(world, pos))
 				return false;
 			
-			if (liquid != null && (hitblock != liquid || (hitblock == liquid && l != 0)))
-			{
+			if (liquid != null && (hitblock != liquid || (hitblock == liquid && l != 0))) {
 				if (liquid == Blocks.WATER && world.provider.doesWaterVaporize() && !ConfigRFC.waterNether) {
 					world.playSound(player, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 					for (int k = 0; k < 8; ++k)
@@ -63,8 +61,7 @@ public class FluidUtils {
 				world.setBlockState(pos, liquid.getDefaultState(), 3);
 				return true;
 			}
-			else if (fluid != null && (hitblock != fluid.getBlock() || (hitblock == fluid.getBlock() && l != 0)))
-			{
+			else if (fluid != null && (hitblock != fluid.getBlock() || (hitblock == fluid.getBlock() && l != 0))) {
 				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					ItemFolder.remove(stack, 1000);
 				
@@ -87,8 +84,7 @@ public class FluidUtils {
 		int l = world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos));
 		
 		if (block instanceof BlockLiquid && l == 0) {
-			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(block.getLocalizedName()))
-			{
+			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(block.getLocalizedName())) {
 				if (!world.isRemote) {
 					ItemFolder.add(stack, 1000);
 					world.setBlockToAir(pos);
@@ -98,8 +94,7 @@ public class FluidUtils {
 		}
 		else if (block instanceof IFluidBlock && l == 0) {
 			Fluid fluid = ((IFluidBlock)block).getFluid();
-			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(fluid.getName()))
-			{
+			if (ItemFolder.getObject(stack) != null && ItemFolder.getFileName(stack).equals(fluid.getName())) {
 				if (!world.isRemote) {
 					ItemFolder.add(stack, 1000);
 					world.setBlockToAir(pos);
@@ -118,8 +113,7 @@ public class FluidUtils {
 	public static FluidStack getFluidFromFolder(TileEntityRFC tile, int slot) {
 		
 		ItemStack stack = tile.getInventory().getTrueStackInSlot(slot);
-		if (stack != ItemStack.EMPTY && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 4)
-		{
+		if (!stack.isEmpty() && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 4) {
 			int count = (int)ItemFolder.getFileSize(stack);
 			if (Block.getBlockFromName(ItemFolder.getFileName(stack)) == null)
 				return FluidRegistry.getFluidStack(ItemFolder.getFileName(stack), count);
