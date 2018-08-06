@@ -26,7 +26,7 @@ public class ItemAspectFolder extends Item implements IFolder {
 	public ItemAspectFolder() {
 		
 		setRegistryName("folder_aspect");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".aspectfolder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".aspectfolder");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}

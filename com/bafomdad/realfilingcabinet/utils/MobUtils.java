@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -47,9 +49,11 @@ public class MobUtils {
 			return false;
 		
 		if (ItemFolder.getFileSize(stack) > 0) {
-			if (player.canPlayerEdit(pos.offset(side), side, stack)) {	
-				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
-				Entity entity = EntityList.createEntityByIDFromName(res, world);
+			if (player.canPlayerEdit(pos.offset(side), side, stack)) {
+				if(!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+					return false;
+				CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+				EntityLivingBase entity = cap.getEntity(world);
 				if (entity != null) {
 					boolean spawn = false;
 					if (!player.world.isRemote) {
@@ -132,7 +136,6 @@ public class MobUtils {
 	}
 	
 	public static void addOrCreateMobFolder(EntityPlayer player, ItemStack folder, EntityLivingBase target) {
-		
 		if (folder.getItemDamage() == 2) {
 			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 			if (ItemFolder.setObject(newFolder, target)) {

@@ -40,16 +40,17 @@ public class ItemUpgrades extends Item implements IUpgrades {
 	public ItemUpgrades() {
 		
 		setRegistryName("upgrade");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".upgrade");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".upgrade");
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setMaxStackSize(16);
 		setCreativeTab(TabRFC.instance);
 	}
 	
-	public String getUnlocalizedName(ItemStack stack) {
+	@Override
+	public String getTranslationKey(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + UpgradeType.values()[stack.getItemDamage()].toString().toLowerCase();
+		return getTranslationKey() + "_" + UpgradeType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	@Override

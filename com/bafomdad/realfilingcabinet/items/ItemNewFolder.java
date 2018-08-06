@@ -32,23 +32,26 @@ public class ItemNewFolder extends Item implements IFolder {
 	public ItemNewFolder() {
 		
 		setRegistryName("folder");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".folder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".folder");
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setMaxStackSize(1);
 	}
 	
-	public String getUnlocalizedName(ItemStack stack) {
+	@Override
+	public String getTranslationKey(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
+		return getTranslationKey() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
+	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		
 		ItemStack copy = stack.copy();
 		return copy;
 	}
 	
+	@Override
 	public boolean hasContainerItem(ItemStack stack) {
 		
 		return !getContainerItem(stack).isEmpty();

@@ -21,7 +21,7 @@ import net.minecraftforge.common.ForgeHooks;
 
 public class FolderMergeRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	
-	public static List inputs = new ArrayList();
+	public static List<ItemStack> inputs = new ArrayList<>();
 	final String name;
 	
 	static
@@ -39,7 +39,7 @@ public class FolderMergeRecipe extends net.minecraftforge.registries.IForgeRegis
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList list = new ArrayList(this.inputs);
+		ArrayList<ItemStack> list = new ArrayList<>(inputs);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {

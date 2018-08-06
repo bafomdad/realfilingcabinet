@@ -44,7 +44,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 		
 		super(Material.ROCK);
 		setRegistryName("manacabinet");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".manacabinet");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".manacabinet");
 		setHardness(5.0F);
 		setResistance(1000.0F);
 		setCreativeTab(TabRFC.instance);
@@ -95,7 +95,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		
-		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
 	}
 	
 	@Override
@@ -129,7 +129,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 		
 		NBTTagCompound tag = new NBTTagCompound();
 		((TileManaCabinet)tile).writeInv(tag, true);
-		if (!tag.hasNoTags()) {
+		if (!tag.isEmpty()) {
 			s.setTagCompound(tag);
 			drops.add(s);
 			return;

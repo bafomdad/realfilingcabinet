@@ -47,13 +47,13 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 	public ItemSuitcase() {
 	
 		setRegistryName("suitcase");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".suitcase");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".suitcase");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag whatisthis) {
 		
 		list.add(TextFormatting.GOLD + "Current place index: " + TextFormatting.RESET + getIndex(stack));
 		IItemHandlerModifiable suitcaseInv = getInventory(stack);
@@ -71,7 +71,7 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		return false;
 	}
 	
-	private void listItems(IItemHandlerModifiable inv, List list) {
+	private void listItems(IItemHandlerModifiable inv, List<String> list) {
 		
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getStackInSlot(i);

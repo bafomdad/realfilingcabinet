@@ -28,6 +28,10 @@ public class StorageUtils {
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
+			if(loopinv.isEmpty())
+			{
+				//System.out.println("EMPTY STACK IN FOLDER! " + loopinv.getCount());
+			}
 			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null) {
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict()) {

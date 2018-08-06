@@ -16,7 +16,7 @@ public class ItemFilter extends Item {
 	public ItemFilter() {
 		
 		setRegistryName("filter");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".filter");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".filter");
 		setMaxStackSize(16);
 		setCreativeTab(TabRFC.instance);
 	}

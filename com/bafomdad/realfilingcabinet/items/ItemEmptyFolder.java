@@ -45,16 +45,17 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	public ItemEmptyFolder() {
 		
 		setRegistryName("emptyfolder");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".emptyfolder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".emptyfolder");
 		setMaxStackSize(8);
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(TabRFC.instance);
 	}
 	
-	public String getUnlocalizedName(ItemStack stack) {
+	@Override
+	public String getTranslationKey(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
+		return getTranslationKey() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
 	}
 	
 	@Override
@@ -121,7 +122,6 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
-		
 		if (!player.world.isRemote && stack.getItemDamage() == FolderType.MOB.ordinal()) {
 			if (!ConfigRFC.mobUpgrade) return false;
 			

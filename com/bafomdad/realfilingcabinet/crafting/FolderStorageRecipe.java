@@ -41,7 +41,7 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList list = new ArrayList(this.inputs);
+		ArrayList<ItemStack> list = new ArrayList<>(this.inputs);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -119,10 +119,8 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || Block.getBlockFromItem(stack.getItem()) instanceof IFilingCabinet)
 			return false;
 		
-		if (stack.getItem().isRepairable() && stack.getItemDamage() == 0)
-			return true;
-		else if (stack.getItem().isRepairable() && stack.getItemDamage() != 0)
-			return false;
+		if (stack.getItem().isRepairable())
+			return stack.getItemDamage() == 0;
 		
 		return true;
 	}

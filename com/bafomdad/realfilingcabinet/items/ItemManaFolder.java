@@ -27,7 +27,7 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 	public ItemManaFolder() {
 		
 		setRegistryName("folder_mana");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".manafolder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".manafolder");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}

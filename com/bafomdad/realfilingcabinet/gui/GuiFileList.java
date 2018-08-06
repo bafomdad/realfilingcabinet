@@ -47,7 +47,7 @@ public class GuiFileList extends Gui {
 	@SubscribeEvent
 	public void renderOverlay(RenderGameOverlayEvent.Post event) {
 		
-		Profiler profiler = mc.mcProfiler;
+		Profiler profiler = mc.profiler;
 		
 		if (event.getType() == ElementType.ALL) {
 			profiler.startSection("RFC-hud");
