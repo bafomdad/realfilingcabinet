@@ -25,16 +25,17 @@ public class ItemKeys extends Item {
 	public ItemKeys() {
 		
 		setRegistryName("key");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".rfckey");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".rfckey");
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}
 	
-	public String getUnlocalizedName(ItemStack stack) {
+	@Override
+	public String getTranslationKey(ItemStack stack) {
 		
-		return getUnlocalizedName() + "_" + keyTypes[stack.getItemDamage()];
+		return getTranslationKey() + "_" + keyTypes[stack.getItemDamage()];
 	}
 	
 	@Override

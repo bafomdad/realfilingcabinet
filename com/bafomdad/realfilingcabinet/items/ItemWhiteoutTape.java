@@ -16,7 +16,7 @@ public class ItemWhiteoutTape extends Item {
 	public ItemWhiteoutTape() {
 		
 		setRegistryName("whiteouttape");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".whiteouttape");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".whiteouttape");
 		setMaxStackSize(1);
 		setMaxDamage(25);
 		setCreativeTab(TabRFC.instance);

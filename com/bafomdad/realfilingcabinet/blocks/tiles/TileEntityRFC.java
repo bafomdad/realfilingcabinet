@@ -252,7 +252,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	}
 	
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> cap, @Nonnull EnumFacing side) {
+	public boolean hasCapability(@Nonnull Capability<?> cap, EnumFacing side) {
 		
 		if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && UpgradeHelper.getUpgrade(this, StringLibs.TAG_FLUID) != null)
 			return cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
@@ -263,7 +263,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	}
 	
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> cap, @Nonnull EnumFacing side) {
+	public <T> T getCapability(@Nonnull Capability<T> cap, EnumFacing side) {
 		
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inv);

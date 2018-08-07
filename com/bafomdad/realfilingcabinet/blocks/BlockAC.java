@@ -42,7 +42,7 @@ public class BlockAC extends Block implements IFilingCabinet {
 		
 		super(Material.WOOD);
 		setRegistryName("aspectcabinet");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".aspectcabinet");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".aspectcabinet");
 		setHardness(2.0F);
 		setResistance(1000.0F);
 		setCreativeTab(TabRFC.instance);
@@ -103,7 +103,7 @@ public class BlockAC extends Block implements IFilingCabinet {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		
-		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
 	}
 	
 	@Override
@@ -128,7 +128,7 @@ public class BlockAC extends Block implements IFilingCabinet {
 			ItemStack s = new ItemStack(this);
 			NBTTagCompound tag = new NBTTagCompound();
 			((TileEntityAC)tile).writeInv(tag, true);
-			if (!tag.hasNoTags()) {
+			if (!tag.isEmpty()) {
 				s.setTagCompound(tag);
 				world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), s));
 				return;

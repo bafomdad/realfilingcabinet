@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet;
 
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -63,6 +64,7 @@ public class RealFilingCabinet {
 		
 		proxy.postInit(event);
 		MinecraftForge.EVENT_BUS.register(new EventHandlerServer());
+		CapabilityProviderFolder.register();
 	}
 	
 	@Mod.EventHandler

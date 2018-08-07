@@ -11,20 +11,30 @@ public class TabRFC extends CreativeTabs {
 
 	public static TabRFC instance = new TabRFC();
 	
+	private ItemStack icon;
+	
 	public TabRFC() {
 		
 		super(RealFilingCabinet.MOD_ID + ".tabRFC.name");
 	}
 	
 	@Override
-	public ItemStack getIconItemStack() {
+	public ItemStack createIcon() {
+		if(icon == null)
+		{
+			icon = new ItemStack(RFCItems.emptyFolder);
+		}
 		
-		return new ItemStack(RFCItems.emptyFolder);
+		return icon;
 	}
 
 	@Override
-	public ItemStack getTabIconItem() {
-
-		return new ItemStack(RFCItems.emptyFolder);
+	public ItemStack getIcon() {
+		if(icon == null)
+		{
+			icon = new ItemStack(RFCItems.emptyFolder);
+		}
+		
+		return icon;
 	}
 }

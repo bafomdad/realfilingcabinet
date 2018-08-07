@@ -33,7 +33,7 @@ public class ItemDebugger extends Item {
 	public ItemDebugger() {
 		
 		setRegistryName("debugger");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".debugger");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".debugger");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}
@@ -55,7 +55,7 @@ public class ItemDebugger extends Item {
     	ItemStack thing = player.getHeldItem(EnumHand.MAIN_HAND);
     	if (!debugger.isEmpty() && debugger.getItem() == this) {
     		if (!thing.isEmpty() && !world.isRemote) {
-    			String str = TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".debugger") + ": " + thing.getUnlocalizedName();
+    			String str = TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".debugger") + ": " + thing.getTranslationKey();
     			player.sendMessage(new TextComponentString(str));
     		}
     	}

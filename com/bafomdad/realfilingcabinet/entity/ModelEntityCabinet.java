@@ -72,7 +72,7 @@ public class ModelEntityCabinet extends ModelBase {
 
 	public void render(Entity entity, float f, float f1, float age, float f3, float f4, float f5) {
 		
-		float speed = (float)((new Vec3d(entity.motionX, 0, entity.motionZ)).lengthVector() * 3.0F);
+		float speed = (float)((new Vec3d(entity.motionX, 0, entity.motionZ)).length() * 3.0F);
 		GlStateManager.translate(0, 0.15, 0);
 		super.render(entity, f, f1, age, f3, f4, f5);
 		setRotationAngles(f, f1, age, f3, f4, f5, entity);

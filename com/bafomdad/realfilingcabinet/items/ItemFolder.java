@@ -1,19 +1,18 @@
 package com.bafomdad.realfilingcabinet.items;
 
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
+import com.bafomdad.realfilingcabinet.utils.FluidUtils;
+import com.bafomdad.realfilingcabinet.utils.MobUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -22,41 +21,17 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
-import com.bafomdad.realfilingcabinet.RealFilingCabinet;
-import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
-import com.bafomdad.realfilingcabinet.helpers.TextHelper;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.utils.EnderUtils;
-import com.bafomdad.realfilingcabinet.utils.FluidUtils;
-import com.bafomdad.realfilingcabinet.utils.MobUtils;
-import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+import java.util.List;
 
 public class ItemFolder extends Item implements IFolder {
 	
-	private static final String TAG_FILE_NAME = "fileName";
-	private static final String TAG_FILE_META = "fileMeta";
-	private static final String TAG_FILE_SIZE = "fileSize";
-	
-	private static final String TAG_REM_SIZE = "leftoverSize";
-	private static final String TAG_ITEMTAG = "itemTagCompound";
-	
-	private static ItemStack ITEM_STORED = ItemStack.EMPTY;
-	
-	public static int extractSize = 0;
+	public static int extractSize = 0; // TODO: Figure out how to move this to CapabilityFolder
 	
 	public enum FolderType {
 		NORMAL,
@@ -70,82 +45,64 @@ public class ItemFolder extends Item implements IFolder {
 	public ItemFolder() {
 		
 		setRegistryName("folder");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".folder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".folder");
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setMaxStackSize(1);
 	}
 	
-	public String getUnlocalizedName(ItemStack stack) {
+	@Override
+	public NBTTagCompound getNBTShareTag(ItemStack stack)
+	{
+		if(!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return super.getNBTShareTag(stack);
+		}
 		
-		return getUnlocalizedName() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
+		NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound().copy() : new NBTTagCompound();
+		tag.setTag("folderCap", stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).serializeNBT());
+		return tag;
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, World player, List list, ITooltipFlag whatisthis) {
+	public String getTranslationKey(ItemStack stack) {
 		
-		String name = getFileName(stack);
-		if (!name.isEmpty()) {
-			long count = getFileSize(stack);
-			if (stack.getItemDamage() == FolderType.FLUID.ordinal()) {
-				
-				if (getObject(stack) instanceof FluidStack)
-					name = ((FluidStack)getObject(stack)).getLocalizedName();
-				list.add(count + "mb " + name);
-				
-				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false);
-				String placeMode = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".placemode.on") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".placemode.off");
-				list.add(placeMode);
-				
-				return;
-			}
-			if (stack.getItemDamage() == FolderType.MOB.ordinal()) {
-				
-				ResourceLocation res = new ResourceLocation(ItemFolder.getFileName(stack));
-				Entity entity = EntityList.createEntityByIDFromName(res, player);
-				if (entity != null)
-					list.add(count + " " + entity.getName());
-				list.add(TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".mobinteract"));
-				
-				if (!ConfigRFC.mobUpgrade)
-					list.add(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".disabled"));
-				return;
-			}
-			if (getObject(stack) instanceof ItemStack)
-				name = ((ItemStack)getObject(stack)).getDisplayName();
-			
-			list.add((Keyboard.isKeyDown(42)) || (Keyboard.isKeyDown(54)) ? count + " " + name : TextHelper.format(count) + " " + name);
-			
-			if (stack.getItemDamage() == FolderType.DURA.ordinal()) {
-				
-				list.add("Durability: " + ItemFolder.getRemSize(stack) + " / " + ((ItemStack)getObject(stack)).getMaxDamage());
-				boolean bool = NBTUtils.getBoolean(stack, StringLibs.RFC_IGNORENBT, false);
-				String ignoreNBT = bool ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.true") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.false");
-				list.add(ignoreNBT);
-				
-				return;
-			}
+		return getTranslationKey() + "_" + FolderType.values()[stack.getItemDamage()].toString().toLowerCase();
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag whatisthis) {
+		
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) // Direction doesn't really matter here.
+		{
+			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).addTooltips(player, list, whatisthis);
 		}
 	}
 	
 	public ItemStack getContainerItem(ItemStack stack) {
 		
-		long count = getFileSize(stack);
-		long extract = 0;
-		if (count > 0 && getObject(stack) instanceof ItemStack)
-			extract = Math.min(((ItemStack)getObject(stack)).getMaxStackSize(), count);
+		if(!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return ItemStack.EMPTY;
+		}
 		
-		if (stack.getTagCompound().hasKey(StringLibs.RFC_TAPED) && NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, true)) {
+		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		long count = cap.getCount();
+		long extract = 0;
+		if (count > 0 && cap.isItemStack())
+			extract = Math.min(cap.getItemStack().getMaxStackSize(), count);
+		
+		if (NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, false)) {
 			return ItemStack.EMPTY;
 		}
 		ItemStack copy = stack.copy();
-		if (stack.getItemDamage() == 2 && count == 0)
+		if (stack.getItemDamage() == 2 && count == 0) // TODO: This works with 0 items? Might want to test this later
 		{
 			setRemSize(copy, 0);
 		}
 		remove(copy, extract);
 		extractSize = (int)extract;
-
+		
 		return copy;
 	}
 	
@@ -154,29 +111,69 @@ public class ItemFolder extends Item implements IFolder {
 		return !getContainerItem(stack).isEmpty();
 	}
 	
-	public static String getFileName(ItemStack stack) {
+	public static String getFolderDisplayName(ItemStack stack)
+	{
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getDisplayName();
+		}
 		
-		return NBTUtils.getString(stack, TAG_FILE_NAME, "");
+		return "";
+	}
+	
+	@Deprecated // Not for save/load use
+	public static String getFileName(ItemStack stack) {
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContentID();
+		}
+		
+		return "";
 	}
 	
 	public static int getFileMeta(ItemStack stack) {
-		
-		return NBTUtils.getInt(stack, TAG_FILE_META, 0);
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+			if(cap.isFluidStack())
+			{
+				return cap.getItemStack().getItemDamage();
+			} else if(cap.isBlock())
+			{
+				return cap.getBlock().getBlock().getMetaFromState(cap.getBlock());
+			}
+		}
+		return 0;
 	}
 	
 	public static void setFileMeta(ItemStack stack, int meta) {
-		
-		NBTUtils.setInt(stack, TAG_FILE_META, meta);
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+			if(cap.isFluidStack())
+			{
+				cap.getItemStack().setItemDamage(meta);
+			} else if(cap.isBlock())
+			{
+				cap.setContents(cap.getBlock().getBlock().getMetaFromState(cap.getBlock()));
+			}
+		}
 	}
 	
 	public static void setFileSize(ItemStack stack, long count) {
-
-		NBTUtils.setLong(stack, TAG_FILE_SIZE, count);
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setCount(count);
+		}
 	}
 	
 	public static long getFileSize(ItemStack stack) {
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getCount();
+		}
 		
-		return NBTUtils.getLong(stack, TAG_FILE_SIZE, 0);
+		return 0;
 	}
 	
 	public static void remove(ItemStack stack, long count) {
@@ -189,16 +186,24 @@ public class ItemFolder extends Item implements IFolder {
 		
 		long current = getFileSize(stack);
 		setFileSize(stack, current + count);
+		
+		System.out.println("New amount = " + (current + count));
 	}
 	
 	public static void setRemSize(ItemStack stack, int count) {
-		
-		NBTUtils.setInt(stack, TAG_REM_SIZE, count);
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setRemaining(count);
+		}
 	}
 	
 	public static int getRemSize(ItemStack stack) {
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getRemaining();
+		}
 		
-		return NBTUtils.getInt(stack, TAG_REM_SIZE, 0);
+		return 0;
 	}
 	
 	public static void addRem(ItemStack stack, int count) {
@@ -214,124 +219,48 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public static NBTTagCompound getItemTag(ItemStack stack) {
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+			
+			if(cap.isItemStack())
+			{
+				return cap.getItemStack().getTagCompound();
+			}
+		}
 		
-		return NBTUtils.getCompound(stack, TAG_ITEMTAG, true);
+		return new NBTTagCompound();
 	}
 	
 	public static void setItemTag(ItemStack stack, NBTTagCompound tag) {
-		
-		NBTUtils.setCompound(stack, TAG_ITEMTAG, tag);
-	}
-	
-	public static ItemStack getItem(ItemStack stack) {
-		
-		return ITEM_STORED;
-	}
-	
-	public static void setItem(ItemStack stack, ItemStack toStore, boolean copy) {
-		
-		if (copy)
-			ITEM_STORED = toStore.copy();
-		
-		ITEM_STORED = toStore;
-		setFileMeta(stack, toStore.getItemDamage());
-		setFileSize(stack, 1);
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+			
+			if(cap.isItemStack())
+			{
+				cap.getItemStack().setTagCompound(tag);
+			}
+		}
 	}
 
 	public static Object getObject(ItemStack folder) {
 
-		String str = getFileName(folder);
+		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContents();
+		}
 		
-		if (folder.getItemDamage() == 3) {
-			if (!str.isEmpty())
-				return str;
-		}
-		if (folder.getItemDamage() == FolderType.FLUID.ordinal()) {
-			if (!str.isEmpty() && FluidRegistry.getFluid(str) != null) {
-				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
-				return new FluidStack(FluidRegistry.getFluid(str), (int)extract);
-			}
-			else if (!str.isEmpty() && Block.getBlockFromName(str) != null) {
-				long extract = Math.min(Integer.MAX_VALUE - 1, getFileSize(folder));
-				if (Block.getBlockFromName(str) == Blocks.WATER)
-					return new FluidStack(FluidRegistry.WATER, (int)extract);
-				else if (Block.getBlockFromName(str) == Blocks.LAVA)
-					return new FluidStack(FluidRegistry.LAVA, (int)extract);
-			}
-		}
-		ItemStack copystack = null;
-		if (Item.getByNameOrId(str) != null) {
-			Item item = (Item)Item.getByNameOrId(str);
-			int meta = getFileMeta(folder);
-			copystack = new ItemStack(item, 1, meta);
-			if (folder.getItemDamage() == 5)
-				copystack.setTagCompound(getItemTag(folder));
-			return copystack;
-		}
-		if (Block.getBlockFromName(str) != null) {
-			Block block = Block.getBlockFromName(str);
-			int meta = getFileMeta(folder);
-			copystack = new ItemStack(block, 1, meta);
-			if (folder.getItemDamage() == 5)
-				copystack.setTagCompound(getItemTag(folder));
-			return copystack;
-		}
 		return null;
 	}
 
 	public static boolean setObject(ItemStack folder, Object object) {
-
-		if (getObject(folder) == null) {
-			if (object instanceof ItemStack) {
-				ItemStack stack = (ItemStack)object;
-				if (stack.getItem() instanceof Item && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
-					NBTUtils.setString(folder, TAG_FILE_NAME, Item.REGISTRY.getNameForObject(stack.getItem()).toString());
-				}
-				else if (stack.getItem() instanceof ItemBlock && Block.REGISTRY.getNameForObject(Block.getBlockFromItem((Item)stack.getItem())) != null) {
-					NBTUtils.setString(folder, TAG_FILE_NAME, Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString());
-				}
-				NBTUtils.setInt(folder, TAG_FILE_META, ((ItemStack)object).getItemDamage());
-				add(folder, 1);
-				if (folder.getItemDamage() == FolderType.DURA.ordinal())
-					addRem(folder, 0);
-				
-				if (folder.getItemDamage() == FolderType.NBT.ordinal())
-					setItemTag(folder, ((ItemStack)object).getTagCompound());
-				
-				return true;
-			}
-			if (object instanceof BlockLiquid || object instanceof IFluidBlock) {
-				Block bl = (Block)object;
-				String fluidname = bl.getLocalizedName();
-				if (object instanceof IFluidBlock)
-					fluidname = ((IFluidBlock)object).getFluid().getName();
-				
-				NBTUtils.setString(folder, TAG_FILE_NAME, fluidname);
-				add(folder, 1000);
-				
-				return true;
-			}
-			if (object instanceof EntityLivingBase) {
-				if (object instanceof EntityCabinet)
-					return false;
-				
-				if (object instanceof IEntityOwnable && ((IEntityOwnable)object).getOwner() != null)
-					return false;
-				
-				String entityblacklist = ((EntityLivingBase)object).getClass().getSimpleName();
-				for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
-					if (toBlacklist.contains(entityblacklist))
-						return false;
-				}
-				
-				if (!(object instanceof EntityPlayer) && ((EntityLivingBase)object).isNonBoss() && (!((EntityLivingBase)object).isChild() || (EntityLivingBase)object instanceof EntityZombie && ((EntityLivingBase)object).isChild())) {
-					ResourceLocation entityName = EntityList.getKey((Entity)object);
-					NBTUtils.setString(folder, TAG_FILE_NAME, entityName.toString());
-					add(folder, 1);
-					return true;
-				}
-			}
+		
+		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		{
+			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setContents(object);
 		}
+		
 		return false;
 	}
 	

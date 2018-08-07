@@ -37,7 +37,7 @@ public class ItemMagnifyingGlass extends Item {
 	public ItemMagnifyingGlass() {
 		
 		setRegistryName("magnifyingglass");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".magnifyingglass");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".magnifyingglass");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 		this.addPropertyOverride(new ResourceLocation("booltime"), new IItemPropertyGetter() {

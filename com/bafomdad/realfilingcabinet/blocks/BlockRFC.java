@@ -67,7 +67,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 		
 		super(Material.IRON);
 		setRegistryName("modelcabinet");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".filingcabinet");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".filingcabinet");
 		setHardness(5.0F);
 		setResistance(1000.0F);
 		setCreativeTab(TabRFC.instance);
@@ -87,7 +87,8 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
     	addCollisionBoxToList(pos, aabb, collidingBoxes, BASE_AABB);
     }
 	
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+    @Override
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
     	
     	TileEntityRFC tileRFC = (TileEntityRFC)world.getTileEntity(pos);
     	if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_MOB) == null)
@@ -154,7 +155,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		
-		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
+		return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta));
 	}
 	
 	@Override
@@ -203,7 +204,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 		
 		NBTTagCompound tag = new NBTTagCompound();
 		((TileEntityRFC)tile).writeInv(tag, true);
-		if (!tag.hasNoTags()) {
+		if (!tag.isEmpty()) {
 			s.setTagCompound(tag);
 		}
 		drops.add(s);

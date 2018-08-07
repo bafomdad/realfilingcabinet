@@ -43,7 +43,7 @@ public class ItemMysteryFolder extends Item {
 	public ItemMysteryFolder() {
 		
 		setRegistryName("mysteryfolder");
-		setUnlocalizedName(RealFilingCabinet.MOD_ID + ".mysteryfolder");
+		setTranslationKey(RealFilingCabinet.MOD_ID + ".mysteryfolder");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
 	}

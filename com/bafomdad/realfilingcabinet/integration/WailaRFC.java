@@ -81,7 +81,7 @@ public class WailaRFC {
 					}
 					else if (ItemFolder.getObject(folder) instanceof String) {
 						if (folder.getItemDamage() == 3) {
-							String entityName = ItemFolder.getFileName(folder);
+							String entityName = ItemFolder.getFolderDisplayName(folder);
 							long storedSize = ItemFolder.getFileSize(folder);
 							
 							name = entityName + " - " + storedSize;
