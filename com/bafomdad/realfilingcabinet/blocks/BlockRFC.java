@@ -52,6 +52,7 @@ import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
+import com.bafomdad.realfilingcabinet.items.ItemUpgrades;
 import com.bafomdad.realfilingcabinet.utils.*;
 import com.jaquadro.minecraft.storagedrawers.api.storage.INetworked;
 
@@ -101,13 +102,13 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
     	if (!elb.isNonBoss() || (elb.isChild() && !(elb instanceof EntityZombie)))
     		return;
     	
-    	ResourceLocation res = EntityList.getKey(elb);
+//    	ResourceLocation res = EntityList.getKey(elb);
     	for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
     		ItemStack folder = tileRFC.getInventory().getTrueStackInSlot(i);
     		if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
-    			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null)
-    			{
-    				if (ItemFolder.getObject(folder).equals(res.toString())) {
+    			Object obj = ItemFolder.getObject(folder);
+    			if (folder.getItemDamage() == 3 && obj != null) {
+    				if (obj.equals(entity.getClass())) {
     					MobUtils.dropMobEquips(world, elb);
     					elb.setDead();
     					ItemFolder.add(folder, 1);
@@ -186,7 +187,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityRFC) {
 			ItemStack upgrade = UpgradeHelper.stackTest((TileEntityRFC)tile);
-			if (!upgrade.isEmpty()) {
+			if (!upgrade.isEmpty() && upgrade.getItemDamage() != ItemUpgrades.UpgradeType.LIFE.ordinal()) {
 				if (upgrade.getCount() == 0)
 					upgrade.setCount(1);
 				InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), upgrade);
