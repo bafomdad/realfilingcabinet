@@ -136,6 +136,7 @@ public class MobUtils {
 	}
 	
 	public static void addOrCreateMobFolder(EntityPlayer player, ItemStack folder, EntityLivingBase target) {
+
 		if (folder.getItemDamage() == 2) {
 			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 			if (ItemFolder.setObject(newFolder, target)) {
@@ -145,12 +146,11 @@ public class MobUtils {
 			}
 		}
 		else if (folder.getItemDamage() == 3) {
-			if (ItemFolder.getObject(folder) != null) {
-				ResourceLocation res = EntityList.getKey(target);
-				if (ItemFolder.getObject(folder).equals(res.toString())) {
-					MobUtils.dropMobEquips(player.world, target);
-					target.setDead();
-				}
+			Object obj = ItemFolder.getObject(folder);
+			if (obj != null && obj.equals(target.getClass())) {
+				ItemFolder.add(folder, 1);
+				dropMobEquips(player.world, target);
+				target.setDead();
 			}
 		}
 	}

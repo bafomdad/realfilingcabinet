@@ -237,29 +237,20 @@ public class EventHandlerServer {
 		if (event.getEntityLiving() instanceof EntityPlayer || !(event.getSource().getTrueSource() instanceof EntityPlayer)) return;
 		
 		EntityPlayer player = (EntityPlayer)event.getSource().getTrueSource();
-		EntityLivingBase target = event.getEntityLiving();
-		
-		if (target.isChild() && !(target instanceof EntityZombie))return;
-		if (target instanceof EntityCabinet) return;
-		if (target instanceof IEntityOwnable && ((IEntityOwnable)target).getOwner() != null) return;
-		
 		ItemStack folder = player.getHeldItemMainhand();
 		if (folder.isEmpty() || (!folder.isEmpty() && folder.getItem() != RFCItems.folder)) return;
 		if (folder.getItemDamage() != FolderType.MOB.ordinal() || !ConfigRFC.mobUpgrade) return;
+		
+		EntityLivingBase target = event.getEntityLiving();
+		if (target.isChild() && !(target instanceof EntityZombie)) return;
+		if (target instanceof EntityCabinet) return;
+		if (target instanceof IEntityOwnable && ((IEntityOwnable)target).getOwner() != null) return;
 		
 		String entityblacklist = target.getClass().getSimpleName();
 		for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
 			if (toBlacklist.contains(entityblacklist)) return;
 		}
-		if (ItemFolder.getObject(folder) != null) {
-			ResourceLocation res = EntityList.getKey(target);
-			if (ItemFolder.getObject(folder).equals(res.toString())) {
-				event.setCanceled(true);
-				ItemFolder.add(folder, 1);
-				MobUtils.dropMobEquips(player.world, target);
-				target.setDead();
-			}
-		}
+		MobUtils.addOrCreateMobFolder(player, folder, target);
 	}
 	
 	@SubscribeEvent
