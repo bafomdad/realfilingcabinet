@@ -11,6 +11,7 @@ import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class MobUpgradeHelper {
 
@@ -72,11 +73,9 @@ public class MobUpgradeHelper {
 			return;
 		
 		ItemStack upgrade = stackTest(cabinet);
-		if (upgrade != null)
-		{
+		if (upgrade != null) {
 			ItemStack newStack = new ItemStack(upgrade.getItem(), 1, upgrade.getItemDamage());
-			if (!player.inventory.addItemStackToInventory(newStack))
-				player.dropItem(newStack.getItem(), 1);
+			ItemHandlerHelper.giveItemToPlayer(player, newStack);
 		}
 		cabinet.setTextureState(0);
 		cabinet.upgrades = "";

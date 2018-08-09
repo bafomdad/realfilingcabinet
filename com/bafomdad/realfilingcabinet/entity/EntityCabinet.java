@@ -100,9 +100,10 @@ public class EntityCabinet extends EntityTameable {
 	
 	@Override
 	public boolean isEntityInvulnerable(DamageSource source) {
-		
-		if (source == DamageSource.OUT_OF_WORLD)
+
+		if (source == DamageSource.OUT_OF_WORLD) {
 			return false;
+		}
 		
 		if (source.getTrueSource() instanceof EntityPlayer && source.getTrueSource().isSneaking()) {
 			EntityPlayer player = (EntityPlayer)source.getTrueSource();
@@ -117,7 +118,7 @@ public class EntityCabinet extends EntityTameable {
 		
 		if (this.isEntityInvulnerable(source))
 			return false;
-		
+			
 		if (!this.world.isRemote && !this.isLegit()) {
 			this.setDead();
 			return false;
@@ -125,6 +126,16 @@ public class EntityCabinet extends EntityTameable {
 		if (!upgrades.isEmpty()) {
 			if (source.getTrueSource() instanceof EntityPlayer)
 				MobUpgradeHelper.removeUpgrade((EntityPlayer)source.getTrueSource(), this);
+			return false;
+		}
+		if (source.getTrueSource() == null) {
+			setDead();
+			return true;
+		}
+		if (getPosition().getY() < 0) {
+			BlockPos toHome = BlockPos.fromLong(homePos);
+			if (!world.isRemote)
+				this.setPosition(toHome.getX(), toHome.getY(), toHome.getZ());
 			return false;
 		}
 		this.setTile(source);
@@ -259,6 +270,25 @@ public class EntityCabinet extends EntityTameable {
 					player.sendStatusMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")), true);
 			}
 		}
+//		else {
+//			BlockPos resetPos = BlockPos.fromLong(homePos);
+//			IBlockState state = RFCBlocks.blockRFC.getDefaultState().withProperty(BlockRFC.FACING, this.getHorizontalFacing().getOpposite());
+//			if (!world.isRemote) {
+//				world.setBlockState(resetPos, state);
+//				TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(resetPos);
+//				if (tile != null) {
+//					for (int i = 0; i < inventory.getSlots(); i++) {
+//						ItemStack folder = inventory.getStackInSlot(i);
+//						if (!folder.isEmpty())
+//							this.setInventory(tile, i, folder);
+//					}
+//					if (this.getOwner() != null)
+//						tile.setOwner(this.getOwnerId());
+//					world.spawnEntity(new EntityItem(world, resetPos.getX(), resetPos.getY() + 1, resetPos.getZ(), new ItemStack(RFCItems.upgrades, 1, 6)));
+//					this.setDead();
+//				}
+//			}
+//		}
 	}
 	
 	@Override
