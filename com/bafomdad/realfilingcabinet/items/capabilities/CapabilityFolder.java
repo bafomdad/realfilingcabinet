@@ -106,7 +106,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
         }
         
         items.copy();
-        items.setCount(0); // TODO: Add capcity/transfer limits here
+        items.setCount(0); // TODO: Add capacity/transfer limits here
         
         if(!sim)
         {
@@ -147,6 +147,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             if(rootStack.getItemDamage() != ItemFolder.FolderType.NBT.ordinal())
             {
                 // TODO: Test NBT folder
+            	// TODO: done
                 stack.setTagCompound(null); // Delete the tags if this folder doesn't support it
             }
             

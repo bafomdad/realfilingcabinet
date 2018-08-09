@@ -17,6 +17,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -86,7 +89,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack != ItemStack.EMPTY && stack.getItemDamage() != 3)
+		if (!stack.isEmpty() && stack.getItemDamage() != FolderType.FLUID.ordinal())
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 		
 		RayTraceResult rtr = rayTrace(world, player, true);
@@ -105,12 +108,14 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 				
 				if ((block instanceof BlockLiquid || block instanceof IFluidBlock) && l == 0) {
 					if (!world.isRemote) {
-						ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 4);
-						if (ItemFolder.setObject(newFolder, block)) {							
-							if (!player.inventory.addItemStackToInventory(newFolder))
-								player.dropItem(newFolder, true);
-							world.setBlockToAir(pos);
-							stack.shrink(1);
+						Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+						if (fluid != null) {
+							ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 4);
+							if (ItemFolder.setObject(newFolder, new FluidStack(fluid, 1000))) {							
+								ItemHandlerHelper.giveItemToPlayer(player, newFolder);
+								world.setBlockToAir(pos);
+								stack.shrink(1);
+							}
 						}
 					}
 					return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
@@ -122,6 +127,7 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 	
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target, EnumHand hand) {
+		
 		if (!player.world.isRemote && stack.getItemDamage() == FolderType.MOB.ordinal()) {
 			if (!ConfigRFC.mobUpgrade) return false;
 			

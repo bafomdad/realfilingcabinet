@@ -74,17 +74,13 @@ public class ItemFolder extends Item implements IFolder {
 	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag whatisthis) {
 		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) // Direction doesn't really matter here.
-		{
 			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).addTooltips(player, list, whatisthis);
-		}
 	}
 	
 	public ItemStack getContainerItem(ItemStack stack) {
 		
 		if(!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return ItemStack.EMPTY;
-		}
 		
 		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
 		long count = cap.getCount();
@@ -92,14 +88,13 @@ public class ItemFolder extends Item implements IFolder {
 		if (count > 0 && cap.isItemStack())
 			extract = Math.min(cap.getItemStack().getMaxStackSize(), count);
 		
-		if (NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, false)) {
+		if (NBTUtils.getBoolean(stack, StringLibs.RFC_TAPED, false))
 			return ItemStack.EMPTY;
-		}
+		
 		ItemStack copy = stack.copy();
-		if (stack.getItemDamage() == 2 && count == 0) // TODO: This works with 0 items? Might want to test this later
-		{
+		if (stack.getItemDamage() == FolderType.DURA.ordinal() && count == 0) // TODO: This works with 0 items? Might want to test this later
 			setRemSize(copy, 0);
-		}
+
 		remove(copy, extract);
 		extractSize = (int)extract;
 		
@@ -111,35 +106,30 @@ public class ItemFolder extends Item implements IFolder {
 		return !getContainerItem(stack).isEmpty();
 	}
 	
-	public static String getFolderDisplayName(ItemStack stack)
-	{
+	public static String getFolderDisplayName(ItemStack stack) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getDisplayName();
-		}
 		
 		return "";
 	}
 	
 	@Deprecated // Not for save/load use
 	public static String getFileName(ItemStack stack) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContentID();
-		}
 		
 		return "";
 	}
 	
 	public static int getFileMeta(ItemStack stack) {
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
+		
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
 			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
-			if(cap.isFluidStack())
-			{
+			if(cap.isFluidStack()) {
 				return cap.getItemStack().getItemDamage();
-			} else if(cap.isBlock())
-			{
+			} else if(cap.isBlock()) {
 				return cap.getBlock().getBlock().getMetaFromState(cap.getBlock());
 			}
 		}
@@ -147,14 +137,12 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public static void setFileMeta(ItemStack stack, int meta) {
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
+		
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
 			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
-			if(cap.isFluidStack())
-			{
+			if(cap.isFluidStack()) {
 				cap.getItemStack().setItemDamage(meta);
-			} else if(cap.isBlock())
-			{
+			} else if(cap.isBlock()) {
 				cap.setContents(cap.getBlock().getBlock().getMetaFromState(cap.getBlock()));
 			}
 		}
@@ -168,10 +156,9 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public static long getFileSize(ItemStack stack) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getCount();
-		}
 		
 		return 0;
 	}
@@ -187,21 +174,19 @@ public class ItemFolder extends Item implements IFolder {
 		long current = getFileSize(stack);
 		setFileSize(stack, current + count);
 		
-		System.out.println("New amount = " + (current + count));
+//		System.out.println("New amount = " + (current + count));
 	}
 	
 	public static void setRemSize(ItemStack stack, int count) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setRemaining(count);
-		}
 	}
 	
 	public static int getRemSize(ItemStack stack) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getRemaining();
-		}
 		
 		return 0;
 	}
@@ -219,37 +204,31 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public static NBTTagCompound getItemTag(ItemStack stack) {
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
-			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
 			
+			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
 			if(cap.isItemStack())
-			{
 				return cap.getItemStack().getTagCompound();
-			}
 		}
 		
 		return new NBTTagCompound();
 	}
 	
 	public static void setItemTag(ItemStack stack, NBTTagCompound tag) {
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
+		
+		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
 			CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
 			
 			if(cap.isItemStack())
-			{
 				cap.getItemStack().setTagCompound(tag);
-			}
 		}
 	}
 
 	public static Object getObject(ItemStack folder) {
 
 		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContents();
-		}
 		
 		return null;
 	}
@@ -257,9 +236,7 @@ public class ItemFolder extends Item implements IFolder {
 	public static boolean setObject(ItemStack folder, Object object) {
 		
 		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setContents(object);
-		}
 		
 		return false;
 	}
@@ -307,7 +284,7 @@ public class ItemFolder extends Item implements IFolder {
 			if (stack.getItemDamage() < 2) {
 				if (((ItemStack)getObject(stack)).getItem() instanceof ItemBlock) {	
 					long count = ItemFolder.getFileSize(stack);
-					if (stack.getItemDamage() == 1 && !EnderUtils.preValidateEnderFolder(stack))
+					if (stack.getItemDamage() == FolderType.ENDER.ordinal() && !EnderUtils.preValidateEnderFolder(stack))
 						return EnumActionResult.FAIL;
 					
 					if (count > 0) {
@@ -355,12 +332,12 @@ public class ItemFolder extends Item implements IFolder {
 		if (!stack.isEmpty() && stack.getItem() != this)
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 
-		if (stack.getItemDamage() == 2) {
+		if (stack.getItemDamage() == FolderType.DURA.ordinal()) {
 			NBTTagCompound tag = stack.getTagCompound();
 			tag.setBoolean(StringLibs.RFC_IGNORENBT, !tag.getBoolean(StringLibs.RFC_IGNORENBT));
 			return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
 		}
-		if (!stack.isEmpty() && stack.getItemDamage() != 4)
+		if (!stack.isEmpty() && stack.getItemDamage() != FolderType.FLUID.ordinal())
 			return ActionResult.newResult(EnumActionResult.PASS, stack);
 		
 		RayTraceResult rtr = rayTrace(world, player, true);

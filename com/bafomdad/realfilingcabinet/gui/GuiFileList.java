@@ -98,25 +98,25 @@ public class GuiFileList extends Gui {
 		List<String> list = new ArrayList();
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getTrueStackInSlot(i);
-			if (folder != ItemStack.EMPTY && folder.getItem() instanceof IFolder) {
+			if (!folder.isEmpty() && folder.getItem() instanceof IFolder) {
 				if (ItemFolder.getObject(folder) != null) {
 					String name = TextHelper.folderStr(folder);
 					long count = ItemFolder.getFileSize(folder);
 					
 					if (!crouching) {
-						if (folder.getItemDamage() == 2)
+						if (folder.getItemDamage() == ItemFolder.FolderType.DURA.ordinal())
 							list.add(name + " - " + TextHelper.format(count) + " [" + ItemFolder.getRemSize(folder) + " / " + ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage() + "]");
-						if (folder.getItemDamage() == 4)
+						if (folder.getItemDamage() == ItemFolder.FolderType.FLUID.ordinal())
 							list.add(name + " - " + count + "mB");
-						else if (folder.getItemDamage() != 2 && folder.getItemDamage() != 4)
+						else if (folder.getItemDamage() != ItemFolder.FolderType.DURA.ordinal() && folder.getItemDamage() != ItemFolder.FolderType.FLUID.ordinal())
 							list.add(name + " - " + TextHelper.format(count));
 					}
 					else {
-						if (folder.getItemDamage() == 2)
+						if (folder.getItemDamage() == ItemFolder.FolderType.DURA.ordinal())
 							list.add(name + " - " + count + " [" + ItemFolder.getRemSize(folder) + " / " + ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage() + "]");
-						if (folder.getItemDamage() == 4)
+						if (folder.getItemDamage() == ItemFolder.FolderType.FLUID.ordinal())
 							list.add(name + " - " + count + "mB");
-						else if (folder.getItemDamage() != 2 && folder.getItemDamage() != 4)
+						else if (folder.getItemDamage() != ItemFolder.FolderType.DURA.ordinal() && folder.getItemDamage() != ItemFolder.FolderType.FLUID.ordinal())
 							list.add(name + " - " + count);
 					}
 				}

@@ -26,6 +26,7 @@ public class RealFilingCabinet {
 	public static final String VERSION = "@VERSION@";
 	public static final String FORGE_VER = "14.21.0.2363";
 	
+	// intentional typo in order to disable integration with storage drawers for now
 	public static final String STORAGEDRAWERS = "storageDrawers";
 	
 	@SidedProxy(clientSide="com.bafomdad.realfilingcabinet.proxies.ClientProxy", serverSide="com.bafomdad.realfilingcabinet.proxies.CommonProxy")

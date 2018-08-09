@@ -144,12 +144,10 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 					event.craftMatrix.setInventorySlotContents(i, ItemStack.EMPTY);
 			}
 		}
-		if (!event.player.getEntityWorld().isRemote && canSync)
-		{
+		if (!event.player.getEntityWorld().isRemote && canSync) {
 			if (!foldy.isEmpty())
-			{
 				EnderUtils.syncToTile(EnderUtils.getTileLoc(foldy), NBTUtils.getInt(foldy, StringLibs.RFC_DIM, 0), NBTUtils.getInt(foldy, StringLibs.RFC_SLOTINDEX, 0), ItemFolder.extractSize, true);
-			}
+
 			canSync = false;
 		}
 	}
