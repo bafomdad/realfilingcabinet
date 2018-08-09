@@ -8,6 +8,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.items.ItemEmptyFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -61,14 +62,9 @@ public class TextHelper {
 		if (!(folder.getItem() instanceof IFolder))
 			return null;
 		
-		if (ItemFolder.getObject(folder) != null) {
-			if (ItemFolder.getObject(folder) instanceof ItemStack)
-				return ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
-			if (ItemFolder.getObject(folder) instanceof FluidStack)
-				return ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
-			else if (ItemFolder.getObject(folder) instanceof String) {
-				return (String)ItemFolder.getObject(folder);
-			}
+		Object obj = ItemFolder.getObject(folder);
+		if (obj != null) {
+			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getDisplayName();
 		}
 		return null;
 	}

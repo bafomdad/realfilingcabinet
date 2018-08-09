@@ -10,9 +10,11 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -107,35 +109,20 @@ public class TopRFC {
 			
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(slot);
 			if (!folder.isEmpty()) {
-				if (ItemFolder.getObject(folder) instanceof ItemStack) {
-					String stackName = ((ItemStack)ItemFolder.getObject(folder)).getDisplayName();
+				String name = TextHelper.folderStr(folder);
+				if (name != null) {
 					long storedSize = ItemFolder.getFileSize(folder);
-					
-					String name = stackName + " - " + storedSize;
-					name += SmeltingUtils.getSmeltingPercentage(tile, slot);
-					if (folder.getItemDamage() == 2) {
+					if (folder.getItemDamage() == ItemFolder.FolderType.DURA.ordinal()) {
 						int storedRem = ItemFolder.getRemSize(folder);
-						int maxDamage = ((ItemStack)ItemFolder.getObject(folder)).getMaxDamage();
-						name = stackName + " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]";
+						int maxDamage = folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getItemStack().getMaxDamage();
+						name += " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]";
 					}
-					info.horizontal().text(name);
-				}
-				else if (ItemFolder.getObject(folder) instanceof FluidStack) {
-					String fluidName = ((FluidStack)ItemFolder.getObject(folder)).getLocalizedName();
-
-					long storedSize = ItemFolder.getFileSize(folder);
-					String name = fluidName + " - " + storedSize + " mB";
-					info.horizontal().text(name);
-				}
-				else if (ItemFolder.getObject(folder) instanceof String) {
-					if (folder.getItemDamage() == 3) {
-						String mobName = (String)ItemFolder.getObject(folder);
-						if (!mobName.isEmpty()) {
-							long storedSize = ItemFolder.getFileSize(folder);
-							String name = mobName + " - " + storedSize;
-							info.horizontal().text(name);
-						}
+					if (folder.getItemDamage() == ItemFolder.FolderType.FLUID.ordinal()) {
+						name += " - " + storedSize + "mB";
 					}
+					else
+						name += " - " + storedSize;
+					info.horizontal().text(name);
 				}
 			}
 		}
