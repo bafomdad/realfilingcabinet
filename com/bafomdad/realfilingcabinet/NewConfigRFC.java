@@ -68,6 +68,9 @@ public class NewConfigRFC {
 		@Comment({"If enabled, A fluid cabinet filled with more than 3000mb of water will never run out of water."})
 		@Tap
 		public static boolean infiniteWaterSource = true;
+		@Comment({"Configure the general folder storage limit for dyed folders."})
+		@Tap
+		public static int folderSizeLimit = 1000;
 		
 		// INTEGRATION
 		@Comment({"If enabled, will add mana cabinets and folders for Botania"})

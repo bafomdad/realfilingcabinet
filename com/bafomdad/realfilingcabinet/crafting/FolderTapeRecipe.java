@@ -46,8 +46,7 @@ public class FolderTapeRecipe extends net.minecraftforge.registries.IForgeRegist
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (!stack.isEmpty())
-				{
+				if (!stack.isEmpty()) {
 					if (stack.getItem() instanceof IFolder || stack.isItemEnchanted())
 						list.add(stack);
 					
@@ -84,9 +83,10 @@ public class FolderTapeRecipe extends net.minecraftforge.registries.IForgeRegist
 			
 			ItemStack stack = ic.getStackInSlot(i);
 			
-			if (!stack.isEmpty())
-			{
+			if (!stack.isEmpty()) {
 				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() != 1)
+					continue;
+				if (stack.getItem() instanceof IFolder)
 					folder = i;
 				if (stack.getItem() == RFCItems.whiteoutTape)
 					tape = i;
@@ -94,19 +94,16 @@ public class FolderTapeRecipe extends net.minecraftforge.registries.IForgeRegist
 					misc = i;
 			}
 		}
-		if (folder >= 0 && tape >= 0 && misc <= 0)
-		{
+		if (folder >= 0 && tape >= 0 && misc <= 0) {
 			StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), true);
 			
 			ItemStack stack2 = ic.getStackInSlot(folder);
-			if (ItemFolder.getObject(stack2) != null && ItemFolder.getFileSize(stack2) == 0)
-			{
+			if (ItemFolder.getObject(stack2) != null && ItemFolder.getFileSize(stack2) == 0) {
 				ItemStack stacky = ic.getStackInSlot(folder);
 				return ((IFolder)stacky.getItem()).isFolderEmpty(stacky);
 			}
 		}
-		else if (tape >= 0 && misc >= 0 && folder <= 0)
-		{
+		else if (tape >= 0 && misc >= 0 && folder <= 0) {
 			ItemStack stack3 = ic.getStackInSlot(misc).copy();
 			stack3.setCount(1);
 			EnchantmentHelper.setEnchantments(Collections.emptyMap(), stack3);

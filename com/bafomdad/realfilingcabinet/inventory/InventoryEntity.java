@@ -36,30 +36,30 @@ public class InventoryEntity extends ItemStackHandler {
 
         validateSlotIndex(slot);
 
-        if (simpleFolderMatch(stack) != -1)
-        {
+        if (simpleFolderMatch(stack) != -1) {
         	slot = simpleFolderMatch(stack);
         	if (!simulate) {
-        		if (getStacks().get(slot).getItemDamage() == 2)
-        		{
+        		if (getStacks().get(slot).getItemDamage() == 2) {
         			int remSize = stack.getItemDamage();
         			int storedRem = ItemFolder.getRemSize(getStacks().get(slot));
         			
         			if (remSize == 0)
-        				ItemFolder.add(getStacks().get(slot), 1);
+        				ItemFolder.insert(getStacks().get(slot), stack);
+ //       				ItemFolder.add(getStacks().get(slot), 1);
         			
         			ItemFolder.addRem(getStacks().get(slot), stack.getMaxDamage() - stack.getItemDamage());
         			int newRem = ItemFolder.getRemSize(getStacks().get(slot));
         			
-        			if (newRem >= stack.getMaxDamage())
-        			{
-        				ItemFolder.add(getStacks().get(slot), 1);
+        			if (newRem >= stack.getMaxDamage()) {
+        				ItemFolder.insert(getStacks().get(slot), stack);
+ //       				ItemFolder.add(getStacks().get(slot), 1);
         				int newStoredRem = newRem - stack.getMaxDamage();
         				ItemFolder.setRemSize(getStacks().get(slot), newStoredRem);
         			}
         		}
         		else
-        			ItemFolder.add(stacks.get(slot), stack.getCount());
+        			ItemFolder.insert(stacks.get(slot), stack);
+//        			ItemFolder.add(stacks.get(slot), stack.getCount());
         	}
         	return null;
         }
@@ -72,14 +72,11 @@ public class InventoryEntity extends ItemStackHandler {
 		if (ItemFolder.getObject(folder) == null)
 			return ItemStack.EMPTY;
 		
-		if (folder != null && folder.getItem() instanceof IFolder)
-		{
-			if (ItemFolder.getObject(folder) instanceof ItemStack)
-			{
+		if (folder != null && folder.getItem() instanceof IFolder) {
+			if (ItemFolder.getObject(folder) instanceof ItemStack) {
 				ItemStack stack = (ItemStack)ItemFolder.getObject(folder);
-				if (!stack.isEmpty()) {
+				if (!stack.isEmpty())
 					return stack.copy();
-				}
 			}
 		}
 		return ItemStack.EMPTY;
@@ -117,9 +114,8 @@ public class InventoryEntity extends ItemStackHandler {
     			if (folder.getItemDamage() == 3 && ItemFolder.getObject(folder) != null) {
     				if (ItemFolder.getObject(folder).equals(entityName)) {
     					if (doThing)
-    					{
     						ItemFolder.add(folder, 1);
-    					}
+
     					return true;
     				}
     			}

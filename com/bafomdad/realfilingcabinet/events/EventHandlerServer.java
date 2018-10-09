@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.events;
 
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
+
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
@@ -42,6 +43,7 @@ import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemDyedFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.ItemSuitcase;
 import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
@@ -117,7 +119,6 @@ public class EventHandlerServer {
 			return;
 		
 		ItemStack estack = event.getItem().getItem();
-		
 		if (estack.getCount() > 0) {
 			for (EnumHand hand : EnumHand.values()) {
 				ItemStack stack = event.getEntityPlayer().getHeldItem(hand);
@@ -137,6 +138,23 @@ public class EventHandlerServer {
 					continue;
 				
 				ItemStack folder = event.getEntityPlayer().inventory.getStackInSlot(i);
+				if (!folder.isEmpty() && folder.getItem() == RFCItems.dyedFolder && folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
+					CapabilityFolder cap = folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+					if (cap.isItemStack()) {
+						ItemStack folderStack = cap.getItemStack();
+						if (!folderStack.isEmpty() && ItemStack.areItemsEqual(folderStack, estack)) {
+							int remainder = ItemDyedFolder.add(folder, estack.getCount());
+							if (remainder > 0) {
+								event.setCanceled(true);
+								event.getItem().getItem().setCount(event.getItem().getItem().getCount() - remainder);
+								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+								break;
+							}
+							else
+								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+						}
+					}
+				}
 				if (!folder.isEmpty() && folder.getItem() == RFCItems.folder && folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
 					CapabilityFolder cap = folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
 					if (cap.isItemStack()) {
@@ -254,11 +272,9 @@ public class EventHandlerServer {
 	}
 	
 	@SubscribeEvent
-	public void onAttachCapability(AttachCapabilitiesEvent<ItemStack> event)
-	{
-		if(event.getObject().getItem() == RFCItems.folder)
-		{
+	public void onAttachCapability(AttachCapabilitiesEvent<ItemStack> event) {
+		
+		if(event.getObject().getItem() == RFCItems.folder || event.getObject().getItem() == RFCItems.dyedFolder)
 			event.addCapability(CapabilityProviderFolder.FOLDER_ID, new CapabilityProviderFolder(event.getObject()));
-		}
 	}
 }

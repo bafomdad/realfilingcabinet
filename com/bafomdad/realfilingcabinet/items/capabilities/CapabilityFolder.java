@@ -4,8 +4,10 @@ import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -25,6 +27,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -47,6 +50,12 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
     
     public void addTooltips(World world, List<String> list, ITooltipFlag tooltipFlag)
     {
+    	if (rootStack.getItem() == RFCItems.dyedFolder) {
+    		
+    		ItemStack item = getItemStack();
+            list.add((Keyboard.isKeyDown(42)) || (Keyboard.isKeyDown(54)) ? count + " " + item.getDisplayName() : TextHelper.format(count) + " " + item.getDisplayName());
+            return;
+    	}
         if(rootStack.getItemDamage() == ItemFolder.FolderType.FLUID.ordinal() && isFluidStack())
         {
             FluidStack fluid = getFluidStack();
@@ -91,29 +100,31 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
         return items;
     }
     
-    public ItemStack insertItems(ItemStack items, boolean sim)
-    {
-        if(!isItemStack() || count <= 0)
-        {
-            return items;
-        }
+    // WIP
+    public ItemStack insertItems(ItemStack items, boolean sim) {
         
+//    	if(!isItemStack() || count <= 0)
+//            return items;
+
         ItemStack stack = getItemStack();
+//        if(!ItemStack.areItemsEqual(stack, items))
+//            return items;
         
-        if(!ItemStack.areItemsEqual(stack, items))
-        {
+        if (rootStack.getItem() == RFCItems.dyedFolder) {
+            long newCount = Math.min(count + items.getCount(), ConfigRFC.folderSizeLimit);
+            long remainder = ConfigRFC.folderSizeLimit - count;
+            items.setCount(items.getCount() - (int)remainder);
+            if (!sim)
+            	count = newCount;
+            
             return items;
         }
-        
-        items.copy();
-        items.setCount(0); // TODO: Add capacity/transfer limits here
-        
+//        items.copy();
+//        items.setCount(0);
         if(!sim)
-        {
             count += items.getCount();
-        }
         
-        return items; // Return left overs that didn't fit
+        return ItemStack.EMPTY;
     }
     
     public boolean setContents(Object obj)
@@ -139,6 +150,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             this.count = stack.getCount();
             stack.setCount(1);
             
+            if (rootStack.getItem() == RFCItems.dyedFolder)
+            	return true;
+            
             if(rootStack.getItemDamage() == ItemFolder.FolderType.DURA.ordinal())
             {
                 this.remSize = stack.getItemDamage();
@@ -146,8 +160,6 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             
             if(rootStack.getItemDamage() != ItemFolder.FolderType.NBT.ordinal())
             {
-                // TODO: Test NBT folder
-            	// TODO: done
                 stack.setTagCompound(null); // Delete the tags if this folder doesn't support it
             }
             
@@ -179,26 +191,6 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
     public String getDisplayName()
     {
         return this.displayName;
-    }
-    
-    @Deprecated // Really shouldn't be using this anymore
-    public String getContentID()
-    {
-        if(isItemStack())
-        {
-            return getItemStack().getItem().getRegistryName().toString();
-        } else if(isBlock())
-        {
-            return getBlock().getBlock().getRegistryName().toString();
-        } else if(isFluidStack())
-        {
-            return FluidRegistry.getFluidName(getFluidStack());
-        } else if(isEntity())
-        {
-            return EntityRegistry.getEntry((Class<EntityLivingBase>)this.contents).getRegistryName().toString();
-        }
-        
-        return "";
     }
     
     public Object getContents()

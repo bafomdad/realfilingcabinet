@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class SmeltingUtils {
@@ -36,6 +37,7 @@ public class SmeltingUtils {
 		int smeltResult = -1;
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			if (hasSmeltingJob(tile, i)) continue;
+			if (tile.getInventory().getTrueStackInSlot(i).getItem() == RFCItems.dyedFolder) continue; 
 			ItemStack result = FurnaceRecipes.instance().getSmeltingResult(tile.getInventory().getStackInSlot(i));
 			if (!result.isEmpty()) {
 				toSmelt = i;

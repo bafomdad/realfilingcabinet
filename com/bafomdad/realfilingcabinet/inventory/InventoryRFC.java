@@ -56,7 +56,8 @@ public class InventoryRFC extends ItemStackHandler {
         if (StorageUtils.simpleFolderMatch(tile, stack) != -1) {
         	slot = StorageUtils.simpleFolderMatch(tile, stack);
         	if (!simulate) {
-        		ItemFolder.add(stacks.get(slot), stack.getCount());
+        		ItemFolder.insert(stacks.get(slot), stack);
+//        		ItemFolder.add(stacks.get(slot), stack.getCount());
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
         	return ItemStack.EMPTY;

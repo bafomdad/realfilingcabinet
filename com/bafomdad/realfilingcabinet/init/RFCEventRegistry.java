@@ -27,6 +27,7 @@ import com.bafomdad.realfilingcabinet.renders.RenderFilingCabinet;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -78,6 +79,8 @@ public class RFCEventRegistry {
 		event.getRegistry().register(RFCItems.upgrades);
 		event.getRegistry().register(RFCItems.whiteoutTape);
 		event.getRegistry().register(RFCItems.suitcase);
+		event.getRegistry().register(RFCItems.emptyDyedFolder);
+		event.getRegistry().register(RFCItems.dyedFolder);
 		
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 0), StringLibs.TAG_CREATIVE);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 1), StringLibs.TAG_CRAFT);
@@ -102,14 +105,14 @@ public class RFCEventRegistry {
 		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
 			event.getRegistry().register(new FolderAspectRecipe("folderaspect"));
 		}
-		List<ItemStack> inputs1 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 0)); }};
-		List<ItemStack> inputs2 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 1)); }};
-		List<ItemStack> inputs3 = new ArrayList<ItemStack>() {{ add(new ItemStack(RFCItems.emptyFolder, 1, 4)); }};
+		event.getRegistry().register(new FolderStorageRecipe("normalstoragefolder", new ItemStack(RFCItems.folder, 1, 0), new ItemStack(RFCItems.emptyFolder, 1, 0)));
+		event.getRegistry().register(new FolderStorageRecipe("durabilitystoragefolder", new ItemStack(RFCItems.folder, 1, 2), new ItemStack(RFCItems.emptyFolder, 1, 1)));
+		event.getRegistry().register(new FolderStorageRecipe("nbtstoragefolder", new ItemStack(RFCItems.folder, 1, 5), new ItemStack(RFCItems.emptyFolder, 1, 4)));
+		for (int i = 0; i < EnumDyeColor.values().length; ++i)
+			event.getRegistry().register(new FolderStorageRecipe("dyedstoragefolder" + i, new ItemStack(RFCItems.dyedFolder, 1, i), new ItemStack(RFCItems.emptyDyedFolder, 1, i)));
 		
-		event.getRegistry().register(new FolderStorageRecipe("normalstoragefolder", new ItemStack(RFCItems.folder, 1, 0), inputs1));
-		event.getRegistry().register(new FolderStorageRecipe("durabilitystoragefolder", new ItemStack(RFCItems.folder, 1, 2), inputs2));
-		event.getRegistry().register(new FolderStorageRecipe("nbtstoragefolder", new ItemStack(RFCItems.folder, 1, 5), inputs3));
-		event.getRegistry().register(new FolderExtractRecipe("folderextract"));
+		event.getRegistry().register(new FolderExtractRecipe("folderextract", new ItemStack(RFCItems.folder)));
+		event.getRegistry().register(new FolderExtractRecipe("dyedfolderextract", new ItemStack(RFCItems.dyedFolder)));
 		event.getRegistry().register(new FolderMergeRecipe("foldermerge"));
 		event.getRegistry().register(new FolderTapeRecipe("foldertape"));
 	}

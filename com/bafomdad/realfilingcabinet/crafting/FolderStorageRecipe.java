@@ -22,18 +22,19 @@ import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemDyedFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
-	private List<ItemStack> inputs;
 	private ItemStack output;
 	final String name;
+	private ItemStack input;
 	
-	public FolderStorageRecipe(String name, ItemStack output, List<ItemStack> inputs) {
+	public FolderStorageRecipe(String name, ItemStack output, ItemStack input) {
 		
 		this.output = output;
-		this.inputs = inputs;
+		this.input = input;
 		this.name = name;
 		this.setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, name));
 	}
@@ -41,33 +42,32 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList<ItemStack> list = new ArrayList<>(this.inputs);
+		List<ItemStack> list = new ArrayList();
+		list.add(input);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
 				
 				ItemStack stack = ic.getStackInRowAndColumn(j, i);
-				if (!stack.isEmpty())
-				{
+				if (!stack.isEmpty()) {
 					if (allowableIngredient(stack))
 						list.add(stack);
 					
 					boolean flag = false;
 					Iterator iter = list.iterator();
 					
-					while (iter.hasNext())
-					{
+					while (iter.hasNext()) {
 						ItemStack stack1 = (ItemStack)iter.next();
 						
-						if (stack.getItem() == stack1.getItem() && (stack1.getItemDamage() == 32767 || stack.getItemDamage() == stack1.getItemDamage()))
-						{
+						if (stack.getItem() == stack1.getItem() && (stack1.getItemDamage() == 32767 || stack.getItemDamage() == stack1.getItemDamage())) {
 							flag = true;
 							list.remove(stack1);
 							break;
 						}
 					}
-					if (!flag)
+					if (!flag) {
 						return false;
+					}
 				}
 			}
 		}
@@ -96,6 +96,11 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 			ItemStack stack1 = ic.getStackInSlot(recipestack);
 			ItemStack folder = ic.getStackInSlot(emptyFolder);
 			
+			if (folder.getItem() == RFCItems.emptyDyedFolder) {
+				ItemStack newFolder = new ItemStack(RFCItems.dyedFolder, 1, folder.getItemDamage());
+				ItemFolder.setObject(newFolder, stack1);
+				return newFolder;
+			}
 			if ((folder.getItemDamage() == 0 && !stack1.getItem().isRepairable()) || (folder.getItemDamage() == 1 && stack1.getItem().isRepairable()))
 			{
 				int damage = 0;

@@ -28,6 +28,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemDyedFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
@@ -35,19 +36,21 @@ import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	
-	public static List<ItemStack> input = new ArrayList();
+//	public static List<ItemStack> input = new ArrayList();
 	private boolean canSync = false;
 	private ItemStack foldy = ItemStack.EMPTY;
+	private ItemStack input;
 	final String name;
 	
-	static
-	{
-		input.add(new ItemStack(RFCItems.folder));
-	}
+//	static
+//	{
+//		input.add(new ItemStack(RFCItems.folder));
+//	}
 	
-	public FolderExtractRecipe(String name) {
+	public FolderExtractRecipe(String name, ItemStack input) {
 		
 		this.name = name;
+		this.input = input;
 		this.setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, name));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
@@ -55,7 +58,9 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 	@Override
 	public boolean matches(InventoryCrafting ic, World world) {
 		
-		ArrayList list = new ArrayList(this.input);
+//		ArrayList list = new ArrayList(this.input);
+		List<ItemStack> list = new ArrayList();
+		list.add(input);
 		
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -99,6 +104,19 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 		if (folder >= 0) {
 			ItemStack stack = ic.getStackInSlot(folder);
 			
+			if (stack.getItem() == RFCItems.dyedFolder && ItemFolder.getObject(stack) != null) {
+				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
+				if (ItemFolder.getObject(stack) instanceof ItemStack) {
+					long count = ItemFolder.getFileSize(stack);
+					if (count > 0) {
+						ItemStack folderStack = (ItemStack)ItemFolder.getObject(stack);
+						int meta = folderStack.getItemDamage();
+						long extract = Math.min(folderStack.getMaxStackSize(), count);
+						
+						return new ItemStack(folderStack.getItem(), (int)extract, meta);
+					}
+				}
+			}
 			if (stack.getItem() == RFCItems.folder && ItemFolder.getObject(stack) != null) {
 				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
 				if (ItemFolder.getObject(stack) instanceof ItemStack) {
@@ -169,7 +187,7 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 
         NonNullList<ItemStack> ret = NonNullList.withSize(ic.getSizeInventory(), ItemStack.EMPTY);
         for (int i = 0; i < ret.size(); i++) {
-        	if (ic.getStackInSlot(i).getItem() == RFCItems.folder)
+        	if (ic.getStackInSlot(i).getItem() == RFCItems.folder || ic.getStackInSlot(i).getItem() == RFCItems.dyedFolder)
         		ret.set(i, ic.getStackInSlot(i).getItem().getContainerItem(ic.getStackInSlot(i)));
         	else
         		ret.set(i, ItemStack.EMPTY);

@@ -18,7 +18,7 @@ public class CommandFolderItem {
 	public static void setItem(EntityPlayer player, String object, int meta) {
 		
 		ItemStack folder = player.getHeldItemMainhand();
-		if (folder == null || (folder != null && !(folder.getItem() instanceof ItemEmptyFolder))) {
+		if (folder.isEmpty() || (!folder.isEmpty() && !(folder.getItem() instanceof ItemEmptyFolder))) {
 			player.sendMessage(new TextComponentString(TextHelper.localizeCommands("notEmptyFolder")));
 			return;
 		}

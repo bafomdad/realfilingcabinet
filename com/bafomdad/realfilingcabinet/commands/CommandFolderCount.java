@@ -28,7 +28,7 @@ public class CommandFolderCount {
 		try {
 			long size = Long.parseLong(count);
 			if (!player.world.isRemote) {
-				if (folder.getItem() == RFCItems.folder)
+				if (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.dyedFolder)
 					ItemFolder.setFileSize(folder, size);
 				if (folder.getItem() == BotaniaRFC.manaFolder)
 					ItemManaFolder.setManaSize(folder, (int)size);

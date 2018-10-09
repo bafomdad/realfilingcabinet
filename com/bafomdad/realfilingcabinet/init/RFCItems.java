@@ -23,6 +23,8 @@ public class RFCItems {
 	public static ItemDebugger debugger;
 	public static ItemMysteryFolder mysteryFolder;
 	public static ItemSuitcase suitcase;
+	public static ItemEmptyDyedFolder emptyDyedFolder;
+	public static ItemDyedFolder dyedFolder;
 	
 	// Thaumcraft integration
 	public static ItemAspectFolder aspectFolder;
@@ -42,6 +44,8 @@ public class RFCItems {
 		debugger = new ItemDebugger();
 		mysteryFolder = new ItemMysteryFolder();
 		suitcase = new ItemSuitcase();
+		emptyDyedFolder = new ItemEmptyDyedFolder();
+		dyedFolder = new ItemDyedFolder();
 		
 		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration)
 			aspectFolder = new ItemAspectFolder();

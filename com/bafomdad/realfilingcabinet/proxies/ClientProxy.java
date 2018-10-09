@@ -4,6 +4,7 @@ import thaumcraft.api.aspects.Aspect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,8 +56,8 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerColors() {
 		
+		ItemColors ic = Minecraft.getMinecraft().getItemColors();
 		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
-			ItemColors ic = Minecraft.getMinecraft().getItemColors();
 			ic.registerItemColorHandler(new IItemColor() {
 				
 				@Override
@@ -73,5 +74,27 @@ public class ClientProxy extends CommonProxy {
 				}
 			}, RFCItems.aspectFolder);
 		}
+		ic.registerItemColorHandler(new IItemColor() {
+			
+			@Override
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
+				
+				if (!stack.isEmpty() && stack.getItem() == RFCItems.emptyDyedFolder) {
+					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
+				}
+				return 0xffffff;
+			}
+		}, RFCItems.emptyDyedFolder);
+		ic.registerItemColorHandler(new IItemColor() {
+			
+			@Override
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
+				
+				if (!stack.isEmpty() && stack.getItem() == RFCItems.dyedFolder) {
+					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
+				}
+				return 0xffffff;
+			}
+		}, RFCItems.dyedFolder);
 	}
 }

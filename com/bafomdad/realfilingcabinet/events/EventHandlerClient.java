@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -53,6 +54,10 @@ public class EventHandlerClient {
 		for (int i = 0; i < ItemUpgrades.UpgradeType.values().length; ++i)
 			ModelLoader.setCustomModelResourceLocation(RFCItems.upgrades, i, new ModelResourceLocation(RFCItems.upgrades.getRegistryName() + "_" + ItemUpgrades.UpgradeType.values()[i].toString().toLowerCase(), "inventory"));
 		
+		for (int i = 0; i < EnumDyeColor.values().length; ++i) {
+			ModelLoader.setCustomModelResourceLocation(RFCItems.emptyDyedFolder, i, new ModelResourceLocation(RFCItems.emptyDyedFolder.getRegistryName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(RFCItems.dyedFolder, i, new ModelResourceLocation(RFCItems.dyedFolder.getRegistryName(), "inventory"));
+		}
 		ModelLoader.setCustomModelResourceLocation(RFCItems.magnifyingGlass, 0, new ModelResourceLocation(RFCItems.magnifyingGlass.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(RFCItems.whiteoutTape, 0, new ModelResourceLocation(RFCItems.whiteoutTape.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(RFCItems.filter, 0, new ModelResourceLocation(RFCItems.filter.getRegistryName(), "inventory"));

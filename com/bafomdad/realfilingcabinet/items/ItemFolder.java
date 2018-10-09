@@ -114,15 +114,6 @@ public class ItemFolder extends Item implements IFolder {
 		return "";
 	}
 	
-	@Deprecated // Not for save/load use
-	public static String getFileName(ItemStack stack) {
-		
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-			return stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContentID();
-		
-		return "";
-	}
-	
 	public static int getFileMeta(ItemStack stack) {
 		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null)) {
@@ -169,11 +160,24 @@ public class ItemFolder extends Item implements IFolder {
 		setFileSize(stack, Math.max(current - count, 0));
 	}
 	
+	// trial new way of adding to contents of folder, while also returning the remainder in cases of reaching the storage limit
+	public static ItemStack insert(ItemStack folder, ItemStack items) {
+		
+		if (folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).insertItems(items, false);
+		
+		return items;
+	}
+	
+	/*
+	 * Maybe find a better way of adding things?
+	 */
+	@Deprecated
 	public static void add(ItemStack stack, long count) {
 		
 		long current = getFileSize(stack);
 		setFileSize(stack, current + count);
-		
+
 //		System.out.println("New amount = " + (current + count));
 	}
 	

@@ -135,7 +135,7 @@ public class AutocraftingUtils {
 		
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = ((InventoryRFC)inv).getTrueStackInSlot(i);
-			if (folder != ItemStack.EMPTY && folder.getItem() == RFCItems.folder) {
+			if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
 				if (ItemFolder.getObject(folder) != null && container.isItemEqual((ItemStack)ItemFolder.getObject(folder))) {
 					ItemFolder.add(folder, 1);
 					return true;
