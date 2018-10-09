@@ -9,6 +9,7 @@ import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityAC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemAspectFolder;
 import com.bafomdad.realfilingcabinet.utils.AspectStorageUtils;
 
 import net.minecraft.block.Block;
@@ -151,7 +152,7 @@ public class BlockAC extends Block implements IFilingCabinet {
 		ItemStack stack = player.getHeldItemMainhand();
 		
 		if (!player.isSneaking() && !stack.isEmpty()) {
-			if (stack.getItem() == RFCItems.aspectFolder && tileAC.isOpen) {
+			if ((stack.getItem() == RFCItems.aspectFolder && !ItemAspectFolder.isAspectFolderEmpty(stack)) && tileAC.isOpen) {
 				if (!tileAC.getWorld().isRemote) {
 					for (int i = 0; i < tileAC.getInv().getSlots(); i++) {
 						ItemStack tileStack = tileAC.getInv().getStackInSlot(i);
