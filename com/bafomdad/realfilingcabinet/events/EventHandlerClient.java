@@ -1,10 +1,13 @@
 package com.bafomdad.realfilingcabinet.events;
 
+import thaumcraft.api.aspects.Aspect;
+
 import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.init.*;
 import com.bafomdad.realfilingcabinet.integration.BotaniaRFC;
+import com.bafomdad.realfilingcabinet.items.ItemAspectFolder;
 import com.bafomdad.realfilingcabinet.items.ItemEmptyFolder;
 import com.bafomdad.realfilingcabinet.items.ItemFilter;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
@@ -16,6 +19,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
@@ -24,6 +29,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
@@ -126,5 +132,50 @@ public class EventHandlerClient {
 		
 		if (event.getModID().equals(RealFilingCabinet.MOD_ID))
 			ConfigManager.load(RealFilingCabinet.MOD_ID, Config.Type.INSTANCE);
+	}
+	
+	@SubscribeEvent
+	public void registerColors(ColorHandlerEvent.Item event) {
+		
+		ItemColors ic = event.getItemColors();
+		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
+			ic.registerItemColorHandler(new IItemColor() {
+				
+				@Override
+				public int colorMultiplier(ItemStack stack, int tintIndex) {
+					
+					if (!stack.isEmpty() && stack.getItem() == RFCItems.aspectFolder) {
+						if (tintIndex == 1) {
+							Aspect asp = ItemAspectFolder.getAspectFromFolder(stack);
+							if (asp != null)
+								return asp.getColor();
+						}
+					}
+					return 0xffffff;
+				}
+			}, RFCItems.aspectFolder);
+		}
+		ic.registerItemColorHandler(new IItemColor() {
+			
+			@Override
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
+				
+				if (!stack.isEmpty() && stack.getItem() == RFCItems.emptyDyedFolder) {
+					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
+				}
+				return 0xffffff;
+			}
+		}, RFCItems.emptyDyedFolder);
+		ic.registerItemColorHandler(new IItemColor() {
+			
+			@Override
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
+				
+				if (!stack.isEmpty() && stack.getItem() == RFCItems.dyedFolder) {
+					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
+				}
+				return 0xffffff;
+			}
+		}, RFCItems.dyedFolder);
 	}
 }

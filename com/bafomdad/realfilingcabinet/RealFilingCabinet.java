@@ -57,7 +57,6 @@ public class RealFilingCabinet {
 	public void init(FMLInitializationEvent event) {
 
 		proxy.init(event);
-		proxy.registerColors();
 	}
 	
 	@Mod.EventHandler

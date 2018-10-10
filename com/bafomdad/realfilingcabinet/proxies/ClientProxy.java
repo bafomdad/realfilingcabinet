@@ -52,49 +52,4 @@ public class ClientProxy extends CommonProxy {
 		
 		MinecraftForge.EVENT_BUS.register(new GuiFileList(Minecraft.getMinecraft()));
 	}
-	
-	@Override
-	public void registerColors() {
-		
-		ItemColors ic = Minecraft.getMinecraft().getItemColors();
-		if (RealFilingCabinet.tcLoaded && ConfigRFC.tcIntegration) {
-			ic.registerItemColorHandler(new IItemColor() {
-				
-				@Override
-				public int colorMultiplier(ItemStack stack, int tintIndex) {
-					
-					if (!stack.isEmpty() && stack.getItem() == RFCItems.aspectFolder) {
-						if (tintIndex == 1) {
-							Aspect asp = ItemAspectFolder.getAspectFromFolder(stack);
-							if (asp != null)
-								return asp.getColor();
-						}
-					}
-					return 0xffffff;
-				}
-			}, RFCItems.aspectFolder);
-		}
-		ic.registerItemColorHandler(new IItemColor() {
-			
-			@Override
-			public int colorMultiplier(ItemStack stack, int tintIndex) {
-				
-				if (!stack.isEmpty() && stack.getItem() == RFCItems.emptyDyedFolder) {
-					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
-				}
-				return 0xffffff;
-			}
-		}, RFCItems.emptyDyedFolder);
-		ic.registerItemColorHandler(new IItemColor() {
-			
-			@Override
-			public int colorMultiplier(ItemStack stack, int tintIndex) {
-				
-				if (!stack.isEmpty() && stack.getItem() == RFCItems.dyedFolder) {
-					return EnumDyeColor.byMetadata(stack.getItemDamage()).getColorValue();
-				}
-				return 0xffffff;
-			}
-		}, RFCItems.dyedFolder);
-	}
 }
