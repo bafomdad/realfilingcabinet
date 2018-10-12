@@ -11,6 +11,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
@@ -47,7 +48,7 @@ public class InventoryRFC extends ItemStackHandler {
 
         validateSlotIndex(slot);
 
-        if (!stacks.get(slot).isEmpty() && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate)) {
+        if (!stacks.get(slot).isEmpty() && stacks.get(slot).getItem() == RFCItems.folder && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate)) {
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
@@ -55,12 +56,11 @@ public class InventoryRFC extends ItemStackHandler {
         }
         if (StorageUtils.simpleFolderMatch(tile, stack) != -1) {
         	slot = StorageUtils.simpleFolderMatch(tile, stack);
+        	ItemStack toInsert = ItemFolder.insert(stacks.get(slot), stack, simulate);
         	if (!simulate) {
-        		ItemFolder.insert(stacks.get(slot), stack);
-//        		ItemFolder.add(stacks.get(slot), stack.getCount());
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
-        	return ItemStack.EMPTY;
+        	return toInsert;
         }
         return stack;
 	}

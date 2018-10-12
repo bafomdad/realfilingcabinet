@@ -39,26 +39,26 @@ public class InventoryEntity extends ItemStackHandler {
         if (simpleFolderMatch(stack) != -1) {
         	slot = simpleFolderMatch(stack);
         	if (!simulate) {
-        		if (getStacks().get(slot).getItemDamage() == 2) {
+        		if (getStacks().get(slot).getItem() == RFCItems.folder && getStacks().get(slot).getItemDamage() == 2) {
         			int remSize = stack.getItemDamage();
         			int storedRem = ItemFolder.getRemSize(getStacks().get(slot));
         			
         			if (remSize == 0)
-        				ItemFolder.insert(getStacks().get(slot), stack);
+        				ItemFolder.insert(getStacks().get(slot), stack, simulate);
  //       				ItemFolder.add(getStacks().get(slot), 1);
         			
         			ItemFolder.addRem(getStacks().get(slot), stack.getMaxDamage() - stack.getItemDamage());
         			int newRem = ItemFolder.getRemSize(getStacks().get(slot));
         			
         			if (newRem >= stack.getMaxDamage()) {
-        				ItemFolder.insert(getStacks().get(slot), stack);
+        				ItemFolder.insert(getStacks().get(slot), stack, simulate);
  //       				ItemFolder.add(getStacks().get(slot), 1);
         				int newStoredRem = newRem - stack.getMaxDamage();
         				ItemFolder.setRemSize(getStacks().get(slot), newStoredRem);
         			}
         		}
         		else
-        			ItemFolder.insert(stacks.get(slot), stack);
+        			ItemFolder.insert(stacks.get(slot), stack, simulate);
 //        			ItemFolder.add(stacks.get(slot), stack.getCount());
         	}
         	return null;

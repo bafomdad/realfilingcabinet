@@ -75,7 +75,7 @@ public class StorageUtils {
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict()) {
 					if (!loopinv.isEmpty() && OreDictUtils.areItemsEqual(stack, loopinv)) {
-						ItemFolder.insert(folder, stack);
+						ItemFolder.insert(folder, stack, false);
 //						ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.getCount());
 //						player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 //						tile.markBlockForUpdate();
@@ -96,7 +96,7 @@ public class StorageUtils {
 					if (!ItemStack.areItemStackTagsEqual(loopinv, stack))
 						continue;
 					
-					ItemFolder.insert(tile.getInventory().getTrueStackInSlot(i), stack);
+					ItemFolder.insert(tile.getInventory().getTrueStackInSlot(i), stack, false);
 //					ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.getCount());
 //					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 //					tile.markBlockForUpdate();
@@ -104,7 +104,7 @@ public class StorageUtils {
 				}
 			}
 			if (/*!loopinv.isEmpty() && folder.getItemDamage() != 5 && */simpleMatch(loopinv, stack)) {
-				ItemStack toInsert = ItemFolder.insert(folder, stack);
+				ItemStack toInsert = ItemFolder.insert(folder, stack, false);
 				player.setHeldItem(EnumHand.MAIN_HAND, toInsert);
 				if (toInsert.isEmpty()) {
 					break;
@@ -150,7 +150,7 @@ public class StorageUtils {
 					ItemStack tilestack = tile.getInventory().getTrueStackInSlot(j);
 					if (!tilestack.isEmpty() && ItemFolder.getObject(tilestack) instanceof ItemStack)  {
 						ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
-						if (!tilestack.isEmpty() && tilestack.getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv)) {
+						if (!tilestack.isEmpty() && tilestack.getItem() == RFCItems.folder && tilestack.getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv)) {
 							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 							consume = true;
 							break;
@@ -159,17 +159,16 @@ public class StorageUtils {
 							if (!ItemStack.areItemStackTagsEqual(loopinv, folderstack))
 								continue;
 							
-							ItemFolder.insert(tilestack, loopinv);
+							ItemFolder.insert(tilestack, loopinv, false);
 //							ItemFolder.add(tilestack, loopinv.getCount());
 //							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 							consume = true;
 							break;
 						}
-						if (ItemStack.areItemsEqual(folderstack, loopinv))
-						{
+						if (ItemStack.areItemsEqual(folderstack, loopinv)) {
 //							ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.getCount());
 //							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-							ItemFolder.insert(tilestack, loopinv);
+							ItemFolder.insert(tilestack, loopinv, false);
 							consume = true;
 							break;
 						}

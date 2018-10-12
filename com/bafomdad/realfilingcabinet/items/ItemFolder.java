@@ -161,7 +161,7 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	// trial new way of adding to contents of folder, while also returning the remainder in cases of reaching the storage limit
-	public static ItemStack insert(ItemStack folder, ItemStack items) {
+	public static ItemStack insert(ItemStack folder, ItemStack items, boolean simulate) {
 		
 		if (folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
 			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).insertItems(items, false);

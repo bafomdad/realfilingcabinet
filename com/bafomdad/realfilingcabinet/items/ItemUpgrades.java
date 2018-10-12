@@ -9,6 +9,7 @@ import com.bafomdad.realfilingcabinet.api.IUpgrades;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -106,12 +107,16 @@ public class ItemUpgrades extends Item implements IUpgrades {
 			case 7: if (!ConfigRFC.smeltingUpgrade) return false; 
 		}
 		
-		if (upgrade.getItemDamage() == 0) {
+		if (upgrade.getItemDamage() == UpgradeType.CREATIVE.ordinal()) {
 			return !UpgradeHelper.isCreative(tile);
 		}
-		if (upgrade.getItemDamage() == 2) {
+		if (upgrade.getItemDamage() == UpgradeType.ENDER.ordinal()) {
 			for (ItemStack stack : tile.getInventory().getStacks()) {
-				if (!stack.isEmpty() && /*stack.getItem() instanceof ItemManaFolder ||*/ (stack.getItem() instanceof ItemFolder && stack.getItemDamage() > 0)) {
+				if (stack.isEmpty()) 
+					continue;
+				if (!stack.isEmpty() && stack.getItem() == RFCItems.folder && stack.getItemDamage() == 0)
+					continue;
+				else {
 					player.sendStatusMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".errorEnder")), true);
 					return false;
 				}
