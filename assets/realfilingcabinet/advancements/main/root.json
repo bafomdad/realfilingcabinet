@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "title": {
+      "translate": "itemGroup.realfilingcabinet"
+    },
+    "description": {
+      "translate": "realfilingcabinet.desc"
+    },
+    "background": "realfilingcabinet:textures/blocks/side.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "seed": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "realfilingcabinet:folder"
+          }
+        ]
+      }
+    }
+  }
+}

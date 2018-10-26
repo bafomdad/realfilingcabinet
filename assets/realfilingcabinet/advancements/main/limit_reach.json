@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "item": "realfilingcabinet:dyedfolder",
+	  "data": 3
+    },
+    "title": {
+      "translate": "advancement.realfilingcabinet:limitReach"
+    },
+    "description": {
+      "translate": "advancement.realfilingcabinet:limitReach.desc"
+    }
+  },
+  "parent": "realfilingcabinet:main/root",
+  "__comment": "In the future, it may become data-driven",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

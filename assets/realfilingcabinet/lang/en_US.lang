@@ -1,5 +1,7 @@
 # CREATIVE TAB
 itemGroup.realfilingcabinet.tabRFC.name=Real Filing Cabinet
+itemGroup.realfilingcabinet=Real Filing Cabinet
+realfilingcabinet.desc=(Exactly what it says on the tin)
 
 # ITEMS
 item.realfilingcabinet.folder_normal.name=Filing Folder
@@ -104,3 +106,9 @@ commands.realfilingcabinet.notNormalFolder=This folder must be a normal empty fo
 commands.realfilingcabinet.noItemOrBlockFound=Unable to set item or block to folder
 commands.realfilingcabinet.errorManaFolder=Cannot set count to a mana folder
 commands.realfilingcabinet.errorParseLong=Unable to parse Long. Must be a number
+
+# ADVANCEMENTS
+advancement.realfilingcabinet:limitReach=Limit Break!
+advancement.realfilingcabinet:limitReach.desc=Reach the storage limit on the dyed folders.
+advancement.realfilingcabinet:craftingFolder=File it away, boys
+advancement.realfilingcabinet:craftingFolder.desc=Craft some empty filing folders

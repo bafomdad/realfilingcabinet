@@ -1,6 +1,7 @@
 package com.bafomdad.realfilingcabinet;
 
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
