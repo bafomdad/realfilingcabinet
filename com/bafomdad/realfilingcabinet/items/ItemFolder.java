@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.items;
 
+import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
@@ -49,7 +50,6 @@ public class ItemFolder extends Item implements IFolder {
 		setRegistryName("folder");
 		setTranslationKey(RealFilingCabinet.MOD_ID + ".folder");
 		setHasSubtypes(true);
-		setMaxDamage(0);
 		setMaxStackSize(1);
 	}
 	
@@ -61,6 +61,7 @@ public class ItemFolder extends Item implements IFolder {
 		
 		NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound().copy() : new NBTTagCompound();
 		tag.setTag("folderCap", stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).serializeNBT());
+		LogRFC.debug("Sharing tag: " + tag.toString());
 		return tag;
 	}
 	
@@ -239,7 +240,7 @@ public class ItemFolder extends Item implements IFolder {
 
 	public static boolean setObject(ItemStack folder, Object object) {
 		
-		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		if(folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null) && folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getContents() == null)
 			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setContents(object);
 		
 		return false;
@@ -383,6 +384,7 @@ public class ItemFolder extends Item implements IFolder {
 			return;
 		
 		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		LogRFC.debug("Deserializing: " + stack.getTagCompound().getCompoundTag("folderCap").toString());
 		cap.deserializeNBT(stack.getTagCompound().getCompoundTag("folderCap"));
 		stack.getTagCompound().removeTag("folderCap");
 		

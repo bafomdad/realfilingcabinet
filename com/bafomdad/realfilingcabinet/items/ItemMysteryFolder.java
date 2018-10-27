@@ -59,15 +59,13 @@ public class ItemMysteryFolder extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         
 		ItemStack stack = player.getHeldItemMainhand();
-		if (stack != ItemStack.EMPTY && stack.getItem() == this)
-		{
+		if (!stack.isEmpty() && stack.getItem() == this) {
 			if (rando == null || rando.isEmpty())
 				return ActionResult.newResult(EnumActionResult.PASS, stack);
 			
 			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 0);
 			ItemStack toSet = rando.get(world.rand.nextInt(rando.size()));
-			if (ItemFolder.setObject(newFolder, toSet))
-			{
+			if (ItemFolder.setObject(newFolder, toSet)) {
 				ItemFolder.add(newFolder, world.rand.nextInt(4));
 				return ActionResult.newResult(EnumActionResult.SUCCESS, newFolder);
 			}

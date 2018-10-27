@@ -3,6 +3,7 @@ package com.bafomdad.realfilingcabinet.items;
 import java.util.List;
 
 import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
+import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
@@ -37,7 +38,6 @@ public class ItemDyedFolder extends Item implements IFolder {
 		setRegistryName("dyedfolder");
 		setTranslationKey(RealFilingCabinet.MOD_ID + ".dyedfolder");
 		setHasSubtypes(true);
-		setMaxDamage(0);
 		setMaxStackSize(1);
 	}
 	
@@ -49,6 +49,7 @@ public class ItemDyedFolder extends Item implements IFolder {
 		
 		NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound().copy() : new NBTTagCompound();
 		tag.setTag("folderCap", stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).serializeNBT());
+		LogRFC.debug("Sharing tag: " + tag.toString());
 		return tag;
 	}
 	
@@ -135,6 +136,7 @@ public class ItemDyedFolder extends Item implements IFolder {
 			return;
 		
 		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		LogRFC.debug("Deserializing: " + stack.getTagCompound().getCompoundTag("folderCap").toString());
 		cap.deserializeNBT(stack.getTagCompound().getCompoundTag("folderCap"));
 		stack.getTagCompound().removeTag("folderCap");
 		
