@@ -90,11 +90,12 @@ public class StorageUtils {
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict()) {
 					if (!loopinv.isEmpty() && OreDictUtils.areItemsEqual(stack, loopinv)) {
-						ItemFolder.insert(folder, stack, false);
-//						ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.getCount());
-//						player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
-//						tile.markBlockForUpdate();
-						break;
+						ItemStack toInsert = ItemFolder.insert(folder, stack, false);
+						player.setHeldItem(EnumHand.MAIN_HAND, toInsert);
+						if (toInsert.isEmpty())
+							break;
+						if (player instanceof EntityPlayerMP && folder.getItem() == RFCItems.dyedFolder && ItemFolder.getFileSize(folder) >= ConfigRFC.folderSizeLimit)
+							RFCAdvancements.advance((EntityPlayerMP)player, new ResourceLocation(RealFilingCabinet.MOD_ID, "main/limit_reach"), "code_triggered");
 					}
 				}
 			}
