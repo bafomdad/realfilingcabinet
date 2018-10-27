@@ -10,7 +10,9 @@ import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
+
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -52,12 +54,10 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	@Override
-	public NBTTagCompound getNBTShareTag(ItemStack stack)
-	{
+	public NBTTagCompound getNBTShareTag(ItemStack stack) {
+		
 		if(!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			return super.getNBTShareTag(stack);
-		}
 		
 		NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound().copy() : new NBTTagCompound();
 		tag.setTag("folderCap", stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).serializeNBT());
@@ -375,6 +375,20 @@ public class ItemFolder extends Item implements IFolder {
 		}
 		return false;
     }
+	
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		
+		if (!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null) || !stack.hasTagCompound() || !stack.getTagCompound().hasKey("folderCap", 10))
+			return;
+		
+		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		cap.deserializeNBT(stack.getTagCompound().getCompoundTag("folderCap"));
+		stack.getTagCompound().removeTag("folderCap");
+		
+		if (stack.getTagCompound().getSize() <= 0)
+			stack.setTagCompound(null);
+	}
 	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {

@@ -57,7 +57,7 @@ public class CapabilityProviderFolder implements ICapabilitySerializable<NBTTagC
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
     {
-        return FOLDER_CAP.cast(folder);
+        return capability == FOLDER_CAP ? FOLDER_CAP.cast(folder) : null;
     }
     
     @Override

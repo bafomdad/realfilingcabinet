@@ -19,11 +19,13 @@ import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 import vazkii.botania.api.item.IBlockProvider;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -33,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -43,6 +46,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class ItemSuitcase extends Item implements IBlockProvider {
 	
 	private final String TAG_INDEX = "RFC:placeIndex";
+	private static final String TAG_FOLDERS = "InvFolders";
 
 	public ItemSuitcase() {
 	
@@ -65,17 +69,11 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		}
 	}
 	
-	@Override
-	public boolean getShareTag() {
-		
-		return false;
-	}
-	
 	private void listItems(IItemHandlerModifiable inv, List<String> list) {
 		
 		for (int i = 0; i < inv.getSlots(); i++) {
 			ItemStack folder = inv.getStackInSlot(i);
-			if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
+			if (!folder.isEmpty() && (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.dyedFolder)) {
 				String name = TextHelper.folderStr(folder);
 				long count = ItemFolder.getFileSize(folder);
 				
@@ -169,7 +167,7 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		IItemHandlerModifiable suitcaseInv = getInventory(suitcase);
 		for (int i = 0; i < suitcaseInv.getSlots(); i++) {
 			ItemStack folder = suitcaseInv.getStackInSlot(i);
-			if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
+			if (!folder.isEmpty() && (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.dyedFolder)) {
 				Object obj = ItemFolder.getObject(folder);
 				if (obj instanceof ItemStack) {
 					if (ItemStack.areItemsEqual((ItemStack)obj, toPickup)) {
@@ -201,7 +199,7 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		IItemHandlerModifiable suitcaseInv = getInventory(stack);
 		for (int i = 0; i < suitcaseInv.getSlots(); i++) {
 			ItemStack folder = suitcaseInv.getStackInSlot(i);
-			if (!folder.isEmpty() && folder.getItem() == RFCItems.folder) {
+			if (!folder.isEmpty() && (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.folder)) {
 				Object obj = ItemFolder.getObject(folder);
 				if (obj instanceof ItemStack && ((ItemStack)obj).getItem() instanceof ItemBlock) {
 					if (Block.getBlockFromItem(((ItemStack)obj).getItem()) == block && meta == ItemFolder.getFileMeta(folder)) {
@@ -241,6 +239,20 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 			NBTUtils.setInt(stack, TAG_INDEX, i - 1);
 		else if (!add && (i - 1) <= 0)
 			NBTUtils.setInt(stack, TAG_INDEX, 8 - 1);
+	}
+	
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+		
+		if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(TAG_FOLDERS)) {
+			NBTTagList tagList = stack.getTagCompound().getTagList(TAG_FOLDERS, Constants.NBT.TAG_COMPOUND);
+			IItemHandler inv = getInventory(stack);
+			
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inv, null, tagList);
+			stack.getTagCompound().removeTag(TAG_FOLDERS);
+			if (stack.getTagCompound().getSize() == 0)
+				stack.setTagCompound(null);
+		}
 	}
 	
 	// Botania implementation start

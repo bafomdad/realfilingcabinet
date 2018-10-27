@@ -76,7 +76,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
     
             if(rootStack.getItemDamage() == ItemFolder.FolderType.DURA.ordinal())
             {
-                list.add("Durability: " + remSize + " / " + item.getItemDamage());
+                list.add("Durability: " + remSize + " / " + item.getMaxDamage());
                 list.add(NBTUtils.getBoolean(rootStack, StringLibs.RFC_IGNORENBT, false) ? TextFormatting.GREEN + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.true") : TextFormatting.RED + TextHelper.localize("tooltip." + RealFilingCabinet.MOD_ID + ".ignorenbt.false"));
             }
         }
@@ -111,7 +111,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
 //            return items;
         
         if (rootStack.getItem() == RFCItems.dyedFolder) {
-            long newCount = Math.min(count + items.getCount(), ConfigRFC.folderSizeLimit);
+            long newCount = Math.min(count + items.getCount(), ConfigRFC.folderSizeLimit);  
             long remainder = ConfigRFC.folderSizeLimit - count;
             items.setCount(items.getCount() - (int)remainder);
             if (!sim)

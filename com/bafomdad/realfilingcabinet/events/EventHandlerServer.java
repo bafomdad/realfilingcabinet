@@ -29,6 +29,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -40,6 +41,7 @@ import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.gui.RFCContainerListener;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -125,11 +127,14 @@ public class EventHandlerServer {
 				if (!stack.isEmpty() && stack.getItem() == RFCItems.suitcase) {
 					ItemStack folder = ItemSuitcase.getFolder(stack, estack);
 					if (!folder.isEmpty()) {
-						ItemFolder.add(folder, estack.getCount());
-						event.setCanceled(true);
-						event.getItem().setDead();
-						((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
-						return;
+						int remainder = ItemDyedFolder.add(folder, estack.getCount());
+						if (remainder > 0) {
+							event.setCanceled(true);
+							estack.setCount(estack.getCount() - remainder);
+							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+							break;
+						} else
+							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
 					}
 				}
 			}
@@ -149,8 +154,7 @@ public class EventHandlerServer {
 								event.getItem().getItem().setCount(event.getItem().getItem().getCount() - remainder);
 								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
 								break;
-							}
-							else
+							} else
 								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
 						}
 					}
@@ -272,9 +276,17 @@ public class EventHandlerServer {
 	}
 	
 	@SubscribeEvent
+	public void onContainerOpen(PlayerContainerEvent.Open event) {
+		
+		if (event.getEntityPlayer() instanceof EntityPlayerMP)
+			event.getContainer().addListener(new RFCContainerListener((EntityPlayerMP)event.getEntityPlayer()));
+	}
+	
+	@SubscribeEvent
 	public void onAttachCapability(AttachCapabilitiesEvent<ItemStack> event) {
 		
-		if(event.getObject().getItem() == RFCItems.folder || event.getObject().getItem() == RFCItems.dyedFolder)
+		if(event.getObject().getItem() == RFCItems.folder || event.getObject().getItem() == RFCItems.dyedFolder) {
 			event.addCapability(CapabilityProviderFolder.FOLDER_ID, new CapabilityProviderFolder(event.getObject()));
+		}
 	}
 }

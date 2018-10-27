@@ -14,6 +14,7 @@ import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -60,7 +61,7 @@ public class ItemDyedFolder extends Item implements IFolder {
 	@Override
 	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag whatisthis) {
 		
-		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
+		if (stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
 			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).addTooltips(player, list, whatisthis);
 		list.add("Limit: " + ConfigRFC.folderSizeLimit);
 	}
@@ -125,6 +126,20 @@ public class ItemDyedFolder extends Item implements IFolder {
 			}
 		}
 		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		
+		if (!stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null) || !stack.hasTagCompound() || !stack.getTagCompound().hasKey("folderCap", 10))
+			return;
+		
+		CapabilityFolder cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
+		cap.deserializeNBT(stack.getTagCompound().getCompoundTag("folderCap"));
+		stack.getTagCompound().removeTag("folderCap");
+		
+		if (stack.getTagCompound().getSize() <= 0)
+			stack.setTagCompound(null);
 	}
 	
 	@Override
