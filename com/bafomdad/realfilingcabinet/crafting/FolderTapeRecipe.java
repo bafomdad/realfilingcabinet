@@ -84,7 +84,7 @@ public class FolderTapeRecipe extends net.minecraftforge.registries.IForgeRegist
 			ItemStack stack = ic.getStackInSlot(i);
 			
 			if (!stack.isEmpty()) {
-				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() != 1)
+				if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == 1)
 					continue;
 				if (stack.getItem() instanceof IFolder)
 					folder = i;
