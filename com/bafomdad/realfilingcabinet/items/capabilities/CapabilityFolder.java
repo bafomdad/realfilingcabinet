@@ -147,7 +147,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             ItemStack stack = ((ItemStack)obj).copy();
             this.displayName = stack.getDisplayName();
             this.contents = stack.copy();
-            this.count = stack.getCount();
+            this.count = 1;
             stack.setCount(1);
             
             if (rootStack.getItem() == RFCItems.dyedFolder)
@@ -395,10 +395,11 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             }
             
             return;
-        } else if(rootStack.hasTagCompound() && rootStack.getTagCompound().hasKey("folderCap"))
+        } 
+        else if(rootStack.hasTagCompound() && rootStack.getTagCompound().hasKey("folderCap"))
         {
             nbt = rootStack.getTagCompound().getCompoundTag("folderCap");
-            rootStack.getTagCompound().removeTag("folderCap"); // This might be a bad idea but it works for now
+//            rootStack.getTagCompound().removeTag("folderCap"); // This might be a bad idea but it works for now
         }
         
         // Back to normal read/write
