@@ -11,14 +11,13 @@ public class DurabilityUtils {
 
 	public static boolean matchDurability(TileEntityRFC tile, ItemStack stack) {
 		
-		if (stack == null)
+		if (stack.isEmpty())
 			return false;
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder != null && folder.getItem() == RFCItems.folder) {
-				if (folder.getItemDamage() == 2 && ItemFolder.getObject(folder) != null)
-				{
+				if (folder.getItemDamage() == 2 && ItemFolder.getObject(folder) != null) {
 					if (stack.getItem() == ((ItemStack)ItemFolder.getObject(folder)).getItem()) {
 						if (stack.hasTagCompound() && !NBTUtils.getBoolean(folder, StringLibs.RFC_IGNORENBT, false))
 							return false;
@@ -29,8 +28,7 @@ public class DurabilityUtils {
 						ItemFolder.addRem(folder, stack.getMaxDamage() - stack.getItemDamage());
 						int newRem = ItemFolder.getRemSize(folder);
 						
-						if (newRem >= stack.getMaxDamage())
-						{
+						if (newRem >= stack.getMaxDamage()) {
 							ItemFolder.add(folder, 1);
 							int newStoredRem = newRem - stack.getMaxDamage();
 							ItemFolder.setRemSize(folder, newStoredRem);

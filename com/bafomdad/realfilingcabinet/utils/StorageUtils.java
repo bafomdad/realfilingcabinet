@@ -6,18 +6,23 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.helpers.RFCAdvancements;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.FluidRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 
 public class StorageUtils {
 	
@@ -28,23 +33,35 @@ public class StorageUtils {
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
-			if(loopinv.isEmpty())
-			{
-				//System.out.println("EMPTY STACK IN FOLDER! " + loopinv.getCount());
-			}
+			if (loopinv.isEmpty())
+				continue;
+//			if(loopinv.isEmpty())
+//				System.out.println("EMPTY STACK IN FOLDER! " + loopinv.getCount());
+			
 			if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_OREDICT) != null) {
 				OreDictUtils.recreateOreDictionary(stack);
 				if (OreDictUtils.hasOreDict()) {
-					if (!loopinv.isEmpty() && OreDictUtils.areItemsEqual(stack, loopinv)) {
+					if (OreDictUtils.areItemsEqual(stack, loopinv))
 						return i;
-					}
 				}
 			}
-			if (!loopinv.isEmpty() && (tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 5 && ItemStack.areItemStackTagsEqual(stack, loopinv)))
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
+			if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.NBT.ordinal()) {
+				if (!ItemStack.areItemStackTagsEqual(stack, loopinv))
+					continue;
+				
 				return i;
+			}
+//			if (!loopinv.isEmpty() && (tile.getInventory().getTrueStackInSlot(i).getItemDamage() == 5 && ItemStack.areItemStackTagsEqual(stack, loopinv)))
+//				return i;
 			
-			if (!loopinv.isEmpty() && tile.getInventory().getTrueStackInSlot(i).getItemDamage() != 5 && simpleMatch(stack, loopinv))
-				return i;
+			if (/*!loopinv.isEmpty() && tile.getInventory().getTrueStackInSlot(i).getItemDamage() != 5 && */ simpleMatch(stack, loopinv)) {
+				if (folder.getItem() == RFCItems.dyedFolder && ItemFolder.getFileSize(folder) < ConfigRFC.folderSizeLimit) {
+					return i;
+				}
+				else if (folder.getItem() == RFCItems.folder)
+					return i;
+			}
 		}
 		return -1;
 	}
@@ -56,12 +73,10 @@ public class StorageUtils {
 		
 		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null) {
 			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			if (fluid != null)
-			{
+			if (fluid != null) {
 				FluidActionResult far = FluidUtil.tryEmptyContainer(stack, tile.getFluidInventory(), fluid.amount, player, true);
 				if (far.success && !player.capabilities.isCreativeMode)
 					player.setHeldItem(EnumHand.MAIN_HAND, far.getResult());
-				
 				return;
 			}
 		}
@@ -84,7 +99,7 @@ public class StorageUtils {
 				}
 			}
 			if (!folder.isEmpty()) {
-				if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == 2) {
+				if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.DURA.ordinal()) {
 					if (!DurabilityUtils.matchDurability(tile, stack))
 						continue;
 					
@@ -92,7 +107,7 @@ public class StorageUtils {
 					tile.markBlockForUpdate();
 					break;
 				}
-				if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == 5) {
+				if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.NBT.ordinal()) {
 					if (!ItemStack.areItemStackTagsEqual(loopinv, stack))
 						continue;
 					
@@ -109,6 +124,8 @@ public class StorageUtils {
 				if (toInsert.isEmpty()) {
 					break;
 				}
+				if (player instanceof EntityPlayerMP && folder.getItem() == RFCItems.dyedFolder && ItemFolder.getFileSize(folder) >= ConfigRFC.folderSizeLimit)
+					RFCAdvancements.advance((EntityPlayerMP)player, new ResourceLocation(RealFilingCabinet.MOD_ID, "main/limit_reach"), "code_triggered");
 //				ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.getCount());
 //				player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 //				tile.markBlockForUpdate();
@@ -126,16 +143,12 @@ public class StorageUtils {
 		boolean consume = false;
 		for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 			ItemStack loopinv = player.inventory.getStackInSlot(i);
-			if (loopinv != ItemStack.EMPTY && (loopinv.getItem() != RFCItems.emptyFolder || loopinv.getItem() != RFCItems.folder))
-			{
-				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null)
-				{
+			if (!loopinv.isEmpty() && (loopinv.getItem() != RFCItems.emptyFolder || loopinv.getItem() != RFCItems.folder)) {
+				if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_FLUID) != null) {
 					FluidStack fluid = FluidUtil.getFluidContained(loopinv);
-					if (fluid != null)
-					{
+					if (fluid != null) {
 						FluidActionResult far = FluidUtil.tryEmptyContainer(loopinv, tile.getFluidInventory(), fluid.amount, player, true);
-						if (far.success)
-						{
+						if (far.success) {
 							loopinv.shrink(1);
 							player.inventory.addItemStackToInventory(far.getResult());
 						}
@@ -150,34 +163,33 @@ public class StorageUtils {
 					ItemStack tilestack = tile.getInventory().getTrueStackInSlot(j);
 					if (!tilestack.isEmpty() && ItemFolder.getObject(tilestack) instanceof ItemStack)  {
 						ItemStack folderstack = tile.getInventory().getStackFromFolder(j);
-						if (!tilestack.isEmpty() && tilestack.getItem() == RFCItems.folder && tilestack.getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, loopinv)) {
+						if (!tilestack.isEmpty() && tilestack.getItem() == RFCItems.folder && tilestack.getItemDamage() == FolderType.DURA.ordinal() && DurabilityUtils.matchDurability(tile, loopinv)) {
 							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 							consume = true;
 							break;
 						}
-						if (!tilestack.isEmpty() && tilestack.getItemDamage() == 5) {
+						if (!tilestack.isEmpty() && tilestack.getItem() == RFCItems.folder && tilestack.getItemDamage() == FolderType.NBT.ordinal()) {
 							if (!ItemStack.areItemStackTagsEqual(loopinv, folderstack))
 								continue;
 							
-							ItemFolder.insert(tilestack, loopinv, false);
-//							ItemFolder.add(tilestack, loopinv.getCount());
-//							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+							player.inventory.setInventorySlotContents(i, ItemFolder.insert(tilestack, loopinv, false));
 							consume = true;
 							break;
 						}
-						if (ItemStack.areItemsEqual(folderstack, loopinv)) {
-//							ItemFolder.add(tile.getInventory().getTrueStackInSlot(j), loopinv.getCount());
-//							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-							ItemFolder.insert(tilestack, loopinv, false);
-							consume = true;
-							break;
+						if (simpleMatch(folderstack, loopinv)) {
+							player.inventory.setInventorySlotContents(i, ItemFolder.insert(tilestack, loopinv, false));
+							if (player instanceof EntityPlayerMP && tilestack.getItem() == RFCItems.dyedFolder && ItemFolder.getFileSize(tilestack) >= ConfigRFC.folderSizeLimit)
+								RFCAdvancements.advance((EntityPlayerMP)player, new ResourceLocation(RealFilingCabinet.MOD_ID, "limit_reach"), "code_triggered");
+							if (loopinv.isEmpty()) {
+								consume = true;
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
-		if (consume)
-		{
+		if (consume) {
 			updatePlayerInventory(player);
 			tile.markDirty();
 		}

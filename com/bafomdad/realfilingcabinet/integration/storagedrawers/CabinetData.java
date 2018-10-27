@@ -5,8 +5,10 @@ import java.util.function.Predicate;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
 
+import com.bafomdad.realfilingcabinet.NewConfigRFC.ConfigRFC;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 
@@ -65,6 +67,10 @@ public class CabinetData implements IDrawer {
 	@Override
 	public boolean canItemBeStored(ItemStack prototype, Predicate<ItemStack> matchPredicate) {
 
+		if (tile.getInventory().getTrueStackInSlot(slot).getItem() == RFCItems.dyedFolder) {
+			if (ItemFolder.getFileSize(tile.getInventory().getTrueStackInSlot(slot)) >= ConfigRFC.folderSizeLimit)
+				return false;
+		}
 		ItemStack toMatch = tile.getInventory().getStackFromFolder(slot);
 		return ItemStack.areItemsEqual(toMatch, prototype);
 	}

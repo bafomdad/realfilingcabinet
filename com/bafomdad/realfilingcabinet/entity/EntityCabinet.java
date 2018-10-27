@@ -27,6 +27,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -267,7 +268,7 @@ public class EntityCabinet extends EntityTameable {
 					this.setDead();
 				}
 				else
-					player.sendStatusMessage(new TextComponentString(TextHelper.localize("message." + RealFilingCabinet.MOD_ID + ".notAir")), true);
+					player.sendStatusMessage(new TextComponentTranslation("message." + RealFilingCabinet.MOD_ID + ".notAir"), true);
 			}
 		}
 //		else {

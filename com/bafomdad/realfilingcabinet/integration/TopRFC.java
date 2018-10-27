@@ -13,6 +13,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
@@ -112,15 +113,15 @@ public class TopRFC {
 				String name = TextHelper.folderStr(folder);
 				if (name != null) {
 					long storedSize = ItemFolder.getFileSize(folder);
-					if (folder.getItemDamage() == ItemFolder.FolderType.DURA.ordinal()) {
+					if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.DURA.ordinal()) {
 						int storedRem = ItemFolder.getRemSize(folder);
 						int maxDamage = folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).getItemStack().getMaxDamage();
 						name += " - " + storedSize + " [" + storedRem + " / " + maxDamage + "]";
 					}
-					if (folder.getItemDamage() == ItemFolder.FolderType.FLUID.ordinal()) {
+					if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.FLUID.ordinal()) {
 						name += " - " + storedSize + "mB";
 					}
-					else
+					else if (folder.getItem() == RFCItems.dyedFolder || (folder.getItem() == RFCItems.folder && (folder.getItemDamage() != FolderType.FLUID.ordinal() && folder.getItemDamage() != FolderType.DURA.ordinal())))
 						name += " - " + storedSize;
 					info.horizontal().text(name);
 				}

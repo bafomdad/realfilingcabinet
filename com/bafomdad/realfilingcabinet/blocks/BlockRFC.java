@@ -335,6 +335,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 				return;
 			} else {
 				StorageUtils.addStackManually(tileRFC, player, stack);
+				return;
 			}
 		}
 		if (!player.isSneaking() && stack.isEmpty()) {	
