@@ -151,8 +151,8 @@ public class EventHandlerServer {
 							int remainder = ItemDyedFolder.add(folder, estack.getCount());
 							if (remainder > 0) {
 								event.setCanceled(true);
-								event.getItem().getItem().setCount(event.getItem().getItem().getCount() - remainder);
 								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+								event.getItem().getItem().setCount(event.getItem().getItem().getCount() - remainder);
 								break;
 							} else
 								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
@@ -180,8 +180,8 @@ public class EventHandlerServer {
 									ItemFolder.setRemSize(folder, newStoredRem);
 								}
 								event.setCanceled(true);
-								event.getItem().setDead();
 								((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+								event.getItem().setDead();
 								break;
 							}
 						}
@@ -195,8 +195,8 @@ public class EventHandlerServer {
 								ItemFolder.add(folder, estack.getCount());
 							
 							event.setCanceled(true);
-							event.getItem().setDead();
 							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+							event.getItem().setDead();
 							break;
 						}
 					}

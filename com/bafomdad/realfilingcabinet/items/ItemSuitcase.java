@@ -147,18 +147,20 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 			}
 			return EnumActionResult.SUCCESS;
 		}
-		ItemStack stackToPlace = getStoredItem(heldStack, suitcaseInv, false);
+		ItemStack stackToPlace = getStoredItem(heldStack, suitcaseInv, false).copy();
 		if (!stackToPlace.isEmpty()) {
-			if (!world.isRemote) {
-				player.setHeldItem(hand, stackToPlace);
-				EnumActionResult ear = stackToPlace.onItemUse(player, world, pos, hand, side, x, y, z);
-				player.setHeldItem(hand, heldStack);
-				if (ear == EnumActionResult.SUCCESS) {
-					if (!player.capabilities.isCreativeMode)
-						getStoredItem(heldStack, suitcaseInv, true);
+			ItemStack savedSuitcase = player.getHeldItem(hand);
+
+			player.setHeldItem(hand, stackToPlace);
+			EnumActionResult ear = stackToPlace.onItemUse(player, world, pos, hand, side, x, y, z);
+			player.setHeldItem(hand, savedSuitcase);
+			
+			if (ear == EnumActionResult.SUCCESS) {
+				if (!player.capabilities.isCreativeMode) {
+					getStoredItem(savedSuitcase, suitcaseInv, true);
 				}
+				return EnumActionResult.SUCCESS;
 			}
-			return EnumActionResult.SUCCESS;
 		}
 		return EnumActionResult.PASS;
 	}
@@ -197,7 +199,10 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		ItemStack folder = inv.getStackInSlot(getIndex(suitcase));
 		if (!folder.isEmpty()) {
 			Object obj = ItemFolder.getObject(folder);
-			if (obj instanceof ItemStack && ((ItemStack)obj).getItem() instanceof ItemBlock) {
+			if (obj instanceof ItemStack && !((ItemStack)obj).isEmpty() && ((ItemStack)obj).getItem() instanceof ItemBlock) {
+				if (ItemFolder.getFileSize(folder) <= 0)
+					return ItemStack.EMPTY;
+				
 				if (subtract)
 					ItemFolder.remove(folder, 1);
 				
