@@ -1,6 +1,5 @@
 package com.bafomdad.realfilingcabinet.network;
 
-import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 
@@ -71,7 +70,6 @@ public class PacketRFC implements IMessage {
 				
 				else if (stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null) && stack.getTagCompound().hasKey("folderCap")) {
 					cap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
-					LogRFC.debug("Packeting :" + stack.getTagCompound().getCompoundTag("folderCap"));
 					cap.deserializeNBT(stack.getTagCompound().getCompoundTag("folderCap"));
 					stack.getTagCompound().removeTag("folderCap");
 					

@@ -14,6 +14,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventorySuitcase;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 import vazkii.botania.api.item.IBlockProvider;
@@ -54,6 +55,18 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		setTranslationKey(RealFilingCabinet.MOD_ID + ".suitcase");
 		setMaxStackSize(1);
 		setCreativeTab(TabRFC.instance);
+	}
+	
+	@Override
+	public NBTTagCompound getNBTShareTag(ItemStack stack) {
+		
+		if (!stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+			return super.getNBTShareTag(stack);
+			
+		NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound().copy() : new NBTTagCompound();
+		IItemHandler inv = getInventory(stack);
+		tag.setTag(TAG_FOLDERS, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(inv, null));
+		return tag;
 	}
 	
 	@Override

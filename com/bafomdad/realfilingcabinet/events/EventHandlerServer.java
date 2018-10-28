@@ -130,8 +130,8 @@ public class EventHandlerServer {
 						int remainder = ItemDyedFolder.add(folder, estack.getCount());
 						if (remainder > 0) {
 							event.setCanceled(true);
-							estack.setCount(estack.getCount() - remainder);
 							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));
+							estack.setCount(estack.getCount() - remainder);
 							break;
 						} else
 							((EntityPlayerMP)event.getEntityPlayer()).connection.sendPacket(new SPacketCollectItem(event.getItem().getEntityId(), event.getEntityPlayer().getEntityId(), estack.getCount()));

@@ -141,10 +141,9 @@ public class ItemFolder extends Item implements IFolder {
 	}
 	
 	public static void setFileSize(ItemStack stack, long count) {
+		
 		if(stack.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-		{
 			stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).setCount(count);
-		}
 	}
 	
 	public static long getFileSize(ItemStack stack) {
