@@ -23,6 +23,7 @@ import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemDyedFolder;
+import com.bafomdad.realfilingcabinet.items.ItemEmptyFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 
 public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
@@ -123,6 +124,8 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 		
 		if (stack.getItem() instanceof IFolder || stack.getItem() instanceof IEmptyFolder || Block.getBlockFromItem(stack.getItem()) instanceof IFilingCabinet)
 			return false;
+		
+		if (stack.hasTagCompound() && (input.getItemDamage() != FolderType.NBT.ordinal())) return false;
 		
 		if (stack.getItem().isRepairable())
 			return stack.getItemDamage() == 0;
