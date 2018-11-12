@@ -67,7 +67,7 @@ dependencies {
 	deobfCompile "vazkii.botania:Botania:r1.10-354"
 	
 	// compile against azanor's stuff
-	deobfCompile "azanor.thaumcraft:Thaumcraft:1.12.2-6.1.BETA20"
+	deobfCompile "azanor.thaumcraft:Thaumcraft:1.12.2-6.1.BETA26"
 	deobfCompile "azanor.baubles:Baubles:1.12-1.5.2"
 }
 jar {
