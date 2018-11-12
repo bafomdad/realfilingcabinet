@@ -13,6 +13,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.DurabilityUtils;
@@ -39,23 +40,23 @@ public class InventoryRFC extends ItemStackHandler {
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		
 		LogRFC.debug("Transfer stack: " + stack + " / Stack in slot: " + getStackInSlot(slot) + " / True stack in slot: "  + getTrueStackInSlot(slot) + " / Slot #" + slot + " / Simulating: " + simulate);
+        validateSlotIndex(slot);
 		
-		if (tile.isCabinetLocked() || slot == 8)
+		if (tile.isCabinetLocked())
 			return stack;
 		
-        if (stack.isEmpty() || stack.getCount() == 0)
+        if (stack.isEmpty())
             return ItemStack.EMPTY;
 
-        validateSlotIndex(slot);
-
-        if (!stacks.get(slot).isEmpty() && stacks.get(slot).getItem() == RFCItems.folder && stacks.get(slot).getItemDamage() == 2 && DurabilityUtils.matchDurability(tile, stack, slot, simulate)) {
+        if (!stacks.get(slot).isEmpty() && stacks.get(slot).getItem() == RFCItems.folder && stacks.get(slot).getItemDamage() == FolderType.DURA.ordinal() && DurabilityUtils.matchDurability(tile, stack, slot, simulate)) {
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
         	}
         	return ItemStack.EMPTY;
         }
-        if (StorageUtils.simpleFolderMatch(tile, stack) != -1) {
-        	slot = StorageUtils.simpleFolderMatch(tile, stack);
+        int slotIndex = StorageUtils.simpleFolderMatch(tile, stack);
+        if (slotIndex != -1) {
+        	slot = slotIndex;
         	ItemStack toInsert = ItemFolder.insert(stacks.get(slot), stack, simulate);
         	if (!simulate) {
         		VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());

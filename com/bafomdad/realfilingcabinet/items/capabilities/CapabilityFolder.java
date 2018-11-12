@@ -6,6 +6,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 import net.minecraft.block.Block;
@@ -110,6 +111,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
 //        if(!ItemStack.areItemsEqual(stack, items))
 //            return items;
         
+        if (rootStack.getItem() == RFCItems.folder && rootStack.getItemDamage() == FolderType.DURA.ordinal()) {
+        	return items;
+        }
         if (rootStack.getItem() == RFCItems.dyedFolder) {
             long newCount = Math.min(count + items.getCount(), ConfigRFC.folderSizeLimit);  
             long remainder = ConfigRFC.folderSizeLimit - count;
@@ -120,10 +124,10 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             return items;
         }
 //        items.copy();
-//        items.setCount(0);
-        if(!sim)
+        if(!sim) {
             count += items.getCount();
-        
+            items.setCount(0);
+        }
         return ItemStack.EMPTY;
     }
     

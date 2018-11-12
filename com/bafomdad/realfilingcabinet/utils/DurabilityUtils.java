@@ -57,9 +57,10 @@ public class DurabilityUtils {
 						int remSize = stack.getItemDamage();
 						int storedRem = ItemFolder.getRemSize(folder);
 						
-						if (remSize == 0)
+						if (remSize == 0) {
 							ItemFolder.add(folder, 1);
-						
+							return true;
+						}
 						ItemFolder.addRem(folder, stack.getMaxDamage() - stack.getItemDamage());
 						int newRem = ItemFolder.getRemSize(folder);
 						
