@@ -177,8 +177,6 @@ public class ItemFolder extends Item implements IFolder {
 		
 		long current = getFileSize(stack);
 		setFileSize(stack, current + count);
-
-//		System.out.println("New amount = " + (current + count));
 	}
 	
 	public static void setRemSize(ItemStack stack, int count) {
@@ -301,7 +299,7 @@ public class ItemFolder extends Item implements IFolder {
 						
 						if (ear == EnumActionResult.SUCCESS) {
 							if (!player.capabilities.isCreativeMode) {
-								if (stack.getItemDamage() == 1 && !world.isRemote) {
+								if (stack.getItemDamage() == FolderType.ENDER.ordinal() && !world.isRemote) {
 									EnderUtils.syncToTile(EnderUtils.getTileLoc(stack), NBTUtils.getInt(stack, StringLibs.RFC_DIM, 0), NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0), 1, true);
 									if (player instanceof FakePlayer)
 										EnderUtils.syncToFolder(EnderUtils.getTileLoc(stack), stack, NBTUtils.getInt(stack, StringLibs.RFC_SLOTINDEX, 0));

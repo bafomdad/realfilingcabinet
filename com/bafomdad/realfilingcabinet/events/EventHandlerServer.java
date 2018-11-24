@@ -187,9 +187,9 @@ public class EventHandlerServer {
 						}
 						ItemStack folderStack = cap.getItemStack();
 						if (!folderStack.isEmpty() && ItemStack.areItemsEqual(folderStack, estack)) {
-							if (folder.getItemDamage() == 5 && !ItemStack.areItemStackTagsEqual(folderStack, estack))
+							if (folder.getItemDamage() == FolderType.NBT.ordinal() && !ItemStack.areItemStackTagsEqual(folderStack, estack))
 								return;
-							if (folder.getItemDamage() == 1)
+							if (folder.getItemDamage() == FolderType.ENDER.ordinal())
 								EnderUtils.syncToTile(EnderUtils.getTileLoc(folder), NBTUtils.getInt(folder, StringLibs.RFC_DIM, 0), NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0), estack.getCount(), false);
 							else
 								ItemFolder.add(folder, estack.getCount());
@@ -216,8 +216,7 @@ public class EventHandlerServer {
 			if (enderFolder.isEmpty())
 				continue;
 			
-			if (enderFolder.getItem() == RFCItems.folder && enderFolder.getItemDamage() == 1)
-			{
+			if (enderFolder.getItem() == RFCItems.folder && enderFolder.getItemDamage() == FolderType.ENDER.ordinal()) {
 				if (!enderFolder.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX))
 					return;
 				

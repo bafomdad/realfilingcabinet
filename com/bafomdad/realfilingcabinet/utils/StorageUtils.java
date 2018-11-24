@@ -112,10 +112,8 @@ public class StorageUtils {
 					if (!ItemStack.areItemStackTagsEqual(loopinv, stack))
 						continue;
 					
-					ItemFolder.insert(tile.getInventory().getTrueStackInSlot(i), stack, false);
-//					ItemFolder.add(tile.getInventory().getTrueStackInSlot(i), stack.getCount());
-//					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
-//					tile.markBlockForUpdate();
+					ItemStack toInsert = ItemFolder.insert(tile.getInventory().getTrueStackInSlot(i), stack, false);
+					player.setHeldItem(EnumHand.MAIN_HAND, toInsert);
 					break;
 				}
 			}

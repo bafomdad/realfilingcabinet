@@ -52,7 +52,7 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(state.getValue(BlockHorizontal.FACING).getHorizontalAngle(), 0, 1, 0);
 			
-			if (te.isOpen || (!te.isOpen && te.offset != 0.0F)) {
+			if (te.isOpen || (!te.isOpen && te.offset != 0.05F)) {
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(-0.4F, 0.3F, te.renderOffset + 0.5F);
 				GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);

@@ -93,6 +93,10 @@ public class ItemDyedFolder extends Item implements IFolder {
 	
 	public static int add(ItemStack stack, long count) {
 		
+		if (!(stack.getItem() instanceof ItemDyedFolder)) {
+			ItemFolder.add(stack, count);
+			return Integer.MAX_VALUE;
+		}
 		long current = ItemFolder.getFileSize(stack);
 		long newCount = Math.min(count + current, ConfigRFC.folderSizeLimit);
 		long remainder = ConfigRFC.folderSizeLimit - ItemFolder.getFileSize(stack);

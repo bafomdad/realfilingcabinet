@@ -14,7 +14,9 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventorySuitcase;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
+import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 import vazkii.botania.api.item.IBlockProvider;
@@ -150,13 +152,13 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 		ItemStack stackToPlace = getStoredItem(heldStack, suitcaseInv, false).copy();
 		if (!stackToPlace.isEmpty()) {
 			ItemStack savedSuitcase = player.getHeldItem(hand);
-
+			
 			player.setHeldItem(hand, stackToPlace);
 			EnumActionResult ear = stackToPlace.onItemUse(player, world, pos, hand, side, x, y, z);
 			player.setHeldItem(hand, savedSuitcase);
 			
 			if (ear == EnumActionResult.SUCCESS) {
-				if (!player.capabilities.isCreativeMode) {
+				if (!world.isRemote && !player.capabilities.isCreativeMode) {
 					getStoredItem(savedSuitcase, suitcaseInv, true);
 				}
 				return EnumActionResult.SUCCESS;
@@ -203,9 +205,9 @@ public class ItemSuitcase extends Item implements IBlockProvider {
 				if (ItemFolder.getFileSize(folder) <= 0)
 					return ItemStack.EMPTY;
 				
-				if (subtract)
+				if (subtract) {
 					ItemFolder.remove(folder, 1);
-				
+				}
 				return (ItemStack)obj;
 			}
 		}

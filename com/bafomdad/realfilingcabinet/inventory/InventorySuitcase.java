@@ -3,7 +3,9 @@ package com.bafomdad.realfilingcabinet.inventory;
 import javax.annotation.Nonnull;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -73,7 +75,10 @@ public class InventorySuitcase implements IItemHandlerModifiable {
 			@Nonnull
 			@Override
 			public ItemStack insertItem(int slot, @Nonnull ItemStack toInsert, boolean simulate) {
-				if (!toInsert.isEmpty() && toInsert.getItem() instanceof IFolder && toInsert.getItemDamage() != ItemFolder.FolderType.ENDER.ordinal()) {
+				if (!toInsert.isEmpty() && toInsert.getItem() instanceof IFolder) {
+					if (toInsert.getItem() == RFCItems.folder && toInsert.getItemDamage() == FolderType.ENDER.ordinal())
+						return toInsert;
+					
 					return super.insertItem(slot, toInsert, simulate);
 				}
 				return toInsert;
