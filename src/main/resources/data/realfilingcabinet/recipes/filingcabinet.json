@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:itemfilingcabinet",
+	"count": 1
+  },
+  "pattern": [
+    "III",
+    "ICI",
+    "III"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "I": {
+      "item": "minecraft:iron_bars"
+    }
+  }
+}

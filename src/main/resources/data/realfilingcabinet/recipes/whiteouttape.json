@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "realfilingcabinet:whiteouttape",
+	"count": 1
+  },
+  "pattern": [
+    " P ",
+    "PSP",
+    "BP "
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:blue_dye"
+    },
+    "S": {
+      "item": "minecraft:slimeball"
+    }
+  }
+}

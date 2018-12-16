@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:filter",
+	"count": 1
+  },
+  "pattern": [
+    " R ",
+    "RAR",
+    " R "
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "R": {
+      "item": "minecraft:red_dye"
+    }
+  }
+}

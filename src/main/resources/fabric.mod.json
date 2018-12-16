@@ -1,0 +1,14 @@
+{
+  "id": "realfilingcabinet",
+  "name": "Real Filing Cabinet",
+  "version": "1.0.0",
+  "side": "universal",
+  "initializers": [
+    "com.bafomdad.realfilingcabinet.RealFilingCabinet",
+    "com.bafomdad.realfilingcabinet.RealFilingCabinetClient"
+  ],
+  "mixins": {
+    "client": "realfilingcabinet.client.json",
+    "common": "realfilingcabinet.common.json"
+  }
+}

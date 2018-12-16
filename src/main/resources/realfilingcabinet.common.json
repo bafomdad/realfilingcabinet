@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.bafomdad.realfilingcabinet.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "TestMixin",
+    "FuckYouBiomeColorsMixin",
+    "DataHolderMixin",
+    "HopperMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

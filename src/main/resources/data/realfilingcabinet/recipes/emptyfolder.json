@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "realfilingcabinet:emptyfolder",
+    "count": 8
+  },
+  "pattern": [
+    "P  ",
+    "P  ",
+    "PPP"
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}

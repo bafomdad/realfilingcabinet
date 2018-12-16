@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:magnifyingglass",
+	"count": 1
+  },
+  "pattern": [
+    "G  ",
+    " S ",
+    "   "
+  ],
+  "type": "crafting_shaped",
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    }
+  }
+}
