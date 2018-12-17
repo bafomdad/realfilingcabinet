@@ -34,11 +34,14 @@ public abstract class HopperMixin {
                 for (int i = 0; i < hopper.getInvSize(); i++) {
                     if (!hopper.getInvStack(i).isEmpty()) {
                         ItemStack hopperItem = hopper.getInvStack(i).copy();
+                        hopperItem.setAmount(1);
                         ItemStack toInsert = holder.insert(i, hopperItem);
                         if (toInsert.isEmpty()) {
                             hopper.markDirty();
                         }
-                        hopper.setInvStack(i, hopperItem);
+ //                       hopperItem.subtractAmount(1);
+ //                       hopper.setInvStack(i, hopperItem);
+                        hopper.getInvStack(i).subtractAmount(1);
                         cir.setReturnValue(true);
                     }
                 }

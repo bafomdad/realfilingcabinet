@@ -30,7 +30,7 @@ public class RFCItems {
         MAGNIFYINGGLASS = registerItem(new Item(new Item.Settings().stackSize(1).itemGroup(ItemGroup.MISC)), "magnifyingglass");
         TAPE = registerItem(new Item(new Item.Settings().stackSize(1).durability(25).recipeRemainder(TAPE).itemGroup(ItemGroup.MISC)), "whiteouttape");
         setContainerItemAgain(TAPE, "recipeRemainder", "containerItem", "awj");
-        SUITCASE = registerItem(new Item(new Item.Settings().stackSize(1).itemGroup(ItemGroup.MISC)), "suitcase");
+ //       SUITCASE = registerItem(new Item(new Item.Settings().stackSize(1).itemGroup(ItemGroup.MISC)), "suitcase");
     }
 
     public static Item registerItem(Item item, String name) {

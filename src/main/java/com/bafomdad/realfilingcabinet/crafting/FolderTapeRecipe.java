@@ -6,7 +6,6 @@ import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.init.RFCRecipes;
 import com.bafomdad.realfilingcabinet.items.FolderItem;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.AbstractRecipe;
 import net.minecraft.recipe.RecipeSerializer;
@@ -19,40 +18,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by bafomdad on 12/14/2018.
+ * Created by bafomdad on 12/16/2018.
  */
-public class FolderExtractRecipe extends AbstractRecipe {
+public class FolderTapeRecipe extends AbstractRecipe {
 
-    private ItemStack input;
-
-    public FolderExtractRecipe(String name, ItemStack input) {
+    public FolderTapeRecipe(String name) {
 
         super(new Identifier(RealFilingCabinet.MODID, name));
-        this.input = input;
     }
 
     @Override
     public boolean matches(Inventory inv, World world) {
 
         List<ItemStack> list = new ArrayList();
-        list.add(input);
+        list.add(new ItemStack(RFCItems.TAPE));
         for (int i = 0; i < inv.getInvSize(); ++i) {
             ItemStack stack = inv.getInvStack(i);
-            if (!stack.isEmpty()) {
-                boolean flag = false;
-                Iterator iter = list.iterator();
-                while (iter.hasNext()) {
-                    ItemStack stack1 = (ItemStack)iter.next();
-                    if (stack.getItem() == stack1.getItem()) {
-                        flag = true;
-                        list.remove(stack1);
-                        break;
-                    }
-                }
-                if (!flag)
-                    return false;
+            if (!stack.isEmpty() && stack.getItem() == RFCItems.FOLDER) {
+                list.add(stack);
             }
         }
+        list.removeIf(s -> s.getItem() == RFCItems.FOLDER || s.getItem() == RFCItems.TAPE);
         return list.isEmpty();
     }
 
@@ -60,21 +46,21 @@ public class FolderExtractRecipe extends AbstractRecipe {
     public ItemStack craft(Inventory inv) {
 
         int folder = -1;
+        int tape = -1;
+
         for (int i = 0; i < inv.getInvSize(); i++) {
             ItemStack stack = inv.getInvStack(i);
-            if (!stack.isEmpty())
-                folder = i;
-        }
-        if (folder >= 0) {
-            ItemStack stack = inv.getInvStack(folder);
-            ItemStack heldItem = FolderItem.getItem(stack);
-            if (stack.getItem() == RFCItems.FOLDER && !heldItem.isEmpty()) {
-                long count = FolderItem.getFileSize(stack);
-                if (count > 0) {
-                    long extract = Math.min(heldItem.getMaxAmount(), count);
-                    return new ItemStack(heldItem.getItem(), (int)extract);
-                }
+            if (!stack.isEmpty()) {
+                if (stack.getItem() == RFCItems.FOLDER)
+                    folder = i;
+                if (stack.getItem() == RFCItems.TAPE)
+                    tape = i;
             }
+        }
+        if (folder >= 0 && tape >= 0) {
+            ItemStack stack1 = inv.getInvStack(folder);
+            if (FolderItem.getFileSize(stack1) <= 0)
+                return new ItemStack(RFCItems.EMPTYFOLDER);
         }
         return ItemStack.EMPTY;
     }
@@ -88,7 +74,7 @@ public class FolderExtractRecipe extends AbstractRecipe {
     @Override
     public RecipeSerializer<?> getSerializer() {
 
-        return RFCRecipes.FOLDER_EXTRACT_RECIPE;
+        return RFCRecipes.FOLDER_TAPE_RECIPE;
     }
 
     @Override
@@ -97,11 +83,9 @@ public class FolderExtractRecipe extends AbstractRecipe {
         DefaultedList<ItemStack> items = DefaultedList.create(inv.getInvSize(), ItemStack.EMPTY);
         for (int i = 0; i < items.size(); ++i) {
             ItemStack stack = inv.getInvStack(i);
-            if (stack.getItem() == RFCItems.FOLDER && !FolderItem.getItem(stack).isEmpty()) {
-                long count = FolderItem.getFileSize(stack);
-                long extract = (count > 0) ? Math.min(FolderItem.getItem(stack).getMaxAmount(), count) : 0;
-
-                FolderItem.remove(stack, extract);
+            if (!stack.isEmpty() && stack.getItem() == RFCItems.TAPE) {
+                int damage = stack.getDamage();
+                stack.setDamage(damage + 1);
                 items.set(i, stack.copy());
             }
         }

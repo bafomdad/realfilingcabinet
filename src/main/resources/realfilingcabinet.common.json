@@ -6,7 +6,8 @@
     "TestMixin",
     "FuckYouBiomeColorsMixin",
     "DataHolderMixin",
-    "HopperMixin"
+    "HopperMixin",
+    "ItemPickupMixin"
   ],
   "injectors": {
     "defaultRequire": 1
