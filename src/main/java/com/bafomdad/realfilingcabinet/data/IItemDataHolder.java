@@ -19,8 +19,6 @@ public abstract class IItemDataHolder extends AbstractDataHolder<ItemStack> {
     @Override
     public abstract ItemStack getObject(int slot);
 
-    public abstract int getInvSize();
-
     public CompoundTag serialize(CompoundTag tag, DefaultedList<ItemStack> inv) {
 
         InventoryUtil.serialize(tag, inv);
@@ -31,4 +29,6 @@ public abstract class IItemDataHolder extends AbstractDataHolder<ItemStack> {
 
         InventoryUtil.deserialize(tag, inv);
     }
+
+    public abstract int getInvSize();
 }

@@ -130,15 +130,15 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
     }
 
     @Override
-    public boolean hasDataHolder(EnumDataType type) {
+    public boolean hasDataHolder(EnumDataType type, Direction dir) {
 
         return type == EnumDataType.ITEM;
     }
 
     @Override
-    public AbstractDataHolder getDataHolder(EnumDataType type) {
+    public AbstractDataHolder getDataHolder(EnumDataType type, Direction dir) {
 
-        if (hasDataHolder(type)) {
+        if (hasDataHolder(type, dir)) {
             return data;
         }
         return null;

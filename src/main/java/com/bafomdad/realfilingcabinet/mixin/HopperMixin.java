@@ -29,7 +29,7 @@ public abstract class HopperMixin {
         Direction dir = hopper.getCachedState().get(HopperBlock.field_11129);
         BlockEntity be = hopper.getWorld().getBlockEntity(hopper.getPos().offset(dir));
         if (be instanceof IDataHooks) {
-            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM);
+            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM, dir);
             if (holder != null) {
                 for (int i = 0; i < hopper.getInvSize(); i++) {
                     if (!hopper.getInvStack(i).isEmpty()) {
@@ -54,7 +54,7 @@ public abstract class HopperMixin {
 
         BlockEntity be = hopper.getWorld().getBlockEntity(new BlockPos(hopper.getHopperX(), hopper.getHopperY() + 1, hopper.getHopperZ()));
         if (be instanceof IDataHooks) {
-            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM);
+            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM, Direction.UP);
             if (holder != null) {
                 boolean flag = false;
                 for (int i = 0; i < holder.getInvSize(); i++) {

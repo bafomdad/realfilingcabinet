@@ -4,6 +4,7 @@ import com.bafomdad.realfilingcabinet.data.AbstractDataHolder;
 import com.bafomdad.realfilingcabinet.data.EnumDataType;
 import com.bafomdad.realfilingcabinet.data.IDataHooks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 
 /**
@@ -14,13 +15,13 @@ import org.spongepowered.asm.mixin.Mixin;
 public class DataHolderMixin implements IDataHooks {
 
     @Override
-    public boolean hasDataHolder(EnumDataType type) {
+    public boolean hasDataHolder(EnumDataType type, Direction dir) {
 
         return false;
     }
 
     @Override
-    public AbstractDataHolder getDataHolder(EnumDataType type) {
+    public AbstractDataHolder getDataHolder(EnumDataType type, Direction dir) {
 
         return null;
     }
