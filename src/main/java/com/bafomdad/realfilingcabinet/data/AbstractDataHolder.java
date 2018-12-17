@@ -9,5 +9,5 @@ public abstract class AbstractDataHolder<T> {
 
     public abstract T extract(int slot, int amount);
 
-    public abstract T getObject(int slot);
+    public abstract T getData(int slot);
 }

@@ -17,7 +17,7 @@ public abstract class IItemDataHolder extends AbstractDataHolder<ItemStack> {
     public abstract ItemStack extract(int slot, int amount);
 
     @Override
-    public abstract ItemStack getObject(int slot);
+    public abstract ItemStack getData(int slot);
 
     public CompoundTag serialize(CompoundTag tag, DefaultedList<ItemStack> inv) {
 

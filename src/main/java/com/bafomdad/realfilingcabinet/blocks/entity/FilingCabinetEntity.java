@@ -11,6 +11,7 @@ import com.bafomdad.realfilingcabinet.items.FolderItem;
 import net.fabricmc.fabric.block.entity.ClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DefaultedList;
@@ -20,6 +21,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by bafomdad on 12/11/2018.
@@ -28,8 +30,10 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
 
     public float offset, renderOffset;
     public static final float offsetSpeed = 0.1F;
-
     public boolean isOpen = false;
+
+    private long lastClickTime;
+    private UUID lastClickUUID;
 
     private DefaultedList<ItemStack> inventory;
     private InventoryRFC data = new InventoryRFC(this);
@@ -102,6 +106,18 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
         return inventory;
     }
 
+    public boolean calcLastClick(PlayerEntity player) {
+
+        boolean bool = false;
+        if (getWorld().getTime() - lastClickTime < 10 && player.getUuid().equals(lastClickUUID))
+            bool = true;
+
+        lastClickTime = getWorld().getTime();
+        lastClickUUID = player.getUuid();
+
+        return bool;
+    }
+
     public ItemStack getFilter() {
 
         VoxelShape aabb = VoxelShapes.cube(pos.getX(), pos.getY() + 1, pos.getZ(), pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1);
@@ -109,9 +125,16 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
         for (ItemFrameEntity frame : frames) {
             Direction dir = frame.getHorizontalFacing();
             Direction facing = getCachedState().get(FilingCabinetBlock.FACING);
-            if (frame != null && !frame.getHeldItemStack().isEmpty() && (dir == facing)) {
-                if (frame.getHeldItemStack().getItem() == RFCItems.FILTER) {
-                    return getStoredItem(frame.getRotation());
+            ItemStack heldItem = frame.getHeldItemStack();
+            if (!heldItem.isEmpty() && (dir == facing)) {
+                if (heldItem.getItem() == RFCItems.FILTER) {
+                    ItemStack storedItem = getStoredItem(frame.getRotation());
+                    if (!storedItem.isEmpty() && storedItem.getDisplayName() != heldItem.getDisplayName())
+                        heldItem.setDisplayName(storedItem.getDisplayName());
+                    else if (storedItem.isEmpty() && heldItem.hasDisplayName())
+                        heldItem.removeDisplayName();
+
+                    return storedItem;
                 }
                 return frame.getHeldItemStack();
             }

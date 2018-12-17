@@ -1,17 +1,15 @@
 package com.bafomdad.realfilingcabinet;
 
 import com.bafomdad.realfilingcabinet.api.IModAddon;
-import com.bafomdad.realfilingcabinet.data.EnumDataType;
-import com.bafomdad.realfilingcabinet.data.IDataHooks;
+import com.bafomdad.realfilingcabinet.blocks.entity.FilingCabinetEntity;
 import com.bafomdad.realfilingcabinet.init.*;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,23 +27,19 @@ public class RealFilingCabinet implements ModInitializer {
 		RFCItems.init();
 		RFCRecipes.init();
 		setAddons();
-		/**
 		PlayerInteractionEvent.INTERACT_BLOCK.register((player, world, hand, pos, facing, hitX, hitY, hitZ) -> {
 
-			if (!(world instanceof ServerWorld)) return ActionResult.PASS;
-
 			ItemStack stack = player.getMainHandStack();
-			if (stack.isEmpty() || (!stack.isEmpty() && stack.getItem() != RFCItems.MAGNIFYINGGLASS)) return ActionResult.PASS;
-
 			BlockEntity be = world.getBlockEntity(pos);
-			if (be != null) {
-				System.out.println(((IDataHooks)be).getDataHolder(EnumDataType.CUSTOM));
-				System.out.println(((IDataHooks)be).getDataHolder(EnumDataType.ITEM));
-				return ActionResult.SUCCESS;
+			if (be instanceof FilingCabinetEntity && player.isSneaking() && stack.isEmpty()) {
+				FilingCabinetEntity fe = (FilingCabinetEntity)be;
+				if (fe.isOpen) {
+					StorageUtils.folderExtract(fe, player);
+					return ActionResult.SUCCESS;
+				}
 			}
 			return ActionResult.PASS;
 		});
-		*/
 		System.out.println("Real Filing Cabinets loaded. Let's get kraken");
 	}
 

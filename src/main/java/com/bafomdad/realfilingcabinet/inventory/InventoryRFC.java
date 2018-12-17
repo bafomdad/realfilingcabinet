@@ -38,7 +38,7 @@ public class InventoryRFC extends IItemDataHolder {
 
         if (fe.getFilter().isEmpty()) return ItemStack.EMPTY;
 
-        if (!getObject(slot).isEmpty()) {
+        if (!getData(slot).isEmpty()) {
             int i = StorageUtils.simpleFolderMatch(fe, fe.getFilter());
             if (i != -1 && slot == i) {
                 long filterCount = FolderItem.getFileSize(fe.getInventory().get(i));
@@ -56,7 +56,7 @@ public class InventoryRFC extends IItemDataHolder {
     }
 
     @Override
-    public ItemStack getObject(int slot) {
+    public ItemStack getData(int slot) {
 
         if (!fe.getInventory().get(slot).isEmpty())
             return fe.getStoredItem(slot);

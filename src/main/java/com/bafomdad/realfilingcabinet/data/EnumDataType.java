@@ -7,6 +7,5 @@ public enum EnumDataType {
 
     ITEM,
     FLUID,
-    ENERGY,
-    CUSTOM;
+    ENERGY;
 }

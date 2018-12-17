@@ -5,6 +5,7 @@ import com.bafomdad.realfilingcabinet.items.FolderItem;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Created by bafomdad on 12/12/2018.
@@ -12,6 +13,8 @@ import net.minecraft.item.ItemStack;
 public class StorageUtils {
 
     public static int simpleFolderMatch(FilingCabinetEntity be, ItemStack stack) {
+
+        if (stack.isEmpty()) return -1;
 
         for (int i = 0; i < be.getInvSize(); i++) {
             ItemStack loopInv = be.getInventory().get(i);
@@ -25,6 +28,10 @@ public class StorageUtils {
 
         if (be.getWorld().isRemote) return;
 
+        if (be.calcLastClick(player)) {
+            addAllStacksManually(be, player);
+            return;
+        }
         for (int i = 0; i < be.getInvSize(); i++) {
             ItemStack loopInv = be.getInventory().get(i);
             if (!loopInv.isEmpty() && stack.getItem() == be.getStoredItem(i).getItem()) {
@@ -32,6 +39,25 @@ public class StorageUtils {
                 player.setEquippedStack(EquipmentSlot.HAND_MAIN, ItemStack.EMPTY);
                 be.markBlockForUpdate();
             }
+        }
+    }
+
+    private static void addAllStacksManually(FilingCabinetEntity be, PlayerEntity player) {
+
+        boolean consume = false;
+        for (int i = 0; i < player.inventory.main.size(); i++) {
+            ItemStack loopInv = player.inventory.main.get(i);
+            int slot = simpleFolderMatch(be, loopInv);
+            if (!loopInv.isEmpty() && slot != -1) {
+                FolderItem.add(be.getInventory().get(slot), loopInv.getAmount());
+                player.inventory.main.set(i, ItemStack.EMPTY);
+                consume = true;
+            }
+        }
+        if (consume) {
+//            if (player instanceof ServerPlayerEntity)
+//                ((ServerPlayerEntity)player).container
+            be.markDirty();
         }
     }
 
@@ -51,8 +77,8 @@ public class StorageUtils {
                     if (flag) {
                         FolderItem.remove(loopInv, extract);
                         be.markBlockForUpdate();
+                        break;
                     }
-                    break;
                 }
             }
         }

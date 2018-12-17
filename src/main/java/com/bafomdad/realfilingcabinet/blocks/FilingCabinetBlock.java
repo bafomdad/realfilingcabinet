@@ -48,7 +48,7 @@ public class FilingCabinetBlock extends BlockWithEntity {
     public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof FilingCabinetEntity)
+        if (!world.isRemote && be instanceof FilingCabinetEntity)
             leftClick((FilingCabinetEntity)be, player);
 
         super.onBlockBreakStart(state, world, pos, player);
