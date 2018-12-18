@@ -3,7 +3,7 @@ package com.bafomdad.realfilingcabinet.blocks.entity;
 import com.bafomdad.realfilingcabinet.blocks.FilingCabinetBlock;
 import com.bafomdad.realfilingcabinet.data.AbstractDataHolder;
 import com.bafomdad.realfilingcabinet.data.EnumDataType;
-import com.bafomdad.realfilingcabinet.data.IDataHooks;
+import com.bafomdad.realfilingcabinet.data.DataHooks;
 import com.bafomdad.realfilingcabinet.init.RFCEntities;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * Created by bafomdad on 12/11/2018.
  */
-public class FilingCabinetEntity extends BlockEntity implements Tickable, ClientSerializable, IDataHooks {
+public class FilingCabinetEntity extends BlockEntity implements Tickable, ClientSerializable, DataHooks {
 
     public float offset, renderOffset;
     public static final float offsetSpeed = 0.1F;
@@ -76,6 +76,11 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
         super.fromTag(tag);
         this.isOpen = tag.getBoolean("isOpen");
         this.inventory = DefaultedList.create(this.getInvSize(), ItemStack.EMPTY);
+        this.deserializeInventory(tag);
+    }
+
+    public void deserializeInventory(CompoundTag tag) {
+
         if (tag.containsKey("Items", 9))
             data.deserialize(tag, this.inventory);
     }

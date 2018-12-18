@@ -1,12 +1,16 @@
 {
   "id": "realfilingcabinet",
   "name": "Real Filing Cabinet",
+  "description": "Filing Cabinets! That is all.",
   "version": "1.0.0",
   "side": "universal",
   "initializers": [
     "com.bafomdad.realfilingcabinet.RealFilingCabinet",
     "com.bafomdad.realfilingcabinet.RealFilingCabinetClient"
   ],
+  "requires": {
+    "fabric": "*"
+  },
   "mixins": {
     "client": "realfilingcabinet.client.json",
     "common": "realfilingcabinet.common.json"

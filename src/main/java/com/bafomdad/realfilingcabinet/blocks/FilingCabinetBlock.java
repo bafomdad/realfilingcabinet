@@ -1,28 +1,43 @@
 package com.bafomdad.realfilingcabinet.blocks;
 
-import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.entity.FilingCabinetEntity;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.FolderItem;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.RenderTypeBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.item.TooltipOptions;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sortme.ItemScatterer;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.TextComponent;
+import net.minecraft.text.TextFormat;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Hand;
+import net.minecraft.util.InventoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Created by bafomdad on 12/11/2018.
@@ -40,11 +55,27 @@ public class FilingCabinetBlock extends BlockWithEntity {
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
+    public void addInformation(ItemStack stack, BlockView block, List<TextComponent> text, TooltipOptions tooltip) {
+
+        if (stack.hasTag() && stack.getTag().containsKey("Items", 9)) {
+            if (Gui.isShiftPressed()) {
+                DefaultedList<ItemStack> inv = DefaultedList.create(8, ItemStack.EMPTY);
+                InventoryUtil.deserialize(stack.getTag(), inv);
+                inv.forEach(s -> { if (!s.isEmpty() && s.getItem() == RFCItems.FOLDER)
+                    text.add(FolderItem.getItem(s).getDisplayName().clone().append(" x").append(String.valueOf(FolderItem.getFileSize(s))).applyFormat(TextFormat.GRAY));
+                });
+            }
+        }
+    }
+
+    @Override
     protected void appendProperties(StateFactory.Builder<Block, BlockState> st) {
 
         st.with(FACING);
     }
 
+    @Override
     public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 
         BlockEntity be = world.getBlockEntity(pos);
@@ -71,8 +102,6 @@ public class FilingCabinetBlock extends BlockWithEntity {
         if (player.isCreative()) return;
 
         StorageUtils.extractStackManually(be, player);
-//        if (!player.world.isRemote)
-//            RealFilingCabinet.addons.forEach(r -> r.register());
     }
 
     private void rightClick(FilingCabinetEntity be, PlayerEntity player) {
@@ -105,15 +134,27 @@ public class FilingCabinetBlock extends BlockWithEntity {
         }
     }
 
-    /**
     @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
 
-        if (entity.isSneaking() && entity instanceof PlayerEntity) {
-            System.out.println("oi " + entity.getEntityName() + ", get the hell away from me");
+        ItemStack stack = new ItemStack(RFCBlocks.FILINGCABINET);
+        FilingCabinetEntity fe = (FilingCabinetEntity)world.getBlockEntity(pos);
+        if (!world.isRemote && fe != null) {
+            CompoundTag tag = new CompoundTag();
+            InventoryUtil.serialize(tag, fe.getInventory());
+            stack.setTag(tag);
+            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack);
         }
+        super.onBreak(world, pos, state, player);
     }
-    */
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack) {
+
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof FilingCabinetEntity)
+            ((FilingCabinetEntity)be).deserializeInventory(stack.getTag());
+    }
 
     @Override
     public VoxelShape getBoundingShape(BlockState state, BlockView world, BlockPos pos) {

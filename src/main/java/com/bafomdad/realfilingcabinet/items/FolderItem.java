@@ -3,7 +3,6 @@ package com.bafomdad.realfilingcabinet.items;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.CompoundUtils;
-import com.sun.istack.internal.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipOptions;
@@ -19,8 +18,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 
 /**
@@ -38,7 +35,7 @@ public class FolderItem extends Item implements IFolder {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void buildTooltip(ItemStack stack, @Nullable World world, List<TextComponent> text, TooltipOptions tooltip) {
+    public void buildTooltip(ItemStack stack, World world, List<TextComponent> text, TooltipOptions tooltip) {
 
         text.add(new TranslatableTextComponent(getItem(stack).getTranslationKey()));
         text.add(new StringTextComponent("Count: " + getFileSize(stack)));

@@ -8,7 +8,7 @@ import net.minecraft.util.InventoryUtil;
 /**
  * Created by bafomdad on 12/15/2018.
  */
-public abstract class IItemDataHolder extends AbstractDataHolder<ItemStack> {
+public abstract class ItemDataHolder extends AbstractDataHolder<ItemStack> {
 
     @Override
     public abstract ItemStack insert(int slot, ItemStack type);

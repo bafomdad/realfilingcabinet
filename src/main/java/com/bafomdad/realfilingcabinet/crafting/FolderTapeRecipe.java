@@ -34,11 +34,25 @@ public class FolderTapeRecipe extends AbstractRecipe {
         list.add(new ItemStack(RFCItems.TAPE));
         for (int i = 0; i < inv.getInvSize(); ++i) {
             ItemStack stack = inv.getInvStack(i);
-            if (!stack.isEmpty() && stack.getItem() == RFCItems.FOLDER) {
-                list.add(stack);
+            if (!stack.isEmpty()) {
+                if (stack.getItem() == RFCItems.FOLDER)
+                    list.add(stack);
+
+                boolean flag = false;
+                Iterator iter = list.iterator();
+
+                while (iter.hasNext()) {
+                    ItemStack stack1 = (ItemStack)iter.next();
+                    if (ItemStack.areEqualIgnoreDurability(stack, stack1)) {
+                        flag = true;
+                        list.remove(stack1);
+                        break;
+                    }
+                }
+                if (!flag)
+                    return false;
             }
         }
-        list.removeIf(s -> s.getItem() == RFCItems.FOLDER || s.getItem() == RFCItems.TAPE);
         return list.isEmpty();
     }
 

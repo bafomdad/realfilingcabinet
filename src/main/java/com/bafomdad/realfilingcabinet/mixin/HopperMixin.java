@@ -1,8 +1,8 @@
 package com.bafomdad.realfilingcabinet.mixin;
 
 import com.bafomdad.realfilingcabinet.data.EnumDataType;
-import com.bafomdad.realfilingcabinet.data.IDataHooks;
-import com.bafomdad.realfilingcabinet.data.IItemDataHolder;
+import com.bafomdad.realfilingcabinet.data.DataHooks;
+import com.bafomdad.realfilingcabinet.data.ItemDataHolder;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
@@ -28,8 +28,8 @@ public abstract class HopperMixin {
         HopperBlockEntity hopper = (HopperBlockEntity)(Object)this;
         Direction dir = hopper.getCachedState().get(HopperBlock.field_11129);
         BlockEntity be = hopper.getWorld().getBlockEntity(hopper.getPos().offset(dir));
-        if (be instanceof IDataHooks) {
-            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM, dir);
+        if (be instanceof DataHooks) {
+            ItemDataHolder holder = ((DataHooks)be).getDataHolder(EnumDataType.ITEM, dir);
             if (holder != null) {
                 for (int i = 0; i < hopper.getInvSize(); i++) {
                     if (!hopper.getInvStack(i).isEmpty()) {
@@ -53,8 +53,8 @@ public abstract class HopperMixin {
     private static void tryExtract(Hopper hopper, CallbackInfoReturnable cir) {
 
         BlockEntity be = hopper.getWorld().getBlockEntity(new BlockPos(hopper.getHopperX(), hopper.getHopperY() + 1, hopper.getHopperZ()));
-        if (be instanceof IDataHooks) {
-            IItemDataHolder holder = ((IDataHooks)be).getDataHolder(EnumDataType.ITEM, Direction.UP);
+        if (be instanceof DataHooks) {
+            ItemDataHolder holder = ((DataHooks)be).getDataHolder(EnumDataType.ITEM, Direction.UP);
             if (holder != null) {
                 boolean flag = false;
                 for (int i = 0; i < holder.getInvSize(); i++) {

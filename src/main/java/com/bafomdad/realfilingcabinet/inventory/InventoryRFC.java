@@ -1,7 +1,7 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
 import com.bafomdad.realfilingcabinet.blocks.entity.FilingCabinetEntity;
-import com.bafomdad.realfilingcabinet.data.IItemDataHolder;
+import com.bafomdad.realfilingcabinet.data.ItemDataHolder;
 import com.bafomdad.realfilingcabinet.items.FolderItem;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 import net.minecraft.item.ItemStack;
@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by bafomdad on 12/15/2018.
  */
-public class InventoryRFC extends IItemDataHolder {
+public class InventoryRFC extends ItemDataHolder {
 
     final FilingCabinetEntity fe;
 

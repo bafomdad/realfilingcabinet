@@ -104,6 +104,8 @@ public class FolderStorageRecipe extends AbstractRecipe {
 
     private boolean allowableIngredient(ItemStack stack) {
 
+        if (stack.hasTag() || stack.hasDurability()) return false;
+
         return !(stack.getItem() instanceof IFolder) && !(stack.getItem() instanceof IEmptyFolder);
     }
 }

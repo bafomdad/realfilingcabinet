@@ -6,7 +6,7 @@ import net.minecraft.util.math.Direction;
  * Created by bafomdad on 12/15/2018.
  */
 
-public interface IDataHooks {
+public interface DataHooks {
 
     boolean hasDataHolder(EnumDataType type, Direction dir);
 

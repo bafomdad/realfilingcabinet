@@ -97,7 +97,7 @@ public class FolderExtractRecipe extends AbstractRecipe {
         DefaultedList<ItemStack> items = DefaultedList.create(inv.getInvSize(), ItemStack.EMPTY);
         for (int i = 0; i < items.size(); ++i) {
             ItemStack stack = inv.getInvStack(i);
-            if (stack.getItem() == RFCItems.FOLDER && !FolderItem.getItem(stack).isEmpty()) {
+            if (!stack.isEmpty() && stack.getItem() == RFCItems.FOLDER && !FolderItem.getItem(stack).isEmpty()) {
                 long count = FolderItem.getFileSize(stack);
                 long extract = (count > 0) ? Math.min(FolderItem.getItem(stack).getMaxAmount(), count) : 0;
 
