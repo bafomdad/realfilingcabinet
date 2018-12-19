@@ -1,6 +1,9 @@
 package com.bafomdad.realfilingcabinet.blocks.entity;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.FilingCabinetBlock;
+import com.bafomdad.realfilingcabinet.container.ContainerRFC;
+import com.bafomdad.realfilingcabinet.container.FabricContainerProvider;
 import com.bafomdad.realfilingcabinet.data.AbstractDataHolder;
 import com.bafomdad.realfilingcabinet.data.EnumDataType;
 import com.bafomdad.realfilingcabinet.data.DataHooks;
@@ -10,11 +13,13 @@ import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.FolderItem;
 import net.fabricmc.fabric.block.entity.ClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -26,7 +31,7 @@ import java.util.UUID;
 /**
  * Created by bafomdad on 12/11/2018.
  */
-public class FilingCabinetEntity extends BlockEntity implements Tickable, ClientSerializable, DataHooks {
+public class FilingCabinetEntity extends BlockEntity implements Tickable, ClientSerializable, DataHooks, FabricContainerProvider {
 
     public float offset, renderOffset;
     public static final float offsetSpeed = 0.1F;
@@ -170,5 +175,17 @@ public class FilingCabinetEntity extends BlockEntity implements Tickable, Client
             return data;
         }
         return null;
+    }
+
+    @Override
+    public Container createContainer(PlayerEntity player) {
+
+        return new ContainerRFC(player, inventory);
+    }
+
+    @Override
+    public Identifier getContainerIdentifier() {
+
+        return new Identifier(RealFilingCabinet.MODID, "cabinet");
     }
 }

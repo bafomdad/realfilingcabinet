@@ -26,12 +26,8 @@ public class StorageUtils {
 
     public static void addStackManually(FilingCabinetEntity be, PlayerEntity player, ItemStack stack) {
 
-        if (be.getWorld().isRemote) return;
+        if (be.getWorld().isClient) return;
 
-        if (be.calcLastClick(player)) {
-            addAllStacksManually(be, player);
-            return;
-        }
         for (int i = 0; i < be.getInvSize(); i++) {
             ItemStack loopInv = be.getInventory().get(i);
             if (!loopInv.isEmpty() && stack.getItem() == be.getStoredItem(i).getItem()) {
@@ -42,7 +38,7 @@ public class StorageUtils {
         }
     }
 
-    private static void addAllStacksManually(FilingCabinetEntity be, PlayerEntity player) {
+    public static void addAllStacksManually(FilingCabinetEntity be, PlayerEntity player) {
 
         boolean consume = false;
         for (int i = 0; i < player.inventory.main.size(); i++) {

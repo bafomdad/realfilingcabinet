@@ -21,6 +21,7 @@ public class RealFilingCabinet implements ModInitializer {
 		RFCEntities.init();
 		RFCItems.init();
 		RFCRecipes.init();
+		RFCContainer.init();
 		PlayerInteractionEvent.INTERACT_BLOCK.register((player, world, hand, pos, facing, hitX, hitY, hitZ) -> {
 
 			ItemStack stack = player.getMainHandStack();

@@ -25,7 +25,7 @@ public abstract class ItemPickupMixin {
     public void onPickup(PlayerEntity player, CallbackInfo ci) {
 
         ItemEntity ei = (ItemEntity)(Object)this;
-        if (!ei.world.isRemote) {
+        if (!ei.world.isClient) {
             if (this.pickupDelay == 0) {
                 ItemStack stack = ei.getStack();
                 int amount = stack.getAmount();

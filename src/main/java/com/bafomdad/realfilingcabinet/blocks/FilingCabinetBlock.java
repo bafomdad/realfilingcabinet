@@ -1,8 +1,11 @@
 package com.bafomdad.realfilingcabinet.blocks;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.entity.FilingCabinetEntity;
+import com.bafomdad.realfilingcabinet.container.FabricContainerProvider;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCContainer;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.FolderItem;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
@@ -21,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sortme.ItemScatterer;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.DirectionProperty;
@@ -79,7 +83,7 @@ public class FilingCabinetBlock extends BlockWithEntity {
     public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 
         BlockEntity be = world.getBlockEntity(pos);
-        if (!world.isRemote && be instanceof FilingCabinetEntity)
+        if (!world.isClient && be instanceof FilingCabinetEntity)
             leftClick((FilingCabinetEntity)be, player);
 
         super.onBlockBreakStart(state, world, pos, player);
@@ -107,6 +111,10 @@ public class FilingCabinetBlock extends BlockWithEntity {
     private void rightClick(FilingCabinetEntity be, PlayerEntity player) {
 
         ItemStack stack = player.getMainHandStack();
+        if (be.calcLastClick(player)) {
+            StorageUtils.addAllStacksManually(be, player);
+            return;
+        }
         if (!player.isSneaking() && !stack.isEmpty()) {
             if (stack.getItem() instanceof IFolder && be.isOpen) {
                 for (int i = 0; i < be.getInvSize(); i++) {
@@ -119,12 +127,17 @@ public class FilingCabinetBlock extends BlockWithEntity {
                     }
                 }
             }
+            if (stack.getItem() == RFCItems.MAGNIFYINGGLASS && be.isOpen) {
+                if (!player.world.isClient)
+                    RFCContainer.openGui(be, be.getPos(), (ServerPlayerEntity)player);
+                return;
+            }
             else if (!(stack.getItem() instanceof IFolder)) {
                 StorageUtils.addStackManually(be, player, stack);
             }
         }
         if (!player.isSneaking() && stack.isEmpty()) {
-            if (!be.getWorld().isRemote) {
+            if (!be.getWorld().isClient) {
                 be.isOpen = !be.isOpen;
             }
             be.markBlockForUpdate();
@@ -139,10 +152,8 @@ public class FilingCabinetBlock extends BlockWithEntity {
 
         ItemStack stack = new ItemStack(RFCBlocks.FILINGCABINET);
         FilingCabinetEntity fe = (FilingCabinetEntity)world.getBlockEntity(pos);
-        if (!world.isRemote && fe != null) {
-            CompoundTag tag = new CompoundTag();
-            InventoryUtil.serialize(tag, fe.getInventory());
-            stack.setTag(tag);
+        if (!world.isClient && fe != null) {
+            stack.setTag(InventoryUtil.serialize(new CompoundTag(), fe.getInventory()));
             ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack);
         }
         super.onBreak(world, pos, state, player);
@@ -152,7 +163,7 @@ public class FilingCabinetBlock extends BlockWithEntity {
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack) {
 
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof FilingCabinetEntity)
+        if (be instanceof FilingCabinetEntity && stack.hasTag())
             ((FilingCabinetEntity)be).deserializeInventory(stack.getTag());
     }
 
