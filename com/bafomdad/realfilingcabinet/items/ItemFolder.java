@@ -164,7 +164,7 @@ public class ItemFolder extends Item implements IFolder {
 	public static ItemStack insert(ItemStack folder, ItemStack items, boolean simulate) {
 		
 		if (folder.hasCapability(CapabilityProviderFolder.FOLDER_CAP, null))
-			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).insertItems(items, false);
+			return folder.getCapability(CapabilityProviderFolder.FOLDER_CAP, null).insertItems(items, simulate);
 		
 		return items;
 	}
