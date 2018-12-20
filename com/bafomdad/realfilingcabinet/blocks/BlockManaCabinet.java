@@ -85,8 +85,7 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 		
 		world.setBlockState(pos, state.withProperty(FACING, entity.getHorizontalFacing().getOpposite()), 2);
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile != null && tile instanceof TileManaCabinet)
-		{
+		if (tile instanceof TileManaCabinet) {
 			if (stack.hasTagCompound())
 				((TileManaCabinet)tile).readInv(stack.getTagCompound());
 		}
@@ -149,10 +148,8 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 			if (!tileMana.getCabinetOwner().equals(player.getUniqueID()) && !tileMana.hasKeyCopy(player, tileMana.getCabinetOwner()))
 				return;
 		}
-		if (!player.isSneaking() && !stack.isEmpty())
-		{
-			if (stack.getItem() instanceof ItemKeys)
-			{
+		if (!player.isSneaking() && !stack.isEmpty()) {
+			if (stack.getItem() instanceof ItemKeys) {
 				if (!tileMana.isCabinetLocked()) {
 					if (stack.getItemDamage() == 0)
 						tileMana.setOwner(player.getUniqueID());
@@ -184,10 +181,8 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 				return;
 			}
 		}
-		if (!player.isSneaking() && stack.isEmpty())
-		{
-			if (!tileMana.getWorld().isRemote)
-			{
+		if (!player.isSneaking() && stack.isEmpty()) {
+			if (!tileMana.getWorld().isRemote) {
 				if (tileMana.isOpen)
 					tileMana.isOpen = false;
 				else
@@ -196,13 +191,10 @@ public class BlockManaCabinet extends Block implements IFilingCabinet {
 			}
 			tileMana.markBlockForUpdate();
 		}
-		if (player.isSneaking() && stack.isEmpty() && tileMana.isOpen)
-		{
-			for (int i = tileMana.getInv().getSlots() - 1; i >= 0; i--)
-			{
+		if (player.isSneaking() && stack.isEmpty() && tileMana.isOpen) {
+			for (int i = tileMana.getInv().getSlots() - 1; i >= 0; i--) {
 				ItemStack folder = tileMana.getInv().getStackInSlot(i);
-				if (!folder.isEmpty())
-				{
+				if (!folder.isEmpty()) {
 					tileMana.getInv().setStackInSlot(i, ItemStack.EMPTY);
 					player.setHeldItem(EnumHand.MAIN_HAND, folder);
 					tileMana.markBlockForUpdate();

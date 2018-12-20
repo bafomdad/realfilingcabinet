@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import vazkii.botania.api.mana.IManaItem;
 import vazkii.botania.api.mana.IManaPool;
+import vazkii.botania.api.mana.IManaReceiver;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.ISparkEntity;
 
@@ -34,10 +35,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({
-	@Optional.Interface(iface = "vazkii.botania.api.mana.IManaPool", modid = "botania"),
+	@Optional.Interface(iface = "vazkii.botania.api.mana.IManaReceiver", modid = "botania"),
 	@Optional.Interface(iface = "vazkii.botania.api.mana.spark.ISparkAttachable", modid = "botania")
 })
-public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILockableCabinet, IManaPool, ISparkAttachable {
+public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILockableCabinet, IManaReceiver, ISparkAttachable {
 
 	private ItemStackHandler inv = new ItemStackHandler(8);
 	private UUID owner;
@@ -291,19 +292,4 @@ public class TileManaCabinet extends TileFilingCabinet implements ITickable, ILo
 		
 		return 1000;
 	}
-
-	@Override
-	public EnumDyeColor getColor() {
-
-		return null;
-	}
-
-	@Override
-	public boolean isOutputtingPower() {
-
-		return false;
-	}
-
-	@Override
-	public void setColor(EnumDyeColor arg0) {}
 }
