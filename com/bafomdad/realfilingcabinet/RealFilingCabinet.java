@@ -42,6 +42,7 @@ public class RealFilingCabinet {
 	public static boolean topLoaded = Loader.isModLoaded("theoneprobe");
 	public static boolean wailaLoaded = Loader.isModLoaded("waila");
 	public static boolean tcLoaded = Loader.isModLoaded("thaumcraft");
+	public static boolean crtLoaded = Loader.isModLoaded("crafttweaker");
 	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {

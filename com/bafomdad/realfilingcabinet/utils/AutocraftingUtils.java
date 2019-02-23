@@ -15,8 +15,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.integration.CraftTweakerRFC;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
@@ -31,6 +33,10 @@ public class AutocraftingUtils {
 			Iterator iter = CraftingManager.REGISTRY.iterator();
 			while (iter.hasNext()) {
 				IRecipe recipe = (IRecipe)iter.next();
+				if (RealFilingCabinet.crtLoaded) {
+					recipe = CraftTweakerRFC.getTweakedRecipe(stack);
+					if (recipe != null) return recipe;
+				}
 	    		if ((recipe instanceof ShapedRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe) 
 	    				&& recipe.getRecipeOutput().getItem() == stack.getItem()
 	    				&& (!recipe.getRecipeOutput().getHasSubtypes() || recipe.getRecipeOutput().getItemDamage() == stack.getItemDamage())) {
@@ -59,38 +65,56 @@ public class AutocraftingUtils {
 	
 	public static boolean canCraft(ItemStack input, TileEntityRFC tile) {
 		
-		if (input.isEmpty()) return false;
-		
-		return consumeRecipeIngredients(input, (IItemHandler)getFakeInv(tile));
+		if (isUncraftable(input, tile)) return false;
+		IRecipe recipe = getRecipeFor(input);
+		if (recipe == null) {
+			setUncraftableItem(input, tile);
+			return false;
+		}
+		return consumeRecipeIngredients(recipe, (IItemHandler)getFakeInv(tile));
 	}
 	
 	public static void doCraft(ItemStack input, IItemHandler inv) {
 		
-		consumeRecipeIngredients(input, inv);
+		IRecipe recipe = getRecipeFor(input);
+		consumeRecipeIngredients(recipe, inv);
 	}
 	
-	public static boolean consumeRecipeIngredients(ItemStack input, IItemHandler inv) {
+	private static void setUncraftableItem(ItemStack stack, TileEntityRFC tile) {
 		
-		IRecipe recipe = getRecipeFor(input);
-		if (recipe != null) {
-			NonNullList<Ingredient> ingredients = recipe.getIngredients();
-			for (int i = 0; i < ingredients.size(); i++) {
-				Ingredient ingredient = ingredients.get(i);
-				boolean flag = ingredient.getMatchingStacks().length > 0;
-				if (flag) {
-					ItemStack stack = ingredient.getMatchingStacks()[0];
-					if (stack.isEmpty())
-						return false;
-					if (stack.getCount() > 1)
-						stack.setCount(1);
-					if (stack.getItemDamage() == -1 || stack.getItemDamage() == Short.MAX_VALUE)
-						stack.setItemDamage(0);
-					if (!consumeFromInventory(stack, inv))
-						return false;
-				}
+		tile.uncraftableItem = stack;
+	}
+	
+	private static boolean isUncraftable(ItemStack stack, TileEntityRFC tile) {
+		
+		return stack.isEmpty() || ItemStack.areItemsEqualIgnoreDurability(stack, tile.uncraftableItem);
+	}
+	
+	public static boolean consumeRecipeIngredients(IRecipe recipe, IItemHandler inv) {
+		
+//		IRecipe recipe = getRecipeFor(input);
+//		if (recipe == null) {
+//			setUncraftableItem(input, inv);
+//			return false;
+//		}
+		NonNullList<Ingredient> ingredients = recipe.getIngredients();
+		for (int i = 0; i < ingredients.size(); i++) {
+			Ingredient ingredient = ingredients.get(i);
+			boolean flag = ingredient.getMatchingStacks().length > 0;
+			if (flag) {
+				ItemStack stack = ingredient.getMatchingStacks()[0];
+				if (stack.isEmpty())
+					return false;
+				if (stack.getCount() > 1)
+					stack.setCount(1);
+				if (stack.getItemDamage() == -1 || stack.getItemDamage() == Short.MAX_VALUE)
+					stack.setItemDamage(0);
+				if (!consumeFromInventory(stack, inv))
+					return false;
 			}
-			outputSize = recipe.getRecipeOutput().getCount();
 		}
+		outputSize = recipe.getRecipeOutput().getCount();
+		
 		if (inv instanceof InventoryRFC)
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(((InventoryRFC)inv).getTile());
 		return true;
