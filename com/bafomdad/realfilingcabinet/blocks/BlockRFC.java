@@ -38,6 +38,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.TabRFC;
@@ -252,8 +253,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 				stack.setCount(AutocraftingUtils.getOutputSize());
 				if (!UpgradeHelper.isCreative(tileRFC))
 					AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());
-				if (!player.inventory.addItemStackToInventory(stack))
-					player.dropItem(stack.getItem(), AutocraftingUtils.getOutputSize());
+				ItemHandlerHelper.giveItemToPlayer(player, stack);
 			}
 		}
 	}

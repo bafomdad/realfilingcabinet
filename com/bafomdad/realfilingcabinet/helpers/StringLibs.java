@@ -28,6 +28,7 @@ public class StringLibs {
 	public static String RFC_TAPED = "RFC_whiteoutTaped";
 	public static String RFC_PLACEMODE = "RFC_placeMode";
 	public static String RFC_IGNORENBT = "RFC_ignoreNBT";
+	public static String RFC_CRAFTABLE = "RFC_isCraftable";
 	
 	// ENTITY
 	public static String RFC_MOBUPGRADE = "RFC_mobUpgrade";

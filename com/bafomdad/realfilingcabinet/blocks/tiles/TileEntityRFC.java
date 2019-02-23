@@ -60,6 +60,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 	public String upgrades = "";
 	public List<int[]> smeltingJobs = Lists.newArrayList();
 	public int fuelTime = 0;
+	public ItemStack uncraftableItem = ItemStack.EMPTY;
 	
 	// Rendering variables
 	public static final float offsetSpeed = 0.1F;
@@ -138,6 +139,7 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		tag.setTag("inventory", inv.serializeNBT());
 		tag.setBoolean("isOpen", this.isOpen);
 		tag.setBoolean(StringLibs.TAG_CREATIVE, this.isCreative);
+		tag.setTag(StringLibs.RFC_CRAFTABLE, uncraftableItem.serializeNBT());
 		
 		if (owner != null)
 			tag.setString("Own", owner.toString());
@@ -155,6 +157,8 @@ public class TileEntityRFC extends TileFilingCabinet implements ITickable, ILock
 		inv.deserializeNBT(tag.getCompoundTag("inventory"));
 		this.isOpen = tag.getBoolean("isOpen");
 		this.isCreative = tag.getBoolean(StringLibs.TAG_CREATIVE);
+		if (tag.hasKey(StringLibs.RFC_CRAFTABLE))
+			this.uncraftableItem = new ItemStack((NBTTagCompound) tag.getTag(StringLibs.RFC_CRAFTABLE));
 		
 		this.owner = null;
 		if (tag.hasKey("Own"))
