@@ -12,12 +12,11 @@ public class RFCPacketHandler {
 	public static void init() {
 		
 		INSTANCE.registerMessage(PacketMouse.Handler.class, PacketMouse.class, packetId++, Side.SERVER);
-		INSTANCE.registerMessage(PacketRFC.ServerHandler.class, PacketRFC.class, packetId++, Side.SERVER);
 //		INSTANCE.registerMessage(RFCTileMessage.Handler.class, RFCTileMessage.class, packetId++, Side.SERVER);
 	}
 	
 	public static void initClient() {
 		
-		INSTANCE.registerMessage(PacketRFC.ClientHandler.class, PacketRFC.class, packetId++, Side.CLIENT);
+		INSTANCE.registerMessage(PacketRFC.Handler.class, PacketRFC.class, packetId++, Side.CLIENT);
 	}
 }

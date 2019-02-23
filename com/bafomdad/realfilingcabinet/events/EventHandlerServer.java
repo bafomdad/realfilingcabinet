@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketCollectItem;
 import net.minecraft.tileentity.TileEntity;
@@ -277,8 +278,9 @@ public class EventHandlerServer {
 	@SubscribeEvent
 	public void onContainerOpen(PlayerContainerEvent.Open event) {
 		
-		if (event.getEntityPlayer() instanceof EntityPlayerMP)
-			event.getContainer().addListener(new RFCContainerListener((EntityPlayerMP)event.getEntityPlayer()));
+		Container cont = event.getContainer();
+		if (cont.getClass().getName().contains("forestry") && event.getEntityPlayer() instanceof EntityPlayerMP)
+			cont.addListener(new RFCContainerListener((EntityPlayerMP)event.getEntityPlayer()));
 	}
 	
 	@SubscribeEvent

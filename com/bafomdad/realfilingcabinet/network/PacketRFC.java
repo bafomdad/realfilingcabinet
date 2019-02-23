@@ -39,17 +39,7 @@ public class PacketRFC implements IMessage {
 		ByteBufUtils.writeTag(buf, tags);
 	}
 	
-	public static class ServerHandler implements IMessageHandler<PacketRFC, PacketRFC> {
-
-		@Override
-		public PacketRFC onMessage(PacketRFC message, MessageContext ctx) {
-
-			return null;
-		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public static class ClientHandler implements IMessageHandler<PacketRFC, PacketRFC> {
+	public static class Handler implements IMessageHandler<PacketRFC, IMessage> {
 
 		@Override
 		public PacketRFC onMessage(PacketRFC message, MessageContext ctx) {
