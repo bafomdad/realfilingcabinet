@@ -1,6 +1,7 @@
 package com.bafomdad.realfilingcabinet.utils;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -30,13 +31,14 @@ public class AutocraftingUtils {
 	private static IRecipe getRecipeFor(ItemStack stack) {
 		
 		if (!stack.isEmpty()) {
+			IRecipe recipe;
+			if (RealFilingCabinet.crtLoaded) {
+				recipe = CraftTweakerRFC.getTweakedRecipe(stack);
+				if (recipe != null) return recipe;
+			}
 			Iterator iter = CraftingManager.REGISTRY.iterator();
 			while (iter.hasNext()) {
-				IRecipe recipe = (IRecipe)iter.next();
-				if (RealFilingCabinet.crtLoaded) {
-					recipe = CraftTweakerRFC.getTweakedRecipe(stack);
-					if (recipe != null) return recipe;
-				}
+				recipe = (IRecipe)iter.next();
 	    		if ((recipe instanceof ShapedRecipes || recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe) 
 	    				&& recipe.getRecipeOutput().getItem() == stack.getItem()
 	    				&& (!recipe.getRecipeOutput().getHasSubtypes() || recipe.getRecipeOutput().getItemDamage() == stack.getItemDamage())) {
