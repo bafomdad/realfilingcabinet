@@ -6,7 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import crafttweaker.CraftTweakerAPI;
-import crafttweaker.api.recipes.*;
+import crafttweaker.api.recipes.ICraftingRecipe;
+import crafttweaker.api.recipes.IRecipeManager;
+import crafttweaker.api.recipes.ShapedRecipe;
+import crafttweaker.api.recipes.ShapelessRecipe;
 import crafttweaker.mc1120.item.MCItemStack;
 import crafttweaker.mc1120.recipes.RecipeConverter;
 
