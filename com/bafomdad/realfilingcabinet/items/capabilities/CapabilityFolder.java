@@ -33,7 +33,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-// Funwayguy: Your new capability based class for dealing with folder stuff. Unique to each item rootStack so feel free to add/remove stuf.
+// Funwayguy: Your new capability based class for dealing with folder stuff. Unique to each item rootStack so feel free to add/remove stuff.
 public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
 {
     // The ItemStack instance you're working within (REFERENCE PURPOSES ONLY!)
@@ -90,7 +90,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             return ItemStack.EMPTY;
         }
         
-        ItemStack items = getItemStack().copy();
+        ItemStack items = getItemStack();
         items.setCount((int)Math.min(count, items.getMaxStackSize()));
         
         if(!sim)
@@ -148,9 +148,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             return true;
         } else if(obj instanceof ItemStack)
         {
-            ItemStack stack = ((ItemStack)obj).copy();
+            ItemStack stack = ((ItemStack)obj);
             this.displayName = stack.getDisplayName();
-            this.contents = stack.copy();
+            this.contents = stack;
             this.count = 1;
             stack.setCount(1);
             
@@ -204,10 +204,11 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
             deserializeNBT(new NBTTagCompound());
         }
         
-        if(isItemStack())
+        if(isItemStack()) // wat? probably future use.
         {
-            ItemStack item = getItemStack().copy();
-            item.setCount(1);
+//            ItemStack item = getItemStack().copy();
+//            item.setCount(1);
+        	
         } else if(isFluidStack())
         {
             return getFluidStack().copy();
