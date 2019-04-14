@@ -150,7 +150,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
         {
             ItemStack stack = ((ItemStack)obj);
             this.displayName = stack.getDisplayName();
-            this.contents = stack;
+            this.contents = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
             this.count = 1;
             stack.setCount(1);
             
@@ -162,9 +162,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
                 this.remSize = stack.getItemDamage();
             }
             
-            if(rootStack.getItemDamage() != ItemFolder.FolderType.NBT.ordinal())
+            if(rootStack.getItemDamage() == ItemFolder.FolderType.NBT.ordinal())
             {
-                stack.setTagCompound(null); // Delete the tags if this folder doesn't support it
+            	((ItemStack)this.contents).setTagCompound(stack.getTagCompound()); // Set the tags if this folder supports it
             }
             
             return true;
