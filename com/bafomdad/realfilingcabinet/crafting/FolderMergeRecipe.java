@@ -92,6 +92,8 @@ public class FolderMergeRecipe extends net.minecraftforge.registries.IForgeRegis
 			ItemStack stack1 = ic.getStackInSlot(hostFolder);
 			ItemStack stack2 = ic.getStackInSlot(mergeFolder);
 			
+			if (ItemFolder.getObject(stack1) == null || ItemFolder.getObject(stack2) == null) return ItemStack.EMPTY;
+			
 			if (((ItemStack)ItemFolder.getObject(stack1)).getItem() == ((ItemStack)ItemFolder.getObject(stack2)).getItem() && ((ItemStack)ItemFolder.getObject(stack1)).getItemDamage() == ((ItemStack)ItemFolder.getObject(stack2)).getItemDamage())
 			{
 				long mergeCount = ItemFolder.getFileSize(stack2);
