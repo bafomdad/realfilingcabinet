@@ -121,7 +121,7 @@ public class TopRFC {
 					if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.FLUID.ordinal()) {
 						name += " - " + storedSize + "mB";
 					}
-					else if (folder.getItem() == RFCItems.dyedFolder || (folder.getItem() == RFCItems.folder && (folder.getItemDamage() != FolderType.FLUID.ordinal() && folder.getItemDamage() != FolderType.DURA.ordinal())))
+					else if (folder.getItem() == RFCItems.autoFolder || folder.getItem() == RFCItems.dyedFolder || (folder.getItem() == RFCItems.folder && (folder.getItemDamage() != FolderType.FLUID.ordinal() && folder.getItemDamage() != FolderType.DURA.ordinal())))
 						name += " - " + storedSize;
 					info.horizontal().text(name);
 				}

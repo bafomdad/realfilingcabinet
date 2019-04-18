@@ -69,6 +69,8 @@ public class EventHandlerClient {
 		ModelLoader.setCustomModelResourceLocation(RFCItems.filter, 0, new ModelResourceLocation(RFCItems.filter.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(RFCItems.debugger, 0, new ModelResourceLocation(RFCItems.debugger.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(RFCItems.mysteryFolder, 0, new ModelResourceLocation(RFCItems.mysteryFolder.getRegistryName(), "inventory"));
+//		ModelLoader.setCustomModelResourceLocation(RFCItems.autoFolder, 0, new ModelResourceLocation(RFCItems.autoFolder.getRegistryName(), "inventory"));
+//		ModelLoader.setCustomModelResourceLocation(RFCItems.autoFolder, 1, new ModelResourceLocation(RFCItems.autoFolder.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(RFCItems.suitcase, 0, new ModelResourceLocation(RealFilingCabinet.MOD_ID + ":itemsuitcase", "inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(RFCItems.keys, 0, new ModelResourceLocation(RFCItems.keys.getRegistryName() + "_" + RFCItems.keys.keyTypes[0], "inventory"));

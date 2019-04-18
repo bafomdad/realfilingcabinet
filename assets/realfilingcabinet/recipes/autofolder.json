@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "realfilingcabinet:folder_auto",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    " R ",
+    "RFR",
+    " P "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "realfilingcabinet:emptyfolder",
+	  "data": 0
+    },
+	"P": {
+	  "item": "minecraft:piston"
+	},
+	"R": {
+	  "item": "minecraft:redstone"
+	}
+  }
+}

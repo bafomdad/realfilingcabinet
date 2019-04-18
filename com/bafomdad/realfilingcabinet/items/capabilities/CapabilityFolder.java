@@ -114,6 +114,12 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound>
         if (rootStack.getItem() == RFCItems.folder && rootStack.getItemDamage() == FolderType.DURA.ordinal()) {
         	return items;
         }
+        if (rootStack.getItem() == RFCItems.autoFolder && getItemStack().isEmpty()) {
+        	if (!sim) {
+        		this.contents = new ItemStack(items.getItem(), 1, items.getItemDamage());
+        		rootStack.setItemDamage(1);
+        	}
+        }
         if (rootStack.getItem() == RFCItems.dyedFolder) {
             long newCount = Math.min(count + items.getCount(), ConfigRFC.folderSizeLimit);  
             long remainder = ConfigRFC.folderSizeLimit - count;

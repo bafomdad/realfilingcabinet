@@ -117,6 +117,19 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 					}
 				}
 			}
+			if (stack.getItem() == RFCItems.autoFolder && ItemFolder.getObject(stack) != null) {
+				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
+				if (ItemFolder.getObject(stack) instanceof ItemStack) {
+					long count = ItemFolder.getFileSize(stack);
+					if (count > 0) {
+						ItemStack folderStack = (ItemStack)ItemFolder.getObject(stack);
+						int meta = folderStack.getItemDamage();
+						long extract = Math.min(folderStack.getMaxStackSize(), count);
+						
+						return new ItemStack(folderStack.getItem(), (int)extract, meta);
+					}
+				}
+			}
 			if (stack.getItem() == RFCItems.folder && ItemFolder.getObject(stack) != null) {
 				StorageUtils.checkTapeNBT(ic.getStackInSlot(folder), false);
 				if (ItemFolder.getObject(stack) instanceof ItemStack) {
@@ -187,7 +200,7 @@ public class FolderExtractRecipe extends net.minecraftforge.registries.IForgeReg
 
         NonNullList<ItemStack> ret = NonNullList.withSize(ic.getSizeInventory(), ItemStack.EMPTY);
         for (int i = 0; i < ret.size(); i++) {
-        	if (ic.getStackInSlot(i).getItem() == RFCItems.folder || ic.getStackInSlot(i).getItem() == RFCItems.dyedFolder)
+        	if (ic.getStackInSlot(i).getItem() == RFCItems.folder || ic.getStackInSlot(i).getItem() == RFCItems.dyedFolder || ic.getStackInSlot(i).getItem() == RFCItems.autoFolder)
         		ret.set(i, ic.getStackInSlot(i).getItem().getContainerItem(ic.getStackInSlot(i)));
         	else
         		ret.set(i, ItemStack.EMPTY);

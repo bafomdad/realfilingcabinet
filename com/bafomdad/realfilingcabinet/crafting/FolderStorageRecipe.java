@@ -86,7 +86,7 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 			ItemStack stack = ic.getStackInSlot(i);
 			if (!stack.isEmpty())
 			{
-				if (stack.getItem() instanceof IEmptyFolder)
+				if (stack.getItem() instanceof IEmptyFolder || stack.getItem() == RFCItems.autoFolder)
 					emptyFolder = i;
 				else
 					recipestack = i;
@@ -99,6 +99,11 @@ public class FolderStorageRecipe extends net.minecraftforge.registries.IForgeReg
 			
 			if (folder.getItem() == RFCItems.emptyDyedFolder) {
 				ItemStack newFolder = new ItemStack(RFCItems.dyedFolder, 1, folder.getItemDamage());
+				ItemFolder.setObject(newFolder, stack1);
+				return newFolder;
+			}
+			if (folder.getItem() == RFCItems.autoFolder) {
+				ItemStack newFolder = new ItemStack(RFCItems.autoFolder, 1, 1);
 				ItemFolder.setObject(newFolder, stack1);
 				return newFolder;
 			}

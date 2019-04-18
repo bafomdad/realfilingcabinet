@@ -52,6 +52,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemFolder;
+import com.bafomdad.realfilingcabinet.items.ItemFolder.FolderType;
 import com.bafomdad.realfilingcabinet.items.ItemKeys;
 import com.bafomdad.realfilingcabinet.items.ItemUpgrades;
 import com.bafomdad.realfilingcabinet.utils.*;
@@ -295,11 +296,11 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 			}
 			if (stack.getItem() instanceof IFolder && tileRFC.isOpen) {
 				if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER) != null) {
-					if (stack.getItemDamage() == 1)
+					if (stack.getItem() == RFCItems.folder && stack.getItemDamage() == FolderType.ENDER.ordinal())
 						player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					return;
 				}
-				if (stack.getItemDamage() == 4 && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null) {
+				if (stack.getItemDamage() == FolderType.FLUID.ordinal() && UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null) {
 					for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
 						ItemStack tileStack = tileRFC.getInventory().getTrueStackInSlot(i);
 						if (tileStack.isEmpty()) {
@@ -311,7 +312,7 @@ public class BlockRFC extends Block implements IFilingCabinet, INetworked {
 					}
 					return;
 				}
-				else if (stack.getItemDamage() != 1 && !tileRFC.getWorld().isRemote) {
+				else if (!(stack.getItem() == RFCItems.folder && stack.getItemDamage() == 1) && !tileRFC.getWorld().isRemote) {
 					if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_FLUID) != null && !FluidUtils.canAcceptFluidContainer(stack))
 						return;
 

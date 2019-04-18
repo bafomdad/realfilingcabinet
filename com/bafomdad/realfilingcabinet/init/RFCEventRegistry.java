@@ -81,6 +81,7 @@ public class RFCEventRegistry {
 		event.getRegistry().register(RFCItems.suitcase);
 		event.getRegistry().register(RFCItems.emptyDyedFolder);
 		event.getRegistry().register(RFCItems.dyedFolder);
+//		event.getRegistry().register(RFCItems.autoFolder);
 		
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 0), StringLibs.TAG_CREATIVE);
 		UpgradeHelper.registerUpgrade(new ItemStack(RFCItems.upgrades, 1, 1), StringLibs.TAG_CRAFT);
@@ -110,9 +111,11 @@ public class RFCEventRegistry {
 		event.getRegistry().register(new FolderStorageRecipe("nbtstoragefolder", new ItemStack(RFCItems.folder, 1, 5), new ItemStack(RFCItems.emptyFolder, 1, 4)));
 		for (int i = 0; i < EnumDyeColor.values().length; ++i)
 			event.getRegistry().register(new FolderStorageRecipe("dyedstoragefolder" + i, new ItemStack(RFCItems.dyedFolder, 1, i), new ItemStack(RFCItems.emptyDyedFolder, 1, i)));
+//		event.getRegistry().register(new FolderStorageRecipe("autostoragefolder", new ItemStack(RFCItems.autoFolder), new ItemStack(RFCItems.autoFolder)));
 		
 		event.getRegistry().register(new FolderExtractRecipe("folderextract", new ItemStack(RFCItems.folder)));
 		event.getRegistry().register(new FolderExtractRecipe("dyedfolderextract", new ItemStack(RFCItems.dyedFolder)));
+//		event.getRegistry().register(new FolderExtractRecipe("autofolderextract", new ItemStack(RFCItems.autoFolder)));
 		event.getRegistry().register(new FolderMergeRecipe("foldermerge"));
 		event.getRegistry().register(new FolderTapeRecipe("foldertape"));
 	}

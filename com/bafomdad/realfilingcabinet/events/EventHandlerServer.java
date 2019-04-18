@@ -286,7 +286,7 @@ public class EventHandlerServer {
 	@SubscribeEvent
 	public void onAttachCapability(AttachCapabilitiesEvent<ItemStack> event) {
 		
-		if(event.getObject().getItem() == RFCItems.folder || event.getObject().getItem() == RFCItems.dyedFolder) {
+		if(event.getObject().getItem() == RFCItems.folder || event.getObject().getItem() == RFCItems.dyedFolder || (event.getObject().getItem() == RFCItems.autoFolder)) {
 			event.addCapability(CapabilityProviderFolder.FOLDER_ID, new CapabilityProviderFolder(event.getObject()));
 		}
 	}

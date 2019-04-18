@@ -33,8 +33,13 @@ public class StorageUtils {
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack loopinv = tile.getInventory().getStackFromFolder(i);
-			if (loopinv.isEmpty())
-				continue;
+			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
+			if (loopinv.isEmpty()) {
+				if (folder.getItem() == RFCItems.autoFolder) {
+					return i;
+				}
+ 				continue;
+			}
 //			if(loopinv.isEmpty())
 //				System.out.println("EMPTY STACK IN FOLDER! " + loopinv.getCount());
 			
@@ -45,7 +50,6 @@ public class StorageUtils {
 						return i;
 				}
 			}
-			ItemStack folder = tile.getInventory().getTrueStackInSlot(i);
 			if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.NBT.ordinal()) {
 				if (!ItemStack.areItemStackTagsEqual(stack, loopinv))
 					continue;
@@ -59,7 +63,7 @@ public class StorageUtils {
 				if (folder.getItem() == RFCItems.dyedFolder && ItemFolder.getFileSize(folder) < ConfigRFC.folderSizeLimit) {
 					return i;
 				}
-				else if (folder.getItem() == RFCItems.folder)
+				else if (folder.getItem() == RFCItems.folder || folder.getItem() == RFCItems.autoFolder)
 					return i;
 			}
 		}
@@ -100,6 +104,11 @@ public class StorageUtils {
 				}
 			}
 			if (!folder.isEmpty()) {
+				if (folder.getItem() == RFCItems.autoFolder && loopinv.isEmpty()) {
+					ItemStack toInsert = ItemFolder.insert(folder, stack, false);
+					player.setHeldItem(EnumHand.MAIN_HAND, toInsert);
+					break;
+				}
 				if (folder.getItem() == RFCItems.folder && folder.getItemDamage() == FolderType.DURA.ordinal()) {
 					if (!DurabilityUtils.matchDurability(tile, stack))
 						continue;
