@@ -130,6 +130,11 @@ public class ItemEmptyFolder extends Item implements IEmptyFolder {
 		
 		if (!player.world.isRemote && stack.getItemDamage() == FolderType.MOB.ordinal()) {
 			if (!ConfigRFC.mobUpgrade) return false;
+			String entityblacklist = target.getClass().getSimpleName();
+			for (String toBlacklist : ConfigRFC.mobFolderBlacklist) {
+				if (toBlacklist.contains(entityblacklist))
+					return false;
+			}
 			
 			ItemStack newFolder = new ItemStack(RFCItems.folder, 1, 3);
 			if (ItemFolder.setObject(newFolder, target)) {
