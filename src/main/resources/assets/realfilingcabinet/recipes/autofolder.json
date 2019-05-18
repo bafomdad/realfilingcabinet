@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "realfilingcabinet:autofolder",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "PR ",
+    "PRR",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+	"P": {
+	  "item": "minecraft:paper"
+	},
+	"R": {
+	  "item": "minecraft:redstone"
+	}
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "mobUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 4
+  },
+  "pattern": [
+    "IGI",
+    "BFR",
+    "ISI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "R": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

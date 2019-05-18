@@ -1,0 +1,81 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+repositories {
+    maven { 
+		// CraftTweaker (aka MineTweaker3)
+        name 'jared maven'
+        url "http://maven.blamejared.com/"
+    }
+	maven { 
+		// The One Probe
+		name 'tterrag maven'
+		url "http://maven.tterrag.com/"
+	}
+	maven {
+		// WAILA
+		url "http://tehnut.info/maven"
+	}
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+
+version = "${mc_version}-${mod_version}"
+group = "com.bafomdad.realfilingcabinet"
+archivesBaseName = "realfilingcabinet"
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2768"
+    runDir = "run"
+    mappings = "stable_39"
+    makeObfSourceJar = false 
+	
+	replace "@VERSION@", "${mod_version}"
+    replaceIn "RealFilingCabinet.java"
+}
+
+dependencies {
+	// compile against the CT API
+	compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
+	
+	deobfCompile "mcp.mobius.waila:Hwyla:${waila_version}"
+	deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"
+	
+	// compile against botania
+	deobfCompile "vazkii.botania:Botania:r1.10-354"
+	
+	// compile against azanor's stuff
+	deobfCompile "azanor.thaumcraft:Thaumcraft:1.12.2-6.1.BETA26"
+	deobfCompile "azanor.baubles:Baubles:1.12-1.5.2"
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

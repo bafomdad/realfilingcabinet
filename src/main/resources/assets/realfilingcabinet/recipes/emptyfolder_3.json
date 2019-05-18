@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "realfilingcabinet:emptyfolder",
+    "data": 3,
+    "count": 4
+  },
+  "pattern": [
+    "PB ",
+    "PWL",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  }
+}

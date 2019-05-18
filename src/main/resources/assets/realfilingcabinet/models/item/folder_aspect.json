@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "realfilingcabinet:items/emptyfolder_aspect",
+		"layer1": "realfilingcabinet:items/folder_aspect_overlay"
+    }
+}

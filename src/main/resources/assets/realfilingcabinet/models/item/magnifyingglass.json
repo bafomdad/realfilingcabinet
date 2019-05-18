@@ -1,0 +1,10 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "realfilingcabinet:items/magnifying_glass"
+    },
+	"overrides": [
+		{ "predicate": { "booltime": 0.0000000 }, "model": "realfilingcabinet:item/magnifyingglass" },
+		{ "predicate": { "booltime": 0.1000000 }, "model": "realfilingcabinet:item/magnifyingglass1" }
+	]
+}

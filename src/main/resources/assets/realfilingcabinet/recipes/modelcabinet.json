@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "realfilingcabinet:modelcabinet"
+  },
+  "pattern": [
+    "III",
+    "ICI",
+    "III"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+	  "type": "forge:ore_dict",
+      "ore": "chest"
+    },
+    "I": {
+      "item": "minecraft:iron_bars"
+    }
+  }
+}

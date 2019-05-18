@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "realfilingcabinet:emptydyedfolder",
+    "data": 3,
+    "count": 4
+  },
+  "pattern": [
+    "P  ",
+    "PD ",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+	"D": {
+	  "type": "forge:ore_dict",
+	  "ore": "dyeLightBlue"
+	}
+  }
+}

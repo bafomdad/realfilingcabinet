@@ -1,0 +1,29 @@
+{
+  "conditions": [
+   {
+	  "type": "realfilingcabinet:config",
+	  "key": "smeltingUpgrade"
+   }
+  ],
+  "result": {
+    "item": "realfilingcabinet:upgrade",
+    "data": 7
+  },
+  "pattern": [
+    "CSC",
+    "SFS",
+    "CSC"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "minecraft:coal_block"
+    },
+    "S": {
+      "item": "minecraft:furnace"
+    },
+    "F": {
+      "item": "realfilingcabinet:modelcabinet"
+    }
+  }
+}

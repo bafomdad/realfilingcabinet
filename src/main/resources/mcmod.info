@@ -1,0 +1,16 @@
+[
+{
+  "modid": "realfilingcabinet",
+  "name": "Real Filing Cabinet",
+  "description": "Filing cabinets! That is all.",
+  "version": "0.2.0",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["bafomdad"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

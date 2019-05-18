@@ -1,0 +1,4 @@
+{
+	"squeak": { "sounds":["realfilingcabinet:squeak"], "subtitle": "realfilingcabinet.subtitle.squeak" },
+	"wooden": { "sounds": ["realfilingcabinet:wooden"], "subtitle": "realfilingcabinet.subtitle.wooden" }
+}
