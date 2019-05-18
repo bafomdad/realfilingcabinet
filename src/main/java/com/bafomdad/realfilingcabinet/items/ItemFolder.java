@@ -58,6 +58,9 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 			extract = Math.min(cap.getItemStack().getMaxStackSize(), count);
 			
 		item = stack.copy();
+		if (stack.getItemDamage() == FolderType.DURA.ordinal() && count == 0)
+			FolderUtils.get(item).setRemainingDurability(0);
+			
 		FolderUtils.get(item).remove(extract);
 		FolderUtils.get(item).setExtractSize(-(int)extract);
 		
@@ -80,7 +83,6 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
 		ItemStack folder = player.getHeldItem(hand);
-//		EnumActionResult ear = FolderType.values()[folder.getItemDamage()].placeObject(folder, player, world, pos, hand, side, hitX, hitY, hitZ);
 		EnumActionResult ear = this.placeObject(folder, player, world, pos, hand, side, hitX, hitY, hitZ);
 		if (ear != EnumActionResult.SUCCESS) {
 			RayTraceResult rtr = rayTrace(world, player, true);

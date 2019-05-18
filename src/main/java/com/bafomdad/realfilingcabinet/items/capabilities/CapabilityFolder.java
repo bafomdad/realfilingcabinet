@@ -43,7 +43,10 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		
 		if (isItemStack()) {
 			ItemStack item = getItemStack();
-			list.add(TextHelper.format(count) + " " + item.getDisplayName());
+			if (remSize != 0)
+				list.add(TextHelper.format(count) + " " + item.getDisplayName() + " [" + remSize + " / " + item.getMaxDamage() + "]");
+			else
+				list.add(TextHelper.format(count) + " " + item.getDisplayName());
 		}
 		if (isFluidStack()) {
 			FluidStack fluid = getFluidStack();

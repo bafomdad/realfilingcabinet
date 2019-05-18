@@ -151,18 +151,16 @@ public enum FolderType {
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
-				int remSize = stack.getItemDamage();
-				
-				if (remSize == 0) {
-					cap.setCount(cap.getCount() + stack.getCount());
-					stack.setCount(0);
-					return ItemStack.EMPTY;
-				}
-				int storedRem = cap.setRemainingDurability(stack.getMaxDamage() - stack.getItemDamage());
-				if (storedRem >= stack.getMaxDamage()) {
+
+				cap.setRemainingDurability(cap.getRemainingDurability() + (stack.getMaxDamage() - stack.getItemDamage()));
+				int newRem = cap.getRemainingDurability();
+
+				if (newRem >= stack.getMaxDamage()) {
 					cap.setCount(cap.getCount() + 1);
-					cap.setRemainingDurability(storedRem - stack.getMaxDamage());
+					int newStoredRem = newRem - stack.getMaxDamage();
+					cap.setRemainingDurability(newStoredRem);
 				}
+				stack.shrink(1);
 			}
 			return ItemStack.EMPTY;
 		}
