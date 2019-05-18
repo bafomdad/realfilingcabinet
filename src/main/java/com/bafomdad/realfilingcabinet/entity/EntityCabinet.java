@@ -18,6 +18,7 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -161,13 +162,24 @@ public class EntityCabinet extends EntityTameable implements IEntityCabinet {
 		
 		super.readEntityFromNBT(tag);
 	
-		this.inventory.deserializeNBT(tag.getCompoundTag("inventory"));
+		this.inventory.deserializeNBT(tag.getCompoundTag(StringLibs.ENTITY_INV));
 		this.isRealEntity = tag.getBoolean("legitEntity");
 		this.homePos = tag.getLong("homePos");
 		this.upgrades = tag.getString(StringLibs.RFC_MOBUPGRADE);
 		
 		this.setTexture(tag.getString("hatTexture"));
 		this.setModel(tag.getString("hatModel"));
+		
+		// legacy conversion of old inventory system to the new one
+		if (tag.hasKey("Inventory")) {
+			NBTTagList tagList = tag.getTagList("Inventory", 10);
+			for (int i = 0; i < tagList.tagCount(); ++i) {
+				ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
+				if (!stack.isEmpty())
+					getInventory().setStackInSlot(i, stack);
+			}
+			tag.removeTag("Inventory");
+		}
 	}
 	
 	@Override
@@ -175,7 +187,7 @@ public class EntityCabinet extends EntityTameable implements IEntityCabinet {
 		
 		super.writeEntityToNBT(tag);
 		
-		tag.setTag("inventory", inventory.serializeNBT());
+		tag.setTag(StringLibs.ENTITY_INV, inventory.serializeNBT());
 		tag.setBoolean("legitEntity", isRealEntity);
 		tag.setLong("homePos", homePos);
 		tag.setString(StringLibs.RFC_MOBUPGRADE, upgrades);
