@@ -14,6 +14,7 @@ import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.init.RFCSounds;
+import com.bafomdad.realfilingcabinet.utils.AutocraftingUtils;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
@@ -32,6 +33,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class BlockFilingCabinet extends BlockRFC {
 	
@@ -93,7 +95,22 @@ public class BlockFilingCabinet extends BlockRFC {
 			tileRFC.markBlockForUpdate();
 			return;
 		}
-		StorageUtils.extractStackManually(tileRFC, player);
+		if (UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_CRAFT).isEmpty()) {
+			StorageUtils.extractStackManually(tileRFC, player);
+			return;
+		} else {
+			ItemStack toCraft = tileRFC.getFilter().copy();
+			if (!tileRFC.getFilter().isEmpty() && toCraft.isItemDamaged())
+				toCraft.setItemDamage(0);
+			
+			if (AutocraftingUtils.canCraft(tileRFC.getFilter(), tileRFC)) {
+				ItemStack stack = toCraft;
+				stack.setCount(AutocraftingUtils.getOutputSize());
+				if (!UpgradeHelper.isCreative(tileRFC))
+					AutocraftingUtils.doCraft(tileRFC.getFilter(), tileRFC.getInventory());
+				ItemHandlerHelper.giveItemToPlayer(player, stack);
+			}
+		}
 	}
 
 	@Override
