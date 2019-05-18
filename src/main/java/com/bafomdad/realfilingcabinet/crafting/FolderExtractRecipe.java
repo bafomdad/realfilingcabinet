@@ -68,6 +68,11 @@ public class FolderExtractRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 						return folderStack.copy();
 					
 					return new ItemStack(folderStack.getItem(), (int)extract, folderStack.getItemDamage());
+				} else if (count <= 0 && FolderUtils.get(stack1).getCap().getRemainingDurability() != 0) {
+					ItemStack damageableStack = (ItemStack)FolderUtils.get(stack1).getObject();
+					int damage = damageableStack.getMaxDamage() - FolderUtils.get(stack1).getCap().getRemainingDurability();
+					
+					return new ItemStack(damageableStack.getItem(), 1, damage);
 				}
 			}
 		}
