@@ -25,6 +25,7 @@ import com.bafomdad.realfilingcabinet.api.IEntityCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public class WailaLoader {
@@ -63,9 +64,9 @@ public class WailaLoader {
 		@Override
 	    public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
 	        
-			if (accessor.getNBTData().hasKey("inventory") && accessor.getEntity() instanceof IEntityCabinet) {
+			if (accessor.getNBTData().hasKey(StringLibs.ENTITY_INV) && accessor.getEntity() instanceof IEntityCabinet) {
 				currenttip.add("Currently carrying:");
-				NBTTagCompound tag = accessor.getNBTData().getCompoundTag("inventory");
+				NBTTagCompound tag = accessor.getNBTData().getCompoundTag(StringLibs.ENTITY_INV);
 		        NBTTagList tagList = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		        for (int i = 0; i < tagList.tagCount(); i++) {
 		            NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
@@ -82,7 +83,7 @@ public class WailaLoader {
 	    public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
 			
 			EntityCabinet cabinet = (EntityCabinet)ent;
-			tag.setTag("inventory", cabinet.getInventory().serializeNBT());
+			tag.setTag(StringLibs.ENTITY_INV, cabinet.getInventory().serializeNBT());
 			
 	        return tag;
 	    }

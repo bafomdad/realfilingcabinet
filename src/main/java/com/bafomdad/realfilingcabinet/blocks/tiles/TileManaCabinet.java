@@ -16,7 +16,7 @@ import vazkii.botania.api.mana.spark.ISparkEntity;
 
 public class TileManaCabinet extends TileEntityRFC implements IManaReceiver, ISparkAttachable {
 
-	private static final long MAX_MANA_INTERNAL = 1000000000 * 8;
+	private static final long MAX_MANA_INTERNAL = ManaStorageUtils.getMaxManaFolder() * 8;
 	
 	// Botania stuff start
 	public long getTotalInternalManaPool() {

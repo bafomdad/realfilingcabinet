@@ -6,7 +6,6 @@ public class StringLibs {
 
 	public static final String TOOLTIP = "tooltip." + RealFilingCabinet.MOD_ID;
 	public static final String MESSAGE = "message." + RealFilingCabinet.MOD_ID;
-	public static final String TAG_INDEX = "RFC_placeIndex";
 	
 	// UPGRADES
 	public static final String RFC_UPGRADE = "RFC_upgrade";
@@ -41,6 +40,7 @@ public class StringLibs {
 	
 	// ENTITY
 	public static final String RFC_MOBUPGRADE = "RFC_mobUpgrade";
+	public static final String ENTITY_INV = "inventory";
 	
 	// INTEGRATION
 	public static final String TAG_ASPECT = "RFC_aspectType";

@@ -61,6 +61,7 @@ public class GuiFileList extends Gui {
 						if (!list.isEmpty()) {
 							for (int i = 0; i < list.size(); i++) {
 								GL11.glDisable(GL11.GL_LIGHTING);
+								// TODO: make the overlay placement configurable
 								this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 							}
 						}

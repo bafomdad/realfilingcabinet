@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class ManaStorageUtils {
 
-	public static final int maxCount = 1000000000;
+	private static final int maxCount = 1000000000;
 	
 	public static void setManaSize(ItemStack stack, int count) {
 		
