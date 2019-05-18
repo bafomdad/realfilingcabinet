@@ -58,9 +58,8 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			ItemStack folder = ic.getStackInSlot(emptyFolder);
 			
 			item = ((IEmptyFolder)folder.getItem()).getFilledFolder(folder);
-			if (!item.isEmpty()) {
+			if (!item.isEmpty())
 				FolderUtils.get(item).setObject(ingredient);
-			}
 		}
 		return item;
 	}
@@ -88,13 +87,17 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		
 		NonNullList<ItemStack> ret = NonNullList.withSize(ic.getSizeInventory(), ItemStack.EMPTY);
 		for (int i = 0; i < ret.size(); i++) {
-			if (ic.getStackInSlot(i).getItem() instanceof IEmptyFolder)
-				ret.set(i, ic.getStackInSlot(i));
-			else
-				ret.set(i, ItemStack.EMPTY);
+			ItemStack stack = ic.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				if (stack.getItem() instanceof IEmptyFolder)
+					ret.set(i, ic.getStackInSlot(i));
+				else {
+					ic.setInventorySlotContents(i, ItemStack.EMPTY);
+					ret.set(i, ItemStack.EMPTY);
+				}
+			}
 		}
 		return ret;
-//		return ForgeHooks.defaultRecipeGetRemainingItems(ic);
 	}
 	
 	private boolean allowableIngredient(ItemStack stack) {
