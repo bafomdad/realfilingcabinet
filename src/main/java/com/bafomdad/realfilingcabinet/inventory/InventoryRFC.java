@@ -63,8 +63,12 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		ItemStack stackFolder = getStackFromFolder(slot);
 		if (!stackFolder.isEmpty()) {
-			if (FolderUtils.get(stacks.get(slot)).getFileSize() <= 0)
+			long count = FolderUtils.get(stacks.get(slot)).getFileSize();
+			if (count <= 0)
 				return ItemStack.EMPTY;
+			
+			long extract = Math.min(Integer.MAX_VALUE - 1, count);
+			stackFolder.setCount((int)extract);
 		}
 		return stackFolder;
 	}
