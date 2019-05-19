@@ -35,7 +35,7 @@ public class UpgradeHelper {
 	public static boolean hasUpgrade(TileFilingCabinet tile) {
 		
 		if (tile == null) return false;
-		return !getUpgrade(tile).isEmpty();
+		return !tile.upgrade.isEmpty();
 	}
 	
 	/**
