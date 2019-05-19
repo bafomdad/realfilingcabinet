@@ -79,6 +79,16 @@ public class FolderUtils {
 		setFileSize(Math.max(current - count, 0));
 	}
 	
+	public int getDamageSize() {
+		
+		return (cap.isPresent()) ? cap.get().getRemainingDurability() : 0;
+	}
+	
+	public void setDamageSize(int damage) {
+		
+		cap.ifPresent(d -> d.setRemainingDurability(damage));
+	}
+	
 	public String getDisplayName() {
 		
 		return (cap.isPresent()) ? cap.get().getDisplayName() : "";

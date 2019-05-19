@@ -151,7 +151,7 @@ public enum FolderType {
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
-
+				
 				cap.setRemainingDurability(cap.getRemainingDurability() + (stack.getMaxDamage() - stack.getItemDamage()));
 				int newRem = cap.getRemainingDurability();
 
