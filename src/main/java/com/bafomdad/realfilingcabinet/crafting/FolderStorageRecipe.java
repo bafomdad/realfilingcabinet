@@ -4,6 +4,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
 import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 import net.minecraft.block.Block;
@@ -102,6 +103,9 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 	
 	private boolean allowableIngredient(ItemStack stack) {
 		
-		return !(stack.getItem() instanceof IEmptyFolder || stack.getItem() instanceof IFolder || Block.getBlockFromItem(stack.getItem()) instanceof IBlockCabinet);
+		return !(stack.getItem() instanceof IEmptyFolder 
+				|| stack.getItem() instanceof IFolder 
+				|| Block.getBlockFromItem(stack.getItem()) instanceof IBlockCabinet
+				|| stack.getItem() == RFCItems.WHITEOUTTAPE);
 	}
 }
