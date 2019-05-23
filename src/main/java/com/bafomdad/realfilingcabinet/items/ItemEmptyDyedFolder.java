@@ -58,4 +58,10 @@ public class ItemEmptyDyedFolder extends Item implements ISubModel, IEmptyFolder
 
 		return new ItemStack(RFCItems.DYEDFOLDER, 1, stack.getItemDamage());
 	}
+
+	@Override
+	public boolean canRecipeTakeStack(ItemStack folder, ItemStack recipeStack) {
+
+		return !recipeStack.hasTagCompound() && !recipeStack.isItemDamaged();
+	}
 }

@@ -58,9 +58,11 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			ItemStack ingredient = ic.getStackInSlot(recipeStack);
 			ItemStack folder = ic.getStackInSlot(emptyFolder);
 			
-			item = ((IEmptyFolder)folder.getItem()).getFilledFolder(folder);
-			if (!item.isEmpty())
-				FolderUtils.get(item).setObject(ingredient);
+			if (((IEmptyFolder)folder.getItem()).canRecipeTakeStack(folder, ingredient)) {
+				item = ((IEmptyFolder)folder.getItem()).getFilledFolder(folder);
+				if (!item.isEmpty())
+					FolderUtils.get(item).setObject(ingredient);
+			}
 		}
 		return item;
 	}

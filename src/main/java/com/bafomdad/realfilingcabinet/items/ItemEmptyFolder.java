@@ -2,15 +2,12 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,24 +28,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
 import com.bafomdad.realfilingcabinet.api.ISubModel;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.enums.EmptyFolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
 public class ItemEmptyFolder extends Item implements ISubModel, IEmptyFolder {
-	
-	public enum EmptyFolderType {
-		NORMAL,
-		DURA,
-		MOB,
-		FLUID,
-		NBT;
-	}
-	
+
 	@Override
 	public String getTranslationKey(ItemStack stack) {
 		
@@ -150,5 +139,11 @@ public class ItemEmptyFolder extends Item implements ISubModel, IEmptyFolder {
 			case 4: return new ItemStack(RFCItems.FOLDER, 1, 5);
 			default: return ItemStack.EMPTY;
 		}	
+	}
+
+	@Override
+	public boolean canRecipeTakeStack(ItemStack folder, ItemStack recipeStack) {
+
+		return EmptyFolderType.values()[folder.getItemDamage()].canRecipeTakeStack(recipeStack);
 	}
 }
