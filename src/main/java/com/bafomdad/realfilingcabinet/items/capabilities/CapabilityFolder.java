@@ -20,8 +20,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 
 public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 	
@@ -50,7 +50,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		}
 		if (isFluidStack()) {
 			FluidStack fluid = getFluidStack();
-			list.add(TextHelper.format(count) + "mb " + fluid.getLocalizedName());
+			list.add(count + "mb " + fluid.getLocalizedName());
 		}
 		if (isEntity()) {
 			list.add(TextHelper.format(count) + " " + displayName);
@@ -79,6 +79,8 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		
 		if (obj instanceof ItemStack) {
 			ItemStack stack = ((ItemStack)obj);
+			if (stack.isEmpty()) return false;
+			
 			this.displayName = stack.getDisplayName();
 			this.contents = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 			this.count = stack.getCount();
