@@ -24,6 +24,7 @@ import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
 import com.bafomdad.realfilingcabinet.api.IEntityCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
@@ -33,6 +34,7 @@ public class WailaLoader {
 	public static void load(IWailaRegistrar registrar) {
 		
 		registrar.registerBodyProvider(new WailaProvider(), BlockRFC.class);
+//		registrar.registerNBTProvider(new WailaProvider(), BlockRFC.class);
 		registrar.registerBodyProvider(new WailaEntityProvider(), EntityCabinet.class);
 		registrar.registerNBTProvider(new WailaEntityProvider(), EntityCabinet.class);
 	}
@@ -55,6 +57,18 @@ public class WailaLoader {
 		@Override
 		public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, BlockPos pos) {
 			
+			if (tile instanceof TileFilingCabinet) {
+				TileFilingCabinet cabinet = (TileFilingCabinet)tile;
+				if (!cabinet.smeltingJobs.isEmpty()) {
+					NBTTagList tagList = new NBTTagList();
+					for (int[] job : cabinet.smeltingJobs) {
+						NBTTagCompound nbt = new NBTTagCompound();
+						nbt.setIntArray(StringLibs.TAG_SMELTJOB, job);
+						tagList.appendTag(nbt);
+					}
+					tag.setTag(StringLibs.TAG_SMELTLIST, tagList);
+				}
+			}
 			return tag;
 		}
 	}
