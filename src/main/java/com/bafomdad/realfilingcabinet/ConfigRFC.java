@@ -29,7 +29,26 @@ public class ConfigRFC {
 	@Comment({"If enabled, A fluid cabinet containing at least 3000mb of water will never run out of water."})
 	public static boolean infiniteWaterSource = true;
 	@Comment({"Use this to blacklist certain mobs from being captured in the Mob Folder. Put the class names of the entities here."})
-	public static String[] mobFolderBlacklist = new String[]{ "EntityCabinet" };
+	public static String[] mobFolderBlacklist = new String[] { "EntityCabinet" };
+	@Comment({"List of items that will be randomly picked by the mystery folder."})
+	public static String[] mysteryItems = new String[] { 
+		"minecraft:diamond", 
+		"minecraft:cobblestone:0",
+		"minecraft:blaze_rod",
+		"minecraft:slime_ball",
+		"minecraft:clay",
+		"minecraft:prismarine",
+		"minecraft:rabbit_foot",
+		"minecraft:torch"
+		};
+	
+	@Comment({"Sets the upper bound limit of the loot item's stack size that the Mystery Folder will randomly return. Set to 0 to always return a single item every time."})
+	public static int maxLootChance = 7;
+	
+	@Comment({"Adjust placement of magnifying glass GUI on the x axis."})
+	public static int guiWidth = 0;
+	@Comment({"Adjust placement of magnifying glass GUI on the y axis."})
+	public static int guiHeight = 5;
 	
 	@Config(modid=RealFilingCabinet.MOD_ID, category="recipes")
 	public static class RecipeConfig {

@@ -1,8 +1,8 @@
 package com.bafomdad.realfilingcabinet.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -12,31 +12,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public class ItemMysteryFolder extends Item {
-	
-	private static List<ItemStack> rando = new ArrayList();
-	
-	//TODO: put this in a configurable list
-	static {
-		rando.add(new ItemStack(Items.DIAMOND, 1, 0));
-		rando.add(new ItemStack(Items.APPLE, 1, 0));
-		rando.add(new ItemStack(Blocks.COBBLESTONE, 1, 0));
-		rando.add(new ItemStack(Items.BLAZE_ROD, 1, 0));
-		rando.add(new ItemStack(Items.SLIME_BALL, 1, 0));
-		rando.add(new ItemStack(Blocks.CLAY, 1, 0));
-		rando.add(new ItemStack(Blocks.PRISMARINE, 1, 0));
-		rando.add(new ItemStack(Items.RABBIT_FOOT, 1, 0));
-		rando.add(new ItemStack(Blocks.TORCH, 1, 0));
-	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -51,18 +39,49 @@ public class ItemMysteryFolder extends Item {
         
 		ItemStack stack = player.getHeldItemMainhand();
 		if (!stack.isEmpty() && stack.getItem() == this) {
-			if (rando == null || rando.isEmpty())
+			if (ConfigRFC.mysteryItems == null || ConfigRFC.mysteryItems.length <= 0)
 				return ActionResult.newResult(EnumActionResult.PASS, stack);
 			
 			ItemStack newFolder = new ItemStack(RFCItems.FOLDER, 1, 0);
-			ItemStack toSet = rando.get(world.rand.nextInt(rando.size()));
+			ItemStack toSet = getMysteryItem(world);
 			if (FolderUtils.get(newFolder).setObject(toSet)) {
-				FolderUtils.get(newFolder).add(world.rand.nextInt(4));
+				FolderUtils.get(newFolder).add(world.rand.nextInt(ConfigRFC.maxLootChance));
 				return ActionResult.newResult(EnumActionResult.SUCCESS, newFolder);
 			}
 		}
 		return new ActionResult(EnumActionResult.PASS, player.getHeldItem(hand));
     }
+	
+	private ItemStack getMysteryItem(World world) {
+		
+		ItemStack loot = ItemStack.EMPTY;
+		
+		String str = ConfigRFC.mysteryItems[world.rand.nextInt(ConfigRFC.mysteryItems.length)];
+		String[] split = str.split(":");
+		Item item = Items.AIR;
+		if (split.length > 2)
+			item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(split[0] + split[1]));
+		else
+			item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(str));
+		if (item != null && item != Items.AIR) {
+			if (split.length > 2)
+				loot = new ItemStack(item, 1, Integer.parseInt(split[2]));
+			else
+				loot = new ItemStack(item);
+		}
+		Block block = Blocks.AIR;
+		if (split.length > 2)
+			block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(split[0] + split[1]));
+		else
+			block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(str));
+		if (block != null && block != Blocks.AIR) {
+			if (split.length > 2)
+				loot = new ItemStack(block, 1, Integer.parseInt(split[2]));
+			else
+				loot = new ItemStack(block);
+		}
+		return loot;
+	}
 
 	@Override
     @SideOnly(Side.CLIENT)
