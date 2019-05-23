@@ -1,9 +1,6 @@
 package com.bafomdad.realfilingcabinet.gui;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -18,11 +15,11 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import org.lwjgl.opengl.GL11;
+
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
-import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
-import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
-import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public class GuiFileList extends Gui {
 
@@ -42,8 +39,8 @@ public class GuiFileList extends Gui {
 			profiler.startSection("RFC-hud");
 			
 			ScaledResolution scaled = new ScaledResolution(mc);
-			int width = scaled.getScaledWidth();
-			int height = scaled.getScaledHeight();
+			int width = scaled.getScaledWidth() / 2 + ConfigRFC.guiWidth;
+			int height = ConfigRFC.guiHeight;
 			
 			EntityPlayer player = mc.player;
 			RayTraceResult mop = mc.objectMouseOver;
@@ -56,34 +53,16 @@ public class GuiFileList extends Gui {
 				
 				if (flag) {
 					TileEntity tile = mc.world.getTileEntity(mop.getBlockPos());
-					if (tile instanceof TileEntityRFC) {
-						List<String> list = getFileList(((TileEntityRFC)tile).getInventory(), player.isSneaking());
-						if (!list.isEmpty()) {
-							for (int i = 0; i < list.size(); i++) {
-								GL11.glDisable(GL11.GL_LIGHTING);
-								// TODO: make the overlay placement configurable
-								this.drawCenteredString(mc.fontRenderer, list.get(i), width / 2, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
-							}
+					List<String> list = ((IBlockCabinet)block).getInfoOverlay(tile);
+					if (!list.isEmpty()) {
+						for (int i = 0; i < list.size(); i++) {
+							GL11.glDisable(GL11.GL_LIGHTING);
+							this.drawCenteredString(mc.fontRenderer, list.get(i), width, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 						}
 					}
 				}
 			}
 			profiler.endSection();
 		}
-	}
-	
-	private List getFileList(InventoryRFC inv, boolean crouching) {
-		
-		List<String> list = new ArrayList();
-		for (int j = 0; j < inv.getSlots(); j++) {
-			ItemStack folder = inv.getFolder(j);
-			if (!folder.isEmpty()) {
-				String name = FolderUtils.get(folder).getDisplayName();
-				long count = FolderUtils.get(folder).getFileSize();
-				
-				list.add(name + " - " + count);
-			}
-		}
-		return list;
 	}
 }
