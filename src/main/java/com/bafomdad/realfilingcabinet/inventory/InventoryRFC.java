@@ -44,7 +44,9 @@ public class InventoryRFC extends ItemStackHandler {
 				if (ItemStack.areItemsEqual(folderStack, filter)) {
 					if (!simulate)
 						VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
-					return (ItemStack)FolderUtils.get(stacks.get(i)).extract(amount, simulate);
+					Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
+					if (obj instanceof ItemStack)
+						return (ItemStack)obj;
 				}
 			}
 		}
