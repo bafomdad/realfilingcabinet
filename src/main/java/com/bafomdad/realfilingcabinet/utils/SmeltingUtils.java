@@ -32,8 +32,8 @@ public class SmeltingUtils {
 		int toSmelt = -1;
 		int smeltResult = -1;
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
+			if (tile.getInventory().getStackInSlot(i).isEmpty()) continue;
 			if (hasSmeltingJob(tile, i)) continue;
-//			if (tile.getInventory().getFolder(i).getItem() == RFCItems.DYEDFOLDER) continue; 
 			ItemStack result = FurnaceRecipes.instance().getSmeltingResult(tile.getInventory().getStackInSlot(i));
 			if (!result.isEmpty()) {
 				toSmelt = i;
@@ -53,7 +53,7 @@ public class SmeltingUtils {
 			for (int k = 0; k < tile.getInventory().getSlots(); k++) {
 				ItemStack fuel = tile.getInventory().getStackInSlot(k);
 				if (!fuel.isEmpty() && fuel.getItem() == Items.COAL) {
-					FolderUtils.get(tile.getInventory().getStackInSlot(k)).remove(1);
+					FolderUtils.get(tile.getInventory().getStackFromFolder(k)).remove(1);
 					tile.fuelTime = FUEL_TIME;
 					break;
 				}
@@ -81,13 +81,8 @@ public class SmeltingUtils {
 	
 	public static void readSmeltNBT(TileFilingCabinet tile, NBTTagCompound tag) {
 	
-//		if (!canSmelt(tile)) {
-//			tag.removeTag(TAG_SMELTJOB);
-//			return;
-//		}
 		if (tag.hasKey(StringLibs.TAG_SMELTLIST)) {
-//			if (!tile.smeltingJobs.isEmpty()) tile.smeltingJobs.clear();
-			
+
 			NBTTagList tagList = tag.getTagList(StringLibs.TAG_SMELTLIST, 11);
 			for (int i = 0; i < tagList.tagCount(); i++) {
 				int[] job = tagList.getIntArrayAt(i);
@@ -151,7 +146,6 @@ public class SmeltingUtils {
 	
 	public static String getSmeltingPercentage(TileFilingCabinet tile, int slot) {
 		
-//		if (UpgradeHelper.getUpgrade(tile, StringLibs.TAG_SMELT) == null || tile.smeltingJobs.isEmpty()) return "";
 		if (tile.smeltingJobs.isEmpty()) return "";
 		for (int[] job : tile.smeltingJobs) {
 			if (job[1] == slot) {
