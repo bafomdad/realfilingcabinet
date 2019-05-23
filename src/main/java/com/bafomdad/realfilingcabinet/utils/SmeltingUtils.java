@@ -53,7 +53,7 @@ public class SmeltingUtils {
 			for (int k = 0; k < tile.getInventory().getSlots(); k++) {
 				ItemStack fuel = tile.getInventory().getStackInSlot(k);
 				if (!fuel.isEmpty() && fuel.getItem() == Items.COAL) {
-					FolderUtils.get(tile.getInventory().getStackFromFolder(k)).remove(1);
+					FolderUtils.get(tile.getInventory().getFolder(k)).remove(1);
 					tile.fuelTime = FUEL_TIME;
 					break;
 				}
