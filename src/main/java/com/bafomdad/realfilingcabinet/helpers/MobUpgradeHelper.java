@@ -19,7 +19,7 @@ public class MobUpgradeHelper {
 	public static boolean hasUpgrade(EntityCabinet entity) {
 		
 		if (entity == null) return false;
-		return !getUpgrade(entity).isEmpty();
+		return !entity.upgrades.isEmpty();
 	}
 	
 	public static MobUpgrades getUpgrade(EntityCabinet entity, String tag) {

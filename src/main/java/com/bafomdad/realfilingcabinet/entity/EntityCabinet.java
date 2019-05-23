@@ -45,7 +45,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.entity.ai.*;
 import com.bafomdad.realfilingcabinet.helpers.MobUpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
-import com.bafomdad.realfilingcabinet.helpers.UpgradeType;
+import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;

@@ -14,9 +14,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;

@@ -1,6 +1,7 @@
-package com.bafomdad.realfilingcabinet.helpers;
+package com.bafomdad.realfilingcabinet.helpers.enums;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 
 import net.minecraft.util.ResourceLocation;
 

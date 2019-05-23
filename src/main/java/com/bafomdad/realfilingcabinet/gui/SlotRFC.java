@@ -1,7 +1,7 @@
 package com.bafomdad.realfilingcabinet.gui;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 
 import net.minecraft.entity.player.EntityPlayer;

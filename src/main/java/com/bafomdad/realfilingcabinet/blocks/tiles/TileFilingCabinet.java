@@ -21,7 +21,7 @@ import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
-import com.bafomdad.realfilingcabinet.helpers.UpgradeType;
+import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.FluidRFC;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;

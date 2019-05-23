@@ -100,6 +100,10 @@ public abstract class BlockRFC extends Block implements IBlockCabinet {
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
 		
 		if (willHarvest) {
+//			TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
+//			if (tile != null && tile.isCabinetLocked())
+//				return false;
+			
 			onBlockHarvested(world, pos, state, player);
 			return true;
 		} else {

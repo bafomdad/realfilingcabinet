@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCIntegration;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemAspectFolder;

@@ -78,13 +78,13 @@ public class ItemAspectFolder extends Item implements IFolder {
 
 	@Override
 	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
-		// TODO Auto-generated method stub
+		// NO-OP
 		return null;
 	}
 
 	@Override
 	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
-		// TODO Auto-generated method stub
+		// NO-OP
 		return null;
 	}
 }

@@ -1,7 +1,7 @@
 package com.bafomdad.realfilingcabinet.crafting;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 

@@ -16,7 +16,7 @@ import com.bafomdad.realfilingcabinet.ConfigRFC.RecipeConfig;
 import com.bafomdad.realfilingcabinet.api.ISubModel;
 import com.bafomdad.realfilingcabinet.api.IUpgrade;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
-import com.bafomdad.realfilingcabinet.helpers.UpgradeType;
+import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 
 public class ItemUpgrades extends Item implements ISubModel, IUpgrade {
 	

@@ -1,4 +1,4 @@
-package com.bafomdad.realfilingcabinet.helpers;
+package com.bafomdad.realfilingcabinet.helpers.enums;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -197,7 +197,7 @@ public enum FolderType {
 
 		@Override
 		public EntityLivingBase extract(CapabilityFolder cap, long amount, boolean sim) {
-			// TODO Auto-generated method stub
+			// NO-OP
 			return null;
 		}
 		

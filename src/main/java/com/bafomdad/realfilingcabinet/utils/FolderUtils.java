@@ -3,7 +3,7 @@ package com.bafomdad.realfilingcabinet.utils;
 import java.util.List;
 import java.util.Optional;
 
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 
@@ -12,11 +12,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-public class FolderUtils {
+public final class FolderUtils {
 	
 	final Optional<CapabilityFolder> cap;
 	
-	public FolderUtils(ItemStack stack) {
+	private FolderUtils(ItemStack stack) {
 		
 		CapabilityFolder folderCap = stack.getCapability(CapabilityProviderFolder.FOLDER_CAP, null);
 		cap = (folderCap != null) ? Optional.of(folderCap) : Optional.empty();

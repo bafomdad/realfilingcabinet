@@ -1,6 +1,6 @@
 package com.bafomdad.realfilingcabinet.network;
 
-import com.bafomdad.realfilingcabinet.helpers.FolderType;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemSuitcase;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;

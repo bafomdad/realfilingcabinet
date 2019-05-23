@@ -26,8 +26,8 @@ import com.bafomdad.realfilingcabinet.blocks.*;
 import com.bafomdad.realfilingcabinet.blocks.tiles.*;
 import com.bafomdad.realfilingcabinet.crafting.*;
 import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
-import com.bafomdad.realfilingcabinet.helpers.MobUpgradeType;
-import com.bafomdad.realfilingcabinet.helpers.UpgradeType;
+import com.bafomdad.realfilingcabinet.helpers.enums.MobUpgradeType;
+import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 import com.bafomdad.realfilingcabinet.items.*;
 import com.bafomdad.realfilingcabinet.items.itemblocks.*;
 
