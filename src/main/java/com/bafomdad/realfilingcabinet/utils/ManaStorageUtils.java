@@ -19,6 +19,15 @@ public class ManaStorageUtils {
 		setManaSize(stack, current + count);
 	}
 	
+	public static int takeManaFromFolder(ItemStack stack, int count) {
+		
+		int current = getManaSize(stack);
+		int remainder = current - count;
+		setManaSize(stack, Math.max(current - count, 0));
+		
+		return (remainder > 0) ? 0 : remainder;
+	}
+	
 	public static int getManaSize(ItemStack stack) {
 		
 		return NBTUtils.getInt(stack, StringLibs.TAG_MANA_COUNT, 0);

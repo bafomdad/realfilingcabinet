@@ -4,10 +4,13 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import vazkii.botania.api.mana.IManaItem;
+
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.init.RFCSounds;
+import com.bafomdad.realfilingcabinet.utils.ManaStorageUtils;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -39,8 +42,33 @@ public class BlockManaCabinet extends BlockRFC {
 
 	@Override
 	public void leftClick(TileEntity tile, EntityPlayer player) {
+
+		// TODO: WIP
+		/*
+		TileManaCabinet tmc = (TileManaCabinet)tile;
+		ItemStack stack = player.getHeldItemMainhand();
 		
-		// TODO: make mana extraction possible while holding mana holding items
+		if (stack.getItem() instanceof IManaItem) {
+			IManaItem manaItem = ((IManaItem)stack.getItem());
+			int currentMana = manaItem.getMana(stack);
+			int maxMana = manaItem.getMaxMana(stack);
+			if (currentMana < maxMana) {
+				for (int i = 0; i < tmc.getInventory().getSlots(); i++) {
+					ItemStack tileStack = tmc.getInventory().getFolder(i);
+					if (tileStack.getItem() == RFCItems.FOLDER_MANA) {
+						int currentManaFolder = ManaStorageUtils.getManaSize(tileStack);
+						if (currentManaFolder <= 0) continue;
+						
+						int manaToTake = (maxMana - currentMana);
+						int manaToSet = ManaStorageUtils.takeManaFromFolder(tileStack, manaToTake);
+						manaItem.addMana(stack, manaToTake + manaToSet);
+						tmc.markBlockForUpdate();
+						break;
+					}
+				}
+			}
+		}
+		*/
 	}
 
 	@Override
