@@ -40,12 +40,23 @@ public class ItemSuitcase extends Item {
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag whatisthis) {
 	
-		list.add(TextFormatting.GOLD + "Current place index: " + TextFormatting.RESET + StorageUtils.getIndex(stack));
+//		list.add(TextFormatting.GOLD + "Current place index: " + TextFormatting.RESET + StorageUtils.getIndex(stack));
 		if (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)) {
 			IItemHandlerModifiable suitcaseInv = getSuitcaseInv(stack);
 			if (suitcaseInv != null) {
-				for (int i = 0; i < suitcaseInv.getSlots(); i++)
-					FolderUtils.get(suitcaseInv.getStackInSlot(i)).addTooltips(list);
+				for (int i = 0; i < suitcaseInv.getSlots(); i++) {
+					ItemStack folder = suitcaseInv.getStackInSlot(i);
+					if (folder.isEmpty() || !(folder.getItem() instanceof IFolder))
+						list.add("<Empty>");
+					else
+						FolderUtils.get(suitcaseInv.getStackInSlot(i)).addTooltips(list);
+				}
+			}
+		}
+		if (!list.isEmpty()) {
+			for (int j = 1; j < list.size(); j++) {
+				if (StorageUtils.getIndex(stack) + 1 == j)
+					list.set(j, TextFormatting.GOLD + list.get(j));
 			}
 		}
 	}
