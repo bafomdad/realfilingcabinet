@@ -7,16 +7,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
-public class ItemAutoFolder extends ItemAbstractFolder implements IFolder<ItemStack> {
+public class ItemAutoFolder extends ItemAbstractFolder implements IFolder {
 	
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
@@ -49,33 +51,45 @@ public class ItemAutoFolder extends ItemAbstractFolder implements IFolder<ItemSt
 	}
 
 	@Override
-	public ItemStack insertIntoFolder(ItemStack folder, ItemStack toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
-		if (!ItemStack.areItemsEqual(toInsert, cap.getItemStack()) && !cap.getItemStack().isEmpty()) return toInsert;
-		if (cap.getItemStack().isEmpty() && cap.setContents(toInsert) && !simulate) {
-			toInsert.setCount(0);
+		if (toInsert instanceof ItemStack) {
+			ItemStack stack = (ItemStack)toInsert;
+			if (cap.isFluidStack()) return toInsert;
+			if (stack.getItem() == RFCItems.MAGNIFYINGGLASS) return toInsert;
+			if (stack.hasTagCompound() || stack.isItemDamaged()) return toInsert;
+			if (!ItemStack.areItemsEqual(stack, cap.getItemStack()) && !cap.getItemStack().isEmpty()) return toInsert;
+			if (cap.getItemStack().isEmpty() && cap.setContents(stack) && !simulate) {
+				stack.setCount(0);
+				return ItemStack.EMPTY;
+			}
+			if (!simulate) {
+				cap.setCount(cap.getCount() + stack.getCount());
+				stack.setCount(0);
+			}
 			return ItemStack.EMPTY;
 		}
-		if (!simulate) {
-			cap.setCount(cap.getCount() + toInsert.getCount());
-			toInsert.setCount(0);
+		if (toInsert instanceof FluidStack) {
+			if (cap.isItemStack()) return null;
+			if (cap.getFluidStack() == null && cap.setContents(toInsert) && simulate) {
+				return (FluidStack)toInsert;
+			}
+			return FolderType.FLUID.insert(cap, toInsert, simulate);
 		}
-		return ItemStack.EMPTY;
+		return toInsert;
 	}
 
 	@Override
-	public ItemStack extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
-		ItemStack items = cap.getItemStack();
-		if (items.isEmpty()) return ItemStack.EMPTY;
+		if (cap.isItemStack())
+			return FolderType.NORMAL.extract(cap, amount, simulate);
 		
-		items.setCount((int)Math.min(cap.getCount(), items.getMaxStackSize()));
-		
-		if (!simulate)
-			cap.setCount(cap.getCount() - items.getCount());
-
-		return items;	
+		if (cap.isFluidStack())
+			return FolderType.FLUID.extract(cap, amount, simulate);
+			
+		return null;	
 	}
 }

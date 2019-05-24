@@ -39,7 +39,7 @@ public class FluidRFC implements IFluidHandler {
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folder = tile.getInventory().getFolder(i);
 			CapabilityFolder cap = FolderUtils.get(folder).getCap();
-			if (cap.isFluidStack()) {
+			if (cap != null && cap.isFluidStack()) {
 				props[i] = new FluidTankProperties(cap.getFluidStack(), Math.max(Integer.MAX_VALUE - 1, (int)cap.getCount()));
 			}
 			else

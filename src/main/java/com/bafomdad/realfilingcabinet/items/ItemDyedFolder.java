@@ -27,7 +27,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFolder<ItemStack> {
+public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFolder {
 	
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
@@ -109,17 +109,19 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 	}
 
 	@Override
-	public ItemStack insertIntoFolder(ItemStack folder, ItemStack toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
 		
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
 		
 		if (cap == null) return null;
 		if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
-		if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack())) return null;
 		
-		long newCount = Math.min(cap.getCount() + toInsert.getCount(), ConfigRFC.folderSizeLimit);
+		ItemStack stack = (ItemStack)toInsert;
+		if (!ItemStack.areItemsEqual(stack, cap.getItemStack())) return null;
+		
+		long newCount = Math.min(cap.getCount() + stack.getCount(), ConfigRFC.folderSizeLimit);
 		long remainder = ConfigRFC.folderSizeLimit - cap.getCount();
-		toInsert.setCount(toInsert.getCount() - (int)remainder);
+		stack.setCount(stack.getCount() - (int)remainder);
 		if (!simulate)
 			cap.setCount(newCount);
 		
@@ -127,7 +129,7 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 	}
 
 	@Override
-	public ItemStack extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
 		ItemStack items = cap.getItemStack();

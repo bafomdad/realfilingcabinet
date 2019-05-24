@@ -8,18 +8,18 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public interface IFolder<T> {
+public interface IFolder {
 
 	public ItemStack getEmptyFolder(ItemStack stack);
 	
-	public default void setAdditionalData(ItemStack folder, T toSet) {}
+	public default void setAdditionalData(ItemStack folder, Object toSet) {}
 	
 	public default EnumActionResult placeObject(ItemStack folder, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
 		return EnumActionResult.PASS;
 	}
 	
-	public T insertIntoFolder(ItemStack folder, T toInsert, boolean simulate);
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate);
 	
-	public T extractFromFolder(ItemStack folder, long amount, boolean simulate);
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate);
 }

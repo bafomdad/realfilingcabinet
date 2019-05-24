@@ -43,7 +43,7 @@ import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
 
-public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder<Object> {
+public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder {
 	
 	@Override
 	public ItemStack getContainerItem(ItemStack stack) {

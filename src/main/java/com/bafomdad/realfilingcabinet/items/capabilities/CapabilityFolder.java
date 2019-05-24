@@ -72,7 +72,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		if (obj instanceof ItemStack)
 			return (ItemStack)obj;
 
-		return objects;
+		return obj;
 	}
 	
 	public boolean setContents(Object obj) {
