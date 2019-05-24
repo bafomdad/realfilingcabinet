@@ -16,6 +16,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class StorageUtils {
@@ -24,6 +28,11 @@ public class StorageUtils {
 		
 		if (tile.getWorld().isRemote) return;
 		
+		if (testFluid(tile, stack)) {
+			if (!player.capabilities.isCreativeMode)
+				player.setHeldItem(EnumHand.MAIN_HAND, stack.getItem().getContainerItem(stack));
+			return;
+		}
 		if (testOredict(tile, stack)) return;
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
@@ -125,7 +134,22 @@ public class StorageUtils {
 		}
 	}
 	
-	public static boolean testOredict(TileEntityRFC tile, ItemStack toInsert) {
+	private static boolean testFluid(TileEntityRFC tile, ItemStack toInsert) {
+		
+		if (!(tile instanceof TileFilingCabinet)) return false;
+		if (UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_FLUID).isEmpty()) return false;
+		
+		FluidStack fluid = FluidUtil.getFluidContained(toInsert);
+		if (fluid != null) {
+			IFluidHandler fluidHandler = ((TileFilingCabinet)tile).getFluidInventory();
+			int fluidAmount = fluidHandler.fill(fluid, true);
+			if (fluidAmount > 0)
+				return true;
+		}
+		return false;
+	}
+	
+	private static boolean testOredict(TileEntityRFC tile, ItemStack toInsert) {
 		
 		if (!(tile instanceof TileFilingCabinet)) return false;
 		if (UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty()) return false;

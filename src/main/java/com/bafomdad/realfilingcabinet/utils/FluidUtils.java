@@ -96,11 +96,6 @@ public class FluidUtils {
 		return false;
 	}
 	
-	public static boolean canAcceptFluidContainer(ItemStack stack) {
-		
-		return FluidUtil.getFluidContained(stack) != null;
-	}
-	
 	public static FluidStack getFluidFromFolder(TileEntityRFC tile, int slot) {
 		
 		ItemStack stack = tile.getInventory().getFolder(slot);
