@@ -19,6 +19,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -138,9 +139,9 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 	@Override
 	public boolean setOwner(UUID owner) {
 		
-		if (this.owner != null && !this.owner.equals(owner)) {
+		if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner))) {
 			this.owner = owner;
-			
+
 			if (getWorld() != null && !getWorld().isRemote) {
 				markDirty();
 				this.markBlockForUpdate();
@@ -158,12 +159,16 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 	public void doKeyStuff(EntityPlayer player, ItemStack key) {
 	
 		if (!this.isCabinetLocked()) {
-			if (key.getItemDamage() == 0)
+			if (key.getItemDamage() == 0) {
 				this.setOwner(player.getUniqueID());
+				player.sendStatusMessage(new TextComponentString("Cabinet locked"), true);
+				return;
+			}
 		} else {
 			if (this.getOwner().equals(player.getUniqueID())) {
 				if (key.getItemDamage() == 0) {
 					this.setOwner(null);
+					player.sendStatusMessage(new TextComponentString("Cabinet unlocked"), true);
 					return;
 				} else if (key.getItemDamage() == 1) {
 					if (!key.hasTagCompound() || (key.hasTagCompound() && !key.getTagCompound().hasKey(StringLibs.RFC_COPY))) {

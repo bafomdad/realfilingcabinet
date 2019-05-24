@@ -56,7 +56,7 @@ public abstract class BlockRFC extends Block implements IBlockCabinet {
     
     private boolean isLocked(TileEntity tile, EntityPlayer player) {
     	
-    	if (!(tile instanceof ILockableCabinet)) return true;
+    	if (!(tile instanceof ILockableCabinet)) return false;
 		ILockableCabinet cabinet = (ILockableCabinet)tile;
 		if (cabinet.isCabinetLocked()) {
 			if (!cabinet.getOwner().equals(player.getUniqueID())) {
@@ -99,11 +99,11 @@ public abstract class BlockRFC extends Block implements IBlockCabinet {
 	@Override
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
 		
+		TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
+		if (this.isLocked(tile, player))
+			return false;
+		
 		if (willHarvest) {
-//			TileEntityRFC tile = (TileEntityRFC)world.getTileEntity(pos);
-//			if (tile != null && tile.isCabinetLocked())
-//				return false;
-			
 			onBlockHarvested(world, pos, state, player);
 			return true;
 		} else {

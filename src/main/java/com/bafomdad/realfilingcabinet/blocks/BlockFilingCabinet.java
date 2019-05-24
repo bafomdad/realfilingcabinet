@@ -37,6 +37,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -185,6 +186,8 @@ public class BlockFilingCabinet extends BlockRFC {
 				FolderUtils.get(folder).addTooltips(list);
 			}
 		}
+		if (((TileEntityRFC)tile).isCabinetLocked())
+			list.add(TextFormatting.YELLOW + "[LOCKED]");
 		return list;
 	}
 	
