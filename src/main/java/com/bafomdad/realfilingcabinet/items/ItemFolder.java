@@ -100,6 +100,7 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
 		
+		super.onUpdate(stack, world, entity, slot, isSelected);
 		if (world.isRemote) return;
 		
 		if (stack.getItemDamage() == FolderType.ENDER.ordinal()) {
@@ -112,7 +113,6 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 				return;
 			} else if (tile != null) {
 				EnderUtils.syncToFolder(stack);
-//				EnderUtils.syncToFolder(tile, stack, stack.getTagCompound().getInteger(StringLibs.RFC_SLOTINDEX));
 			}
 		}
 	}

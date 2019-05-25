@@ -2,12 +2,8 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
-import com.bafomdad.realfilingcabinet.LogRFC;
-import com.bafomdad.realfilingcabinet.helpers.StringLibs;
-import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
-import com.bafomdad.realfilingcabinet.utils.FolderUtils;
-
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +11,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.bafomdad.realfilingcabinet.LogRFC;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public abstract class ItemAbstractFolder extends Item {
 	
@@ -38,6 +39,21 @@ public abstract class ItemAbstractFolder extends Item {
 		tag.setTag("folderCap", cap.serializeNBT());
 		LogRFC.debug("Sharing tag: " + tag.toString());
 		return tag;
+	}
+	
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
+		
+		CapabilityFolder cap = FolderUtils.get(stack).getCap();
+		if (cap != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("folderCap", 10)) {
+			NBTTagCompound tag = stack.getTagCompound().getCompoundTag("folderCap");
+			LogRFC.debug("Deserializing: " + tag.toString());
+			cap.deserializeNBT(tag);
+			stack.getTagCompound().removeTag("folderCap");
+			
+			if (stack.getTagCompound().getSize() <= 0)
+				stack.setTagCompound(null);
+		}
 	}
 	
 	@Override

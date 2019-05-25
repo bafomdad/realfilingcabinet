@@ -18,5 +18,6 @@ public class RFCPacketHandler {
 	
 	public static void initClient() {
 		
+		// TODO: maybe re-add the containerlistener packet event stuff
 	}
 }
