@@ -8,6 +8,8 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockAspectCabinet;
@@ -38,6 +40,7 @@ public class ThaumcraftLoader {
 		event.getRegistry().register(new FolderAspectRecipe().setRegistryName(new ResourceLocation(RealFilingCabinet.MOD_ID, "folderaspect")));
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static void registerModels(ModelRegistryEvent event) {
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileAspectCabinet.class, new RenderAspectCabinet());

@@ -10,6 +10,8 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.blocks.BlockManaCabinet;
@@ -41,6 +43,7 @@ public class BotaniaLoader {
 		BotaniaAPI.registerManaInfusionRecipe(new ItemStack(RFCBlocks.MANACABINET), new ItemStack(RFCBlocks.MODELCABINET), 9000);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static void registerModels(ModelRegistryEvent event) {
 		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileManaCabinet.class, new RenderManaCabinet());
