@@ -37,6 +37,7 @@ public class RealFilingCabinet {
 		LOGGER = event.getModLog();
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerRFC());
 		ConfigRFC.checkTappedValues(ConfigRFC.RecipeConfig.class);
+		CapabilityProviderFolder.register();
 		proxy.preInit(event);
 	}
 	
@@ -51,7 +52,6 @@ public class RealFilingCabinet {
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		
-		CapabilityProviderFolder.register();
 		proxy.postInit(event);
 	}
 }
