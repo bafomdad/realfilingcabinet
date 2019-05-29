@@ -2,6 +2,7 @@ package com.bafomdad.realfilingcabinet.gui;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,7 @@ public class SlotRFC extends Slot {
     @Override
     public boolean isItemValid(ItemStack stack) {
     	
-    	return stack.getItem() instanceof IFolder && stack.getItemDamage() != FolderType.ENDER.ordinal();
+    	return stack.getItem() instanceof IFolder && !(stack.getItem() == RFCItems.FOLDER && stack.getItemDamage() == FolderType.ENDER.ordinal());
     }
     
     @Override
