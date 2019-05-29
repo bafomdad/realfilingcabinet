@@ -6,6 +6,7 @@ import java.util.List;
 
 import vazkii.botania.api.mana.IManaItem;
 
+import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileManaCabinet;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -43,8 +44,6 @@ public class BlockManaCabinet extends BlockRFC {
 	@Override
 	public void leftClick(TileEntity tile, EntityPlayer player) {
 
-		// TODO: WIP
-		/*
 		TileManaCabinet tmc = (TileManaCabinet)tile;
 		ItemStack stack = player.getHeldItemMainhand();
 		
@@ -61,6 +60,7 @@ public class BlockManaCabinet extends BlockRFC {
 						
 						int manaToTake = (maxMana - currentMana);
 						int manaToSet = ManaStorageUtils.takeManaFromFolder(tileStack, manaToTake);
+						LogRFC.debug("Mana item: " + currentMana + " / " + maxMana + " - Adding: " + (manaToTake + manaToSet));
 						manaItem.addMana(stack, manaToTake + manaToSet);
 						tmc.markBlockForUpdate();
 						break;
@@ -68,7 +68,7 @@ public class BlockManaCabinet extends BlockRFC {
 				}
 			}
 		}
-		*/
+		
 	}
 
 	@Override
