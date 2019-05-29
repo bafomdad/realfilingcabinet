@@ -25,6 +25,12 @@ public class CapabilityProviderFolder implements ICapabilitySerializable<NBTTagC
 		folder = new CapabilityFolder(stack);
 	}
 	
+	public CapabilityProviderFolder(ItemStack stack, NBTTagCompound tag) {
+		
+		folder = new CapabilityFolder(stack);
+		folder.deserializeNBT(tag.getCompoundTag(FOLDER_ID.toString()));
+	}
+	
 	public static void register() {
 		
 		CapabilityManager.INSTANCE.register(CapabilityFolder.class, new Capability.IStorage<CapabilityFolder>() {
@@ -52,7 +58,7 @@ public class CapabilityProviderFolder implements ICapabilitySerializable<NBTTagC
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 
-		return (capability != null && capability == FOLDER_CAP) ? FOLDER_CAP.cast(folder) : null;
+		return capability == FOLDER_CAP ? FOLDER_CAP.cast(folder) : null;
 	}
 
 	@Override

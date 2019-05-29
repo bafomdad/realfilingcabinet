@@ -79,8 +79,6 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		
 		if (obj instanceof ItemStack) {
 			ItemStack stack = ((ItemStack)obj);
-			if (stack.isEmpty()) return false;
-			
 			this.displayName = stack.getDisplayName();
 			this.contents = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
 			this.count = stack.getCount();

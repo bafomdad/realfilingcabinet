@@ -9,12 +9,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public abstract class ItemAbstractFolder extends Item {
@@ -42,23 +44,33 @@ public abstract class ItemAbstractFolder extends Item {
 	}
 	
 	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
+	public void readNBTShareTag(ItemStack stack, NBTTagCompound nbt) {
 		
 		CapabilityFolder cap = FolderUtils.get(stack).getCap();
-		if (cap != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("folderCap", 10)) {
-			NBTTagCompound tag = stack.getTagCompound().getCompoundTag("folderCap");
+		if (cap != null && nbt != null && nbt.hasKey("folderCap", 10)) {
+			NBTTagCompound tag = nbt.getCompoundTag("folderCap");
 			LogRFC.debug("Deserializing: " + tag.toString());
 			cap.deserializeNBT(tag);
-			stack.getTagCompound().removeTag("folderCap");
-			
-			if (stack.getTagCompound().getSize() <= 0)
-				stack.setTagCompound(null);
+			nbt.removeTag("folderCap");
 		}
+		super.readNBTShareTag(stack, nbt);
 	}
 	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
 		
 		return oldstack.getItem() != newstack.getItem();
+	}
+	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound tag) {
+		
+		// function to convert from the capability dispatcher used by the AttachCapabilitiesEvent to this one
+		if (tag != null && tag.hasKey(CapabilityProviderFolder.FOLDER_ID.toString(), 10)) {
+			if (!stack.isEmpty()) {
+				return new CapabilityProviderFolder(stack, tag);
+			}
+		}
+		return new CapabilityProviderFolder(stack);
 	}
 }

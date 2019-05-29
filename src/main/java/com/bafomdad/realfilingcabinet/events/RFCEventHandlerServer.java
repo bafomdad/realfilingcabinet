@@ -145,11 +145,4 @@ public class RFCEventHandlerServer {
 				event.setCanceled(true);
 		}
 	}
-	
-	@SubscribeEvent
-	public static void onAttachCapability(AttachCapabilitiesEvent<ItemStack> event) {
-		
-		if (event.getObject().getItem() == RFCItems.FOLDER || event.getObject().getItem() == RFCItems.DYEDFOLDER || event.getObject().getItem() == RFCItems.AUTOFOLDER)
-			event.addCapability(CapabilityProviderFolder.FOLDER_ID, new CapabilityProviderFolder(event.getObject()));
-	}
 }
