@@ -63,7 +63,7 @@ public class RFCEventRegistry {
 				registerItem(new ItemSuitcase(), "suitcase").setMaxStackSize(1),
 				registerItem(new ItemEmptyDyedFolder(), "emptydyedfolder").setMaxStackSize(8).setHasSubtypes(true).setMaxDamage(0),
 				registerItem(new ItemDyedFolder(), "dyedfolder", false).setMaxStackSize(1).setHasSubtypes(true),
-				registerItem(new ItemAutoFolder(), "autofolder").setMaxStackSize(1).setHasSubtypes(true),
+				registerItem(new ItemAutoFolder(), "autofolder").setMaxStackSize(1),
 				registerItem(new Item(), "debugger").setMaxStackSize(1),
 				registerItem(new Item(), "filter").setMaxStackSize(16),
 				registerItem(new ItemKeys(), "key").setMaxStackSize(1).setHasSubtypes(true).setMaxDamage(0),
