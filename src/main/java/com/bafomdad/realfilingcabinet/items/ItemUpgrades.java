@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -64,6 +65,12 @@ public class ItemUpgrades extends Item implements ISubModel, IUpgrade {
 		if (!flag)
 			player.sendStatusMessage(new TextComponentTranslation(StringLibs.MESSAGE + ".disabled"), true);
 		return flag;
+	}
+	
+	@Override
+	public void tickUpgrade(ItemStack upgrade, TileEntity tile) {
+		
+		UpgradeType.values()[upgrade.getItemDamage()].tickUpgrade(tile);
 	}
 
 	@Override

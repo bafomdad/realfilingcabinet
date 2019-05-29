@@ -4,27 +4,19 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
-import com.bafomdad.realfilingcabinet.blocks.BlockRFC;
-import com.bafomdad.realfilingcabinet.entity.EntityCabinet;
+import com.bafomdad.realfilingcabinet.api.IUpgrade;
+import com.bafomdad.realfilingcabinet.api.upgrades.Upgrades;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
-import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
-import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.inventory.FluidRFC;
-import com.bafomdad.realfilingcabinet.inventory.InventoryRFC;
 import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
 import com.google.common.collect.Lists;
@@ -44,36 +36,10 @@ public class TileFilingCabinet extends TileEntityRFC {
 	public void update() {
 		
 		super.update();
-		if (SmeltingUtils.canSmelt(this)) {
-			SmeltingUtils.incrementSmeltTime(this);
-			if (getWorld().getTotalWorldTime() % 40 == 0) {
-				SmeltingUtils.createSmeltingJob(this);
-				this.markBlockForUpdate();
-			}
-			return;
-		}
-		if (!UpgradeHelper.getUpgrade(this, StringLibs.TAG_LIFE).isEmpty()) {
-			if (!world.isRemote) {
-				EntityCabinet cabinet = new EntityCabinet(world);
-				IBlockState state = world.getBlockState(getPos());
-				float angle = state.getValue(BlockRFC.FACING).getHorizontalAngle();
-				cabinet.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, angle, 0);
-				
-				for (int i = 0; i < getInventory().getSlots(); i++) {
-					ItemStack folder = getInventory().getFolder(i);
-					if (!folder.isEmpty())
-						cabinet.getInventory().setStackInSlot(i, folder);
-				}
-				if (this.isCabinetLocked())
-					cabinet.setOwnerId(getOwner());
-				else
-					cabinet.homePos = getPos().toLong();
-				
-				cabinet.setLegit();
-				world.spawnEntity(cabinet);
-			}
-			world.setBlockToAir(getPos());
-		}
+
+		Upgrades upgrade = UpgradeHelper.getUpgrade(this);
+		if (!upgrade.isEmpty())
+			((IUpgrade)upgrade.getUpgrade().getItem()).tickUpgrade(upgrade.getUpgrade(), this);
 	}
 	
 	@Override
