@@ -151,6 +151,8 @@ public class BlockFilingCabinet extends BlockRFC {
 					player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					return;
 				}
+				if (!UpgradeHelper.getUpgrade(tileRFC, StringLibs.TAG_ENDER).isEmpty()) return;
+				
 				for (int i = 0; i < tileRFC.getInventory().getSlots(); i++) {
 					if (tileRFC.getInventory().getFolder(i).isEmpty()) {
 						tileRFC.getInventory().setStackInSlot(i, stack);
