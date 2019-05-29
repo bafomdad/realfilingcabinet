@@ -98,14 +98,15 @@ public class EnderUtils {
 	public static void syncToFolder(ItemStack folder) {
 		
 		TileFilingCabinet tile = getCachedTile(folder);
-		CapabilityFolder cap = FolderUtils.get(tile.getInventory().getFolder(NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0))).getCap();
+		int slotIndex = NBTUtils.getInt(folder, StringLibs.RFC_SLOTINDEX, 0);
+		CapabilityFolder cap = FolderUtils.get(tile.getInventory().getFolder(slotIndex)).getCap();
 		if (cap == null || !cap.isItemStack() || !hashMatches(folder, tile)) {
 			FolderUtils.get(folder).setObject(ItemStack.EMPTY);
 			FolderUtils.get(folder).setFileSize(0);
 			return;
 		}
 		long folderSize = cap.getCount();
-		if (!(FolderUtils.get(folder).getObject() instanceof ItemStack))
+		if ((FolderUtils.get(folder).getObject() instanceof ItemStack))
 			FolderUtils.get(folder).setObject(cap.getContents());
 		if (folderSize != FolderUtils.get(folder).getFileSize())
 			FolderUtils.get(folder).setFileSize(folderSize);
