@@ -109,9 +109,21 @@ public final class FolderUtils {
 		return (cap.isPresent()) ? cap.get().insert(objects, simulate) : objects;
 	}
 	
+	public Object insert(Object objects, boolean simulate, boolean oreDict) {
+		
+		// TODO: WIP
+		return null;
+	}
+	
 	public Object extract(long amount, boolean simulate) {
 		
 		return (cap.isPresent()) ? cap.get().extract(amount, simulate) : null;
+	}
+	
+	public Object extract(long amount, boolean simulate, boolean oreDict) {
+		
+		// TODO: WIP
+		return null;
 	}
 	
 	public static boolean areContentsEqual(ItemStack folder1, ItemStack folder2) {
