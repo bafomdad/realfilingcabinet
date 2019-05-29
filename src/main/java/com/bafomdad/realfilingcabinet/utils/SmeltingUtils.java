@@ -114,14 +114,14 @@ public class SmeltingUtils {
 	
 	private static void completeSmeltingJob(TileFilingCabinet tile, int[] job, int jobIndex) {
 		
-		if (tile.getInventory().getFolder(job[1]).isEmpty()) {
+		if (tile.getInventory().getStackInSlot(job[1]).isEmpty()) {
 			tile.smeltingJobs.remove(jobIndex);
 			return;
 		}
 		FolderUtils.get(tile.getInventory().getFolder(job[1])).remove(1);
 		FolderUtils.get(tile.getInventory().getFolder(job[2])).add(1);
 		
-		if (tile.getInventory().getFolder(job[1]).isEmpty()) {
+		if (tile.getInventory().getStackInSlot(job[1]).isEmpty()) {
 			tile.smeltingJobs.remove(jobIndex);
 			return;
 		}
