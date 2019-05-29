@@ -57,7 +57,7 @@ public class ItemAutoFolder extends ItemAbstractFolder implements IFolder {
 		if (toInsert instanceof ItemStack) {
 			ItemStack stack = (ItemStack)toInsert;
 			if (cap.isFluidStack()) return toInsert;
-			if (stack.getItem() == RFCItems.MAGNIFYINGGLASS) return toInsert;
+			if (stack.isEmpty() || stack.getItem() == RFCItems.MAGNIFYINGGLASS) return toInsert;
 			if (stack.hasTagCompound() || stack.isItemDamaged()) return toInsert;
 			if (!ItemStack.areItemsEqual(stack, cap.getItemStack()) && !cap.getItemStack().isEmpty()) return toInsert;
 			if (cap.getItemStack().isEmpty() && cap.setContents(stack) && !simulate) {

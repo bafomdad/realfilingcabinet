@@ -10,12 +10,16 @@ import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -33,8 +37,15 @@ public class StorageUtils {
 				player.setHeldItem(EnumHand.MAIN_HAND, stack.getItem().getContainerItem(stack));
 			return;
 		}
-		if (testOredict(tile, stack)) return;
-		
+		if (tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty()) {
+			OreDictUtils.recreateOreDictionary(stack);
+			if (OreDictUtils.hasOreDict()) {
+				for (int i = 0; i < tile.getInventory().getSlots(); i++) {
+					if (testOredict(tile, i, stack, false))
+						return;
+				}
+			}
+		}
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folderStack = tile.getInventory().getFolder(i);
 			if (!folderStack.isEmpty()) {
@@ -44,7 +55,6 @@ public class StorageUtils {
 					break;
 			}
 		}
-		tile.markBlockForUpdate();
 	}
 	
 	public static void addAllStacksManually(TileEntityRFC tile, EntityPlayer player) {
@@ -74,16 +84,54 @@ public class StorageUtils {
 	public static void extractStackManually(TileEntityRFC tile, EntityPlayer player) {
 		
 		ItemStack stack = tile.getFilter();
+		boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
+		boolean fluidUpgrade = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_FLUID).isEmpty();
+		
 		if (!stack.isEmpty()) {
 			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 				ItemStack folder = tile.getInventory().getFolder(i);
 				CapabilityFolder cap = FolderUtils.get(folder).getCap();
-				if (cap != null && cap.isItemStack() && ItemStack.areItemsEqual(cap.getItemStack(), stack) && cap.getCount() > 0) {
-					if (folder.getItemDamage() == FolderType.NBT.ordinal() && !ItemStack.areItemStackTagsEqual(cap.getItemStack(), stack))
-						return;
-					ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((player.isSneaking()) ? stack.getMaxStackSize() : 1, false));
-					tile.markBlockForUpdate();
-					return;
+				if (cap != null) {
+					if (cap.isFluidStack() && fluidUpgrade) {
+						ItemStack container = player.getHeldItemMainhand();
+						if (!container.isEmpty() && container.getItem() == Items.BUCKET) {
+							FluidStack fluid = FluidUtil.getFluidContained(stack);
+							if (fluid != null) {
+								FluidActionResult far = FluidUtil.tryFillContainer(container,  ((TileFilingCabinet)tile).getFluidInventory(), Fluid.BUCKET_VOLUME, player, true);
+								if (far.success) {
+									container.shrink(1);
+									ItemHandlerHelper.giveItemToPlayer(player, far.getResult());
+									tile.markBlockForUpdate();
+								}
+								return;
+							}
+						}
+						else return;
+					}
+					if (cap.isItemStack()) {
+						if (oreDict) {
+							OreDictUtils.recreateOreDictionary(stack);
+							if (!cap.getItemStack().isEmpty() && OreDictUtils.areItemsEqual(stack, cap.getItemStack())) {
+								long count = cap.getCount();
+								if (count == 0) continue;
+								
+								long extract = (player.isSneaking()) ? Math.min(stack.getMaxStackSize(), count) : 1;
+								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
+								ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
+								if (!UpgradeHelper.isCreative((TileFilingCabinet)tile))
+									cap.setCount(count - extract);
+								tile.markBlockForUpdate();
+								return;
+							}
+						}
+						if (ItemStack.areItemsEqual(cap.getItemStack(), stack) && cap.getCount() > 0) {
+							if (folder.getItemDamage() == FolderType.NBT.ordinal() && !ItemStack.areItemStackTagsEqual(cap.getItemStack(), stack))
+								return;
+							ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((player.isSneaking()) ? stack.getMaxStackSize() : 1, false));
+							tile.markBlockForUpdate();
+							return;
+						}
+					}
 				}
 			}
 		}
@@ -149,21 +197,16 @@ public class StorageUtils {
 		return false;
 	}
 	
-	private static boolean testOredict(TileEntityRFC tile, ItemStack toInsert) {
+	public static boolean testOredict(TileEntityRFC tile, int slot, ItemStack toInsert, boolean simulate) {
 		
-		if (!(tile instanceof TileFilingCabinet)) return false;
-		if (UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty()) return false;
-		
-		OreDictUtils.recreateOreDictionary(toInsert);
-		if (OreDictUtils.hasOreDict()) {
-			for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-				ItemStack stackInFolder = tile.getInventory().getStackFromFolder(i);
-				if (!stackInFolder.isEmpty() && OreDictUtils.areItemsEqual(toInsert, stackInFolder)) {
-					FolderUtils.get(tile.getInventory().getFolder(i)).insert(toInsert, false);
-					tile.markBlockForUpdate();
-					return true;
-				}
+		ItemStack stackInFolder = tile.getInventory().getStackFromFolder(slot);
+		if (!stackInFolder.isEmpty() && OreDictUtils.areItemsEqual(toInsert, stackInFolder)) {
+			ItemStack spoofItem = new ItemStack(stackInFolder.getItem(), toInsert.getCount(), stackInFolder.getItemDamage());
+			ItemStack result = (ItemStack)FolderUtils.get(tile.getInventory().getFolder(slot)).insert(spoofItem, simulate);
+			if (!simulate) {
+				toInsert.setCount(result.getCount());
 			}
+			return true;
 		}
 		return false;
 	}

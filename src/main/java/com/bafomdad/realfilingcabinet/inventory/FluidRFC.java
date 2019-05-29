@@ -81,21 +81,24 @@ public class FluidRFC implements IFluidHandler {
 		if (fluid == null) return null;
 		
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-			Object obj = FolderUtils.get(tile.getInventory().getFolder(i)).extract(maxDrain, doDrain);
-			if (obj instanceof FluidStack && fluid.isFluidEqual((FluidStack)obj)) {
-				FluidStack loopFluid = (FluidStack)obj;
-				this.takeFluidSnapshot(loopFluid);
-				FluidTank tank = new FluidTank(loopFluid, maxDrain);
-				FluidStack f = tank.drain(maxDrain, doDrain);
-				if (f != null && f.amount > 0 && doDrain) {
-					if (snapshot != null && snapshot.isFluidEqual(f) && !UpgradeHelper.isCreative(tile)) {
-						if (snapshot.getFluid() == FluidRegistry.WATER && snapshot.amount >= 3000 && ConfigRFC.infiniteWaterSource)
-							return f;
-						
-						FolderUtils.get(tile.getInventory().getFolder(i)).remove(snapshot.amount - loopFluid.amount);
+			CapabilityFolder cap = FolderUtils.get(tile.getInventory().getFolder(i)).getCap();
+			if (cap != null && cap.isFluidStack()) {
+				FluidStack loopFluid = cap.getFluidStack();
+				if (loopFluid.isFluidEqual(fluid)) {
+					loopFluid.amount = (int)Math.min(Integer.MAX_VALUE - 1, cap.getCount());
+					this.takeFluidSnapshot(loopFluid);
+					FluidTank tank = new FluidTank(loopFluid, maxDrain);
+					FluidStack f = tank.drain(maxDrain, doDrain);
+					if (f != null && f.amount > 0 && doDrain) {
+						if (snapshot != null && snapshot.isFluidEqual(f) && doDrain && !UpgradeHelper.isCreative(tile)) {
+							if (snapshot.getFluid() == FluidRegistry.WATER && snapshot.amount >= 3000 && ConfigRFC.infiniteWaterSource)
+								return f;
+							
+							FolderUtils.get(tile.getInventory().getFolder(i)).remove(snapshot.amount - loopFluid.amount);
+						}
 					}
+					return f;
 				}
-				return f;
 			}
 		}
 		return null;

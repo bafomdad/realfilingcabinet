@@ -1,12 +1,20 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemStackHandler;
 
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.init.RFCBlocks;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
+import com.bafomdad.realfilingcabinet.utils.OreDictUtils;
+import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class InventoryRFC extends ItemStackHandler {
 	
@@ -23,12 +31,12 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		if (tile.isCabinetLocked() || stack.isEmpty()) return stack;
 		
+		Object obj = FolderUtils.get(stacks.get(slot)).insert(stack, simulate);
+		if (!(obj instanceof ItemStack)) {
+			return stack;
+		}
 		if (!simulate)
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
-		
-		Object obj = FolderUtils.get(stacks.get(slot)).insert(stack, simulate);
-		if (!(obj instanceof ItemStack)) return stack;
-		
 		return (ItemStack)obj;
 	}
 	
@@ -42,11 +50,12 @@ public class InventoryRFC extends ItemStackHandler {
 			for (int i = 0; i < this.getSlots(); i++) {
 				ItemStack folderStack = getStackFromFolder(i);
 				if (ItemStack.areItemsEqual(folderStack, filter)) {
-					if (!simulate)
-						VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 					Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
-					if (obj instanceof ItemStack)
+					if (obj instanceof ItemStack) {
+						if (!simulate)
+							VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 						return (ItemStack)obj;
+					}
 				}
 			}
 		}
@@ -79,6 +88,11 @@ public class InventoryRFC extends ItemStackHandler {
 		 
 		ItemStack folder = stacks.get(slot);
 		Object obj = FolderUtils.get(folder).getObject();
+		if (obj instanceof FluidStack && tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_FLUID).isEmpty()) {
+			ItemStack bucket = FluidUtil.getFilledBucket((FluidStack)obj);
+			if (!bucket.isEmpty())
+				return bucket;
+		}
 		return (obj instanceof ItemStack) ? (ItemStack)obj : ItemStack.EMPTY;
 	}
 	
