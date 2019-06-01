@@ -27,10 +27,10 @@ public enum FolderType {
 	NORMAL {
 
 		@Override
-		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 
 			if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
-			if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack())) return null;
+			if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
@@ -83,10 +83,10 @@ public enum FolderType {
 	ENDER {
 
 		@Override
-		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 
 			if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
-			if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack())) return null;
+			if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
@@ -144,14 +144,13 @@ public enum FolderType {
 	DURA {
 
 		@Override
-		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 
 			if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
-			if (!ItemStack.areItemsEqualIgnoreDurability((ItemStack)toInsert, cap.getItemStack())) return null;
+			if (!ItemStack.areItemsEqualIgnoreDurability((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
-				
 				cap.setRemainingDurability(cap.getRemainingDurability() + (stack.getMaxDamage() - stack.getItemDamage()));
 				int newRem = cap.getRemainingDurability();
 
@@ -180,7 +179,7 @@ public enum FolderType {
 	MOB {
 
 		@Override
-		public EntityLivingBase insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public EntityLivingBase insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 
 			if (!(toInsert instanceof EntityLivingBase)) return null;
 			
@@ -214,7 +213,7 @@ public enum FolderType {
 	FLUID {
 
 		@Override
-		public FluidStack insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public FluidStack insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 			
 			if (!(toInsert instanceof FluidStack) || !cap.isFluidStack()) return null;
 			
@@ -247,10 +246,10 @@ public enum FolderType {
 	NBT {
 
 		@Override
-		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim) {
+		public ItemStack insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict) {
 
 			if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
-			if (!ItemStack.areItemStackTagsEqual((ItemStack)toInsert, cap.getItemStack())) return null;
+			if (!ItemStack.areItemStackTagsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 
 			ItemStack stack = (ItemStack)toInsert;
 			if (!sim) {
@@ -273,7 +272,7 @@ public enum FolderType {
 		}
 	};
 	
-	public abstract <T> T insert(CapabilityFolder cap, Object toInsert, boolean sim);
+	public abstract <T> T insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict);
 	
 	public abstract <T> T extract(CapabilityFolder cap, long amount, boolean sim);
 	

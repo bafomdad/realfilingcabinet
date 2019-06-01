@@ -3,10 +3,15 @@ package com.bafomdad.realfilingcabinet.utils;
 import java.util.List;
 import java.util.Optional;
 
+import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
+import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -106,24 +111,17 @@ public final class FolderUtils {
 
 	public Object insert(Object objects, boolean simulate) {
 		
-		return (cap.isPresent()) ? cap.get().insert(objects, simulate) : objects;
+		return this.insert(objects, simulate, false);
 	}
 	
 	public Object insert(Object objects, boolean simulate, boolean oreDict) {
 		
-		// TODO: WIP
-		return null;
+		return (cap.isPresent()) ? cap.get().insert(objects, simulate, oreDict) : objects;
 	}
 	
 	public Object extract(long amount, boolean simulate) {
 		
 		return (cap.isPresent()) ? cap.get().extract(amount, simulate) : null;
-	}
-	
-	public Object extract(long amount, boolean simulate, boolean oreDict) {
-		
-		// TODO: WIP
-		return null;
 	}
 	
 	public static boolean areContentsEqual(ItemStack folder1, ItemStack folder2) {
@@ -143,5 +141,14 @@ public final class FolderUtils {
 			return cap1.getEntityClass().equals(cap2.getEntityClass());
 			
 		return false;
+	}
+	
+	public static boolean allowableIngredient(ItemStack stack) {
+		
+		return !(stack.getItem() instanceof IEmptyFolder 
+				|| stack.getItem() instanceof IFolder 
+				|| Block.getBlockFromItem(stack.getItem()) instanceof IBlockCabinet
+				|| stack.getItem() == RFCItems.WHITEOUTTAPE)
+				|| stack.getItem() == RFCItems.MAGNIFYINGGLASS;
 	}
 }

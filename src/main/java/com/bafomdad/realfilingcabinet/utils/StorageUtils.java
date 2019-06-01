@@ -37,20 +37,19 @@ public class StorageUtils {
 				player.setHeldItem(EnumHand.MAIN_HAND, stack.getItem().getContainerItem(stack));
 			return;
 		}
-		if (tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty()) {
+		boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
+		if (oreDict) {
 			OreDictUtils.recreateOreDictionary(stack);
-			if (OreDictUtils.hasOreDict()) {
-				for (int i = 0; i < tile.getInventory().getSlots(); i++) {
-					if (testOredict(tile, i, stack, false))
-						return;
-				}
-			}
+			oreDict = OreDictUtils.hasOreDict();
 		}
 		for (int i = 0; i < tile.getInventory().getSlots(); i++) {
 			ItemStack folderStack = tile.getInventory().getFolder(i);
 			if (!folderStack.isEmpty()) {
 				testAdvancement(tile.getInventory().getFolder(i), player);
-				FolderUtils.get(tile.getInventory().getFolder(i)).insert(stack, false);
+				if (oreDict && OreDictUtils.areItemsEqual(stack, tile.getInventory().getStackFromFolder(i)))
+					FolderUtils.get(folderStack).insert(stack, false, true);
+				else
+					FolderUtils.get(folderStack).insert(stack, false);
 				if (stack.isEmpty())
 					break;
 			}
@@ -193,20 +192,6 @@ public class StorageUtils {
 			int fluidAmount = fluidHandler.fill(fluid, true);
 			if (fluidAmount > 0)
 				return true;
-		}
-		return false;
-	}
-	
-	public static boolean testOredict(TileEntityRFC tile, int slot, ItemStack toInsert, boolean simulate) {
-		
-		ItemStack stackInFolder = tile.getInventory().getStackFromFolder(slot);
-		if (!stackInFolder.isEmpty() && OreDictUtils.areItemsEqual(toInsert, stackInFolder)) {
-			ItemStack spoofItem = new ItemStack(stackInFolder.getItem(), toInsert.getCount(), stackInFolder.getItemDamage());
-			ItemStack result = (ItemStack)FolderUtils.get(tile.getInventory().getFolder(slot)).insert(spoofItem, simulate);
-			if (!simulate) {
-				toInsert.setCount(result.getCount());
-			}
-			return true;
 		}
 		return false;
 	}

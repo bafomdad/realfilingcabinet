@@ -31,12 +31,24 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		if (tile.isCabinetLocked() || stack.isEmpty()) return stack;
 		
-		Object obj = FolderUtils.get(stacks.get(slot)).insert(stack, simulate);
-		if (!(obj instanceof ItemStack)) {
+		boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
+		if (oreDict) {
+			OreDictUtils.recreateOreDictionary(stack);
+			if (OreDictUtils.hasOreDict()) {
+				oreDict = OreDictUtils.areItemsEqual(stack, this.getStackFromFolder(slot));
+			}
+		}
+		// this is to skip over the hopper's simulated insertion. even if the insertion is successful,
+		// on a oredictionaried item, it still fails in the end since the hopper still checks if
+		// the two items are equal anyway
+		simulate = (oreDict) ? false : simulate;
+		Object obj = FolderUtils.get(stacks.get(slot)).insert(stack, simulate, oreDict);
+		if (obj == null) {
 			return stack;
 		}
 		if (!simulate)
 			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
+		
 		return (ItemStack)obj;
 	}
 	
@@ -47,8 +59,23 @@ public class InventoryRFC extends ItemStackHandler {
 		
 		ItemStack filter = tile.getFilter();
 		if (!filter.isEmpty()) {
+			boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
+			if (oreDict) {
+				OreDictUtils.recreateOreDictionary(filter);
+				oreDict = OreDictUtils.hasOreDict();
+			}
 			for (int i = 0; i < this.getSlots(); i++) {
 				ItemStack folderStack = getStackFromFolder(i);
+				if (oreDict) {
+					if (OreDictUtils.areItemsEqual(filter, folderStack)) {
+						Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
+						if (obj instanceof ItemStack) {
+							if (!simulate)
+								VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
+							return new ItemStack(filter.getItem(), ((ItemStack)obj).getCount(), filter.getItemDamage());
+						}
+					}
+				}
 				if (ItemStack.areItemsEqual(folderStack, filter)) {
 					Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
 					if (obj instanceof ItemStack) {
@@ -77,8 +104,9 @@ public class InventoryRFC extends ItemStackHandler {
 			long count = FolderUtils.get(stacks.get(slot)).getFileSize();
 			if (count <= 0)
 				return ItemStack.EMPTY;
-			
-			long extract = Math.min(Integer.MAX_VALUE - 1, count);
+//			nerf this	
+//			long extract = Math.min(Integer.MAX_VALUE - 1, count);
+			long extract = Math.min(stackFolder.getMaxStackSize(), count);
 			stackFolder.setCount((int)extract);
 		}
 		return stackFolder;

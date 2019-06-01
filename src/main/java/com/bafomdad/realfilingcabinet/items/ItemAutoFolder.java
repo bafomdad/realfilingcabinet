@@ -51,15 +51,16 @@ public class ItemAutoFolder extends ItemAbstractFolder implements IFolder {
 	}
 
 	@Override
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
 		if (toInsert instanceof ItemStack) {
 			ItemStack stack = (ItemStack)toInsert;
 			if (cap.isFluidStack()) return toInsert;
-			if (stack.isEmpty() || stack.getItem() == RFCItems.MAGNIFYINGGLASS) return toInsert;
+			if (!FolderUtils.allowableIngredient(stack)) return toInsert;
 			if (stack.hasTagCompound() || stack.isItemDamaged()) return toInsert;
-			if (!ItemStack.areItemsEqual(stack, cap.getItemStack()) && !cap.getItemStack().isEmpty()) return toInsert;
+			if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict && !cap.getItemStack().isEmpty()) return toInsert;
+
 			if (cap.getItemStack().isEmpty() && cap.setContents(stack) && !simulate) {
 				stack.setCount(0);
 				return ItemStack.EMPTY;
@@ -75,7 +76,7 @@ public class ItemAutoFolder extends ItemAbstractFolder implements IFolder {
 			if (cap.getFluidStack() == null && cap.setContents(toInsert) && simulate) {
 				return (FluidStack)toInsert;
 			}
-			return FolderType.FLUID.insert(cap, toInsert, simulate);
+			return FolderType.FLUID.insert(cap, toInsert, simulate, oreDict);
 		}
 		return toInsert;
 	}

@@ -19,7 +19,7 @@ public interface IFolder {
 		return EnumActionResult.PASS;
 	}
 	
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate);
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict);
 	
 	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate);
 }

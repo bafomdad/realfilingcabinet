@@ -30,7 +30,7 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			if (!stack.isEmpty()) {
 				if (stack.getItem() instanceof IEmptyFolder)
 					foundFolder = true;
-				else if (!foundItem && allowableIngredient(stack))
+				else if (!foundItem && FolderUtils.allowableIngredient(stack))
 					foundItem = true;
 				else return false;
 			}
@@ -101,13 +101,5 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 			}
 		}
 		return ret;
-	}
-	
-	private boolean allowableIngredient(ItemStack stack) {
-		
-		return !(stack.getItem() instanceof IEmptyFolder 
-				|| stack.getItem() instanceof IFolder 
-				|| Block.getBlockFromItem(stack.getItem()) instanceof IBlockCabinet
-				|| stack.getItem() == RFCItems.WHITEOUTTAPE);
 	}
 }

@@ -66,9 +66,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		return obj;
 	}
 	
-	public Object insert(Object objects, boolean sim) {
+	public Object insert(Object objects, boolean sim, boolean oreDict) {
 
-		Object obj = ((IFolder)rootStack.getItem()).insertIntoFolder(rootStack, objects, sim);
+		Object obj = ((IFolder)rootStack.getItem()).insertIntoFolder(rootStack, objects, sim, oreDict);
 		if (obj instanceof ItemStack)
 			return (ItemStack)obj;
 

@@ -157,9 +157,9 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 	}
 
 	@Override
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict) {
 
-		return FolderType.values()[folder.getItemDamage()].insert(FolderUtils.get(folder).getCap(), toInsert, simulate);
+		return FolderType.values()[folder.getItemDamage()].insert(FolderUtils.get(folder).getCap(), toInsert, simulate, oreDict);
 	}
 
 	@Override

@@ -109,7 +109,7 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 	}
 
 	@Override
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict) {
 		
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
 		
@@ -117,7 +117,7 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 		if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
 		
 		ItemStack stack = ((ItemStack)toInsert).copy();
-		if (!ItemStack.areItemsEqual(stack, cap.getItemStack())) return null;
+		if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 		
 		long newCount = Math.min(cap.getCount() + stack.getCount(), ConfigRFC.folderSizeLimit);
 		long remainder = ConfigRFC.folderSizeLimit - cap.getCount();
