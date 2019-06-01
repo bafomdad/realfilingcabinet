@@ -33,7 +33,7 @@ public class TileManaCabinet extends TileEntityRFC implements IManaReceiver, ISp
 	public int getManaFromFolder() {
 		
 		for (int i = 0; i < this.getInventory().getSlots(); i++) {
-			ItemStack stack = this.getInventory().getStackInSlot(i);
+			ItemStack stack = this.getInventory().getFolder(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem) {
 				int manaSize = ManaStorageUtils.getManaSize(stack);
 				if (manaSize >= 0)
@@ -46,7 +46,7 @@ public class TileManaCabinet extends TileEntityRFC implements IManaReceiver, ISp
 	public void addManaToFolder(int mana) {
 		
 		for (int i = 0; i < this.getInventory().getSlots(); i++){
-			ItemStack stack = this.getInventory().getStackInSlot(i);
+			ItemStack stack = this.getInventory().getFolder(i);
 			if (!stack.isEmpty() && stack.getItem() instanceof IManaItem) {
 				if (mana > 0 && ManaStorageUtils.isManaFolderFull(stack))
 					continue;
