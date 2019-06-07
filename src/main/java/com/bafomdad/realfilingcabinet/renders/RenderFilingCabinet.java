@@ -67,6 +67,9 @@ public class RenderFilingCabinet extends TileEntitySpecialRenderer<TileEntityRFC
 				}
 				GlStateManager.popMatrix();
 			}
+			if (UpgradeHelper.isCreative(te))
+				GlStateManager.color(0.65F, 0.3F, 0.65F);
+				
 			bindTheTex(te);
 			model.render(te, f);
 			GlStateManager.popMatrix();

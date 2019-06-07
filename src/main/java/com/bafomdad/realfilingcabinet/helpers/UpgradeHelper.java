@@ -15,6 +15,7 @@ import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IUpgrade;
 import com.bafomdad.realfilingcabinet.api.RealFilingCabinetAPI;
 import com.bafomdad.realfilingcabinet.api.upgrades.Upgrades;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -44,7 +45,7 @@ public class UpgradeHelper {
 	 * @param tile
 	 * @return
 	 */
-	public static boolean isCreative(TileFilingCabinet tile) {
+	public static boolean isCreative(TileEntityRFC tile) {
 		
 		return tile.isCreative;
 	}

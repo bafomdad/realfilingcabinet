@@ -29,7 +29,6 @@ public class TileFilingCabinet extends TileEntityRFC {
 	public List<int[]> smeltingJobs = Lists.newArrayList();
 	public int fuelTime = 0;
 	public ItemStack uncraftableItem = ItemStack.EMPTY;
-	public boolean isCreative = false;
 	private int rfcHash = -1;
 	
 	@Override
@@ -49,7 +48,6 @@ public class TileFilingCabinet extends TileEntityRFC {
 		
 		tag.setTag(StringLibs.RFC_CRAFTABLE, uncraftableItem.serializeNBT());
 		tag.setString(StringLibs.RFC_UPGRADE, upgrade);
-		tag.setBoolean(StringLibs.TAG_CREATIVE, this.isCreative);
 		if (rfcHash != -1)
 			tag.setInteger(StringLibs.RFC_HASH, rfcHash);
 		
@@ -64,7 +62,6 @@ public class TileFilingCabinet extends TileEntityRFC {
 		if (tag.hasKey(StringLibs.RFC_CRAFTABLE))
 			this.uncraftableItem = new ItemStack((NBTTagCompound)tag.getTag(StringLibs.RFC_CRAFTABLE));
 		this.upgrade = tag.getString(StringLibs.RFC_UPGRADE);
-		this.isCreative = tag.getBoolean(StringLibs.TAG_CREATIVE);
 		if (tag.hasKey(StringLibs.RFC_HASH))
 			rfcHash = tag.getInteger(StringLibs.RFC_HASH);
 		

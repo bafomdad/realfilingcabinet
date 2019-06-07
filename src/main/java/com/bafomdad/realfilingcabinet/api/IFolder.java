@@ -21,5 +21,5 @@ public interface IFolder {
 	
 	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict);
 	
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate);
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative);
 }
