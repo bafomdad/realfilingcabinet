@@ -57,12 +57,12 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		}
 	}
 	
-	public Object extract(long amount, boolean sim) {
+	public Object extract(long amount, boolean sim, boolean creative) {
 		
 		Object obj = null;
 		if (count <= 0) return obj;
 		
-		obj = ((IFolder)rootStack.getItem()).extractFromFolder(rootStack, amount, sim);
+		obj = ((IFolder)rootStack.getItem()).extractFromFolder(rootStack, amount, sim, creative);
 		return obj;
 	}
 	

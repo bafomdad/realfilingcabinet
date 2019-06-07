@@ -129,15 +129,15 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 	}
 
 	@Override
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
-		ItemStack items = cap.getItemStack();
+		ItemStack items = cap.getItemStack().copy();
 		items.setCount((int)Math.min(cap.getCount(), amount));
 		
-		if (!simulate)
+		if (!simulate && !creative)
 			cap.setCount(cap.getCount() - items.getCount());
 
-		return items.copy();	
+		return items;	
 	}
 }

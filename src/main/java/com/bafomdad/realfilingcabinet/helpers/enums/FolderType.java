@@ -41,12 +41,12 @@ public enum FolderType {
 		}
 
 		@Override
-		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim) {
+		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
 			ItemStack items = cap.getItemStack();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
-			if (!sim)
+			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
 			return items.copy();	
@@ -97,12 +97,12 @@ public enum FolderType {
 		}
 
 		@Override
-		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim) {
+		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
 			ItemStack items = cap.getItemStack();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
-			if (!sim)
+			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
 			return items.copy();	
@@ -165,12 +165,12 @@ public enum FolderType {
 		}
 
 		@Override
-		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim) {
+		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
 			ItemStack items = cap.getItemStack();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
-			if (!sim)
+			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
 			return items.copy();	
@@ -195,7 +195,7 @@ public enum FolderType {
 		}
 
 		@Override
-		public EntityLivingBase extract(CapabilityFolder cap, long amount, boolean sim) {
+		public EntityLivingBase extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 			// NO-OP
 			return null;
 		}
@@ -227,7 +227,7 @@ public enum FolderType {
 		}
 
 		@Override
-		public FluidStack extract(CapabilityFolder cap, long amount, boolean sim) {
+		public FluidStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
 			if (!cap.isFluidStack()) return null;
 			
@@ -260,12 +260,12 @@ public enum FolderType {
 		}
 
 		@Override
-		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim) {
+		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
 			ItemStack items = cap.getItemStack();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
-			if (!sim)
+			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
 			return items.copy();	
@@ -274,7 +274,7 @@ public enum FolderType {
 	
 	public abstract <T> T insert(CapabilityFolder cap, Object toInsert, boolean sim, boolean oreDict);
 	
-	public abstract <T> T extract(CapabilityFolder cap, long amount, boolean sim);
+	public abstract <T> T extract(CapabilityFolder cap, long amount, boolean sim, boolean creative);
 	
 	public EnumActionResult placeObject(ItemStack folder, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		

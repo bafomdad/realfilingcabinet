@@ -82,14 +82,14 @@ public class ItemAutoFolder extends ItemAbstractFolder implements IFolder {
 	}
 
 	@Override
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
 		if (cap.isItemStack())
-			return FolderType.NORMAL.extract(cap, amount, simulate);
+			return FolderType.NORMAL.extract(cap, amount, simulate, creative);
 		
 		if (cap.isFluidStack())
-			return FolderType.FLUID.extract(cap, amount, simulate);
+			return FolderType.FLUID.extract(cap, amount, simulate, creative);
 			
 		return null;	
 	}

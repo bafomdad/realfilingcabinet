@@ -84,6 +84,7 @@ public class StorageUtils {
 		
 		ItemStack stack = tile.getFilter();
 		boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
+		boolean creative = tile instanceof TileFilingCabinet && UpgradeHelper.isCreative((TileFilingCabinet)tile);
 		boolean fluidUpgrade = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_FLUID).isEmpty();
 		
 		if (!stack.isEmpty()) {
@@ -126,7 +127,7 @@ public class StorageUtils {
 						if (ItemStack.areItemsEqual(cap.getItemStack(), stack) && cap.getCount() > 0) {
 							if (folder.getItemDamage() == FolderType.NBT.ordinal() && !ItemStack.areItemStackTagsEqual(cap.getItemStack(), stack))
 								return;
-							ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((player.isSneaking()) ? stack.getMaxStackSize() : 1, false));
+							ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((player.isSneaking()) ? stack.getMaxStackSize() : 1, false, creative));
 							tile.markBlockForUpdate();
 							return;
 						}

@@ -129,11 +129,11 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 	public ItemStack getEmptyFolder(ItemStack stack) {
 
 		switch (stack.getItemDamage()) {
-			case 0: return new ItemStack(RFCItems.FOLDER, 1, 0);
-			case 2: return new ItemStack(RFCItems.FOLDER, 1, 1);
-			case 3: return new ItemStack(RFCItems.FOLDER, 1, 2);
-			case 4: return new ItemStack(RFCItems.FOLDER, 1, 3);
-			case 5: return new ItemStack(RFCItems.FOLDER, 1, 4);
+			case 0: return new ItemStack(RFCItems.EMPTYFOLDER, 1, 0);
+			case 2: return new ItemStack(RFCItems.EMPTYFOLDER, 1, 1);
+			case 3: return new ItemStack(RFCItems.EMPTYFOLDER, 1, 2);
+			case 4: return new ItemStack(RFCItems.EMPTYFOLDER, 1, 3);
+			case 5: return new ItemStack(RFCItems.EMPTYFOLDER, 1, 4);
 			default: return ItemStack.EMPTY;
 		}
 	}
@@ -163,8 +163,8 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 	}
 
 	@Override
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
 
-		return FolderType.values()[folder.getItemDamage()].extract(FolderUtils.get(folder).getCap(), amount, simulate);
+		return FolderType.values()[folder.getItemDamage()].extract(FolderUtils.get(folder).getCap(), amount, simulate, creative);
 	}
 }

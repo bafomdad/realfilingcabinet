@@ -77,13 +77,13 @@ public class ItemAspectFolder extends Item implements IFolder {
 	}
 
 	@Override
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict) {
 		// NO-OP
 		return null;
 	}
 
 	@Override
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
 		// NO-OP
 		return null;
 	}

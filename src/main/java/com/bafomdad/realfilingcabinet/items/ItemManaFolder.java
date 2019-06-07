@@ -58,14 +58,14 @@ public class ItemManaFolder extends Item implements IFolder, IManaItem, IManaToo
 	}
 
 	@Override
-	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate) {
-
+	public Object insertIntoFolder(ItemStack folder, Object toInsert, boolean simulate, boolean oreDict) {
+		// NO-OP
 		return null;
 	}
 
 	@Override
-	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate) {
-
+	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
+		// NO-OP
 		return null;
 	}
 	
