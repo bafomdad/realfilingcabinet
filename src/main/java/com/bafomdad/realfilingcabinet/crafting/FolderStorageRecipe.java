@@ -92,9 +92,7 @@ public class FolderStorageRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		for (int i = 0; i < ret.size(); i++) {
 			ItemStack stack = ic.getStackInSlot(i);
 			if (!stack.isEmpty()) {
-				if (stack.getItem() instanceof IEmptyFolder)
-					ret.set(i, ic.getStackInSlot(i));
-				else {
+				if (!(stack.getItem() instanceof IEmptyFolder)) {
 					ic.setInventorySlotContents(i, ItemStack.EMPTY);
 					ret.set(i, ItemStack.EMPTY);
 				}
