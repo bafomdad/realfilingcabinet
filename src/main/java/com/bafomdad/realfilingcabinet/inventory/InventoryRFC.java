@@ -11,6 +11,7 @@ import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
 import com.bafomdad.realfilingcabinet.init.RFCBlocks;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.OreDictUtils;
@@ -30,7 +31,7 @@ public class InventoryRFC extends ItemStackHandler {
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		
 		if (tile.isCabinetLocked() || stack.isEmpty()) return stack;
-		
+
 		boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
 		if (oreDict) {
 			OreDictUtils.recreateOreDictionary(stack);
@@ -58,6 +59,9 @@ public class InventoryRFC extends ItemStackHandler {
 		if (tile.isCabinetLocked()) return ItemStack.EMPTY;
 		
 		ItemStack filter = tile.getFilter();
+		boolean hasFilter = tile.getItemFrame() != null;
+		boolean creative = tile instanceof TileFilingCabinet && UpgradeHelper.isCreative((TileFilingCabinet)tile);
+		
 		if (!filter.isEmpty()) {
 			boolean oreDict = tile instanceof TileFilingCabinet && !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_OREDICT).isEmpty();
 			if (oreDict) {
@@ -68,7 +72,9 @@ public class InventoryRFC extends ItemStackHandler {
 				ItemStack folderStack = getStackFromFolder(i);
 				if (oreDict) {
 					if (OreDictUtils.areItemsEqual(filter, folderStack)) {
-						Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
+						// break the loop if the found item and the requested slot doesn't match up if the filter is present
+						if (hasFilter && slot != i) break;
+						Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate, creative);
 						if (obj instanceof ItemStack) {
 							if (!simulate)
 								VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
@@ -77,13 +83,23 @@ public class InventoryRFC extends ItemStackHandler {
 					}
 				}
 				if (ItemStack.areItemsEqual(folderStack, filter)) {
-					Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate);
+					// break the loop if the found item and the requested slot doesn't match up if the filter is present
+					if (hasFilter && slot != i) break;
+					Object obj = FolderUtils.get(stacks.get(i)).extract(amount, simulate, creative);
 					if (obj instanceof ItemStack) {
 						if (!simulate)
 							VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
 						return (ItemStack)obj;
 					}
 				}
+			}
+		}
+		if (!hasFilter) {
+			Object obj = FolderUtils.get(stacks.get(slot)).extract(amount, simulate, creative);
+			if (obj instanceof ItemStack) {
+				if (!simulate)
+					VanillaPacketDispatcher.dispatchTEToNearbyPlayers(tile.getWorld(), tile.getPos());
+				return (ItemStack)obj;
 			}
 		}
 		return ItemStack.EMPTY;
@@ -100,16 +116,20 @@ public class InventoryRFC extends ItemStackHandler {
 		if (stacks.get(slot).isEmpty() || !(stacks.get(slot).getItem() instanceof IFolder)) return ItemStack.EMPTY;
 		
 		ItemStack stackFolder = getStackFromFolder(slot);
+		ItemStack copystack = new ItemStack(stackFolder.getItem(), 1, stackFolder.getItemDamage());
 		if (!stackFolder.isEmpty()) {
+			if (stackFolder.hasTagCompound())
+				copystack.setTagCompound(stackFolder.getTagCompound());
+			
 			long count = FolderUtils.get(stacks.get(slot)).getFileSize();
 			if (count <= 0)
 				return ItemStack.EMPTY;
-//			nerf this	
-//			long extract = Math.min(Integer.MAX_VALUE - 1, count);
-			long extract = Math.min(stackFolder.getMaxStackSize(), count);
-			stackFolder.setCount((int)extract);
+
+			long extract = Math.min(Integer.MAX_VALUE - 1, count);
+//			long extract = Math.min(stackFolder.getMaxStackSize(), count);
+			copystack.setCount((int)extract);
 		}
-		return stackFolder;
+		return copystack;
 	}
 	
 	public ItemStack getStackFromFolder(int slot) {

@@ -35,6 +35,7 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 	
 	private UUID owner;
 	private InventoryRFC inv = new InventoryRFC(this, 8);
+	public boolean isCreative = false;
 	
 	// last clicked variables (we don't have to save those to disk)
 	private long lastClickTime;
@@ -64,23 +65,29 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 		return inv;
 	}
 	
-	public ItemStack getFilter() {
+	public EntityItemFrame getItemFrame() {
 		
 		AxisAlignedBB aabb = new AxisAlignedBB(pos.add(0, 1, 0), pos.add(1, 2, 1));
 		List<EntityItemFrame> frames = this.getWorld().getEntitiesWithinAABB(EntityItemFrame.class, aabb);
 		for (EntityItemFrame frame : frames) {
-			if (frame != null && !frame.getDisplayedItem().isEmpty()) {
-				EnumFacing orientation = frame.getAdjustedHorizontalFacing();
-				IBlockState state = this.getWorld().getBlockState(getPos());
-				EnumFacing tileFacing = (EnumFacing)state.getValue(BlockRFC.FACING);
-				if (orientation == tileFacing) {
-					if (frame.getDisplayedItem().getItem() == RFCItems.FILTER) {
-						int rotation = frame.getRotation();
-						return getInventory().getStackFromFolder(rotation);
-					}
-					return frame.getDisplayedItem();
-				}
+			EnumFacing orientation = frame.getAdjustedHorizontalFacing();
+			IBlockState state = getWorld().getBlockState(getPos());
+			EnumFacing tileFacing = (EnumFacing)state.getValue(BlockRFC.FACING);
+			if (orientation == tileFacing)
+				return frame;
+		}
+		return null;
+	}
+	
+	public ItemStack getFilter() {
+		
+		EntityItemFrame frame = getItemFrame();
+		if (frame != null && !frame.getDisplayedItem().isEmpty()) {
+			if (frame.getDisplayedItem().getItem() == RFCItems.FILTER) {
+				int rotation = frame.getRotation();
+				return getInventory().getStackFromFolder(rotation);
 			}
+			return frame.getDisplayedItem();
 		}
 		return ItemStack.EMPTY;
 	}
@@ -114,6 +121,7 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 	public void writeCustomNBT(NBTTagCompound tag) {
 		
 		tag.setBoolean("isOpen", this.isOpen);
+		tag.setBoolean(StringLibs.TAG_CREATIVE, this.isCreative);
 		
 		if (owner != null)
 			tag.setString(StringLibs.RFC_OWNER, owner.toString());
@@ -123,6 +131,7 @@ public abstract class TileEntityRFC extends TileEntity implements ITickable, ILo
 	public void readCustomNBT(NBTTagCompound tag) {
 		
 		this.isOpen = tag.getBoolean("isOpen");
+		this.isCreative = tag.getBoolean(StringLibs.TAG_CREATIVE);
 		
 		this.owner = null;
 		if (tag.hasKey(StringLibs.RFC_OWNER))
