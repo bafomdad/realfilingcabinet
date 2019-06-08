@@ -1,5 +1,6 @@
 package com.bafomdad.realfilingcabinet.crafting;
 
+import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
@@ -63,6 +64,7 @@ public class FolderMergeRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
 			
 			long mergeCount = FolderUtils.get(host).getFileSize() + FolderUtils.get(toMerge).getFileSize();
 			if (mergeCount > 0) {
+				if (host.getItem() == RFCItems.DYEDFOLDER && mergeCount > ConfigRFC.folderSizeLimit) return item;
 				item = host.copy();
 				FolderUtils.get(item).setFileSize(mergeCount);
 			}
