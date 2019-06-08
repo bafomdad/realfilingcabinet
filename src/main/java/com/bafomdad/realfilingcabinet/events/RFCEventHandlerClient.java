@@ -84,7 +84,7 @@ public class RFCEventHandlerClient {
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		
 		if (event.getModID().equals(RealFilingCabinet.MOD_ID))
-			ConfigManager.load(RealFilingCabinet.MOD_ID, Config.Type.INSTANCE);
+			ConfigManager.sync(RealFilingCabinet.MOD_ID, Config.Type.INSTANCE);
 	}
 
 	@SubscribeEvent
