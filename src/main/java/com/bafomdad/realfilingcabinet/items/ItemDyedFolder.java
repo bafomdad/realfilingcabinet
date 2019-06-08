@@ -116,9 +116,9 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 		if (cap == null) return null;
 		if (!(toInsert instanceof ItemStack) || !cap.isItemStack()) return null;
 		
-		ItemStack stack = ((ItemStack)toInsert).copy();
 		if (!ItemStack.areItemsEqual((ItemStack)toInsert, cap.getItemStack()) && !oreDict) return null;
 		
+		ItemStack stack = (ItemStack)toInsert;
 		long newCount = Math.min(cap.getCount() + stack.getCount(), ConfigRFC.folderSizeLimit);
 		long remainder = ConfigRFC.folderSizeLimit - cap.getCount();
 		stack.setCount(stack.getCount() - (int)remainder);
