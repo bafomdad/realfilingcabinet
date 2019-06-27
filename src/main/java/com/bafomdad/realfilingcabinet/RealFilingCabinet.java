@@ -5,10 +5,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import org.apache.logging.log4j.Logger;
 
+import com.bafomdad.realfilingcabinet.commands.CommandsRFC;
 import com.bafomdad.realfilingcabinet.gui.GuiHandlerRFC;
 import com.bafomdad.realfilingcabinet.init.RFCDataFixer;
 import com.bafomdad.realfilingcabinet.init.RFCIntegration;
@@ -53,5 +55,11 @@ public class RealFilingCabinet {
 	public void postInit(FMLPostInitializationEvent event) {
 		
 		proxy.postInit(event);
+	}
+	
+	@Mod.EventHandler
+	public void serverLoad(FMLServerStartingEvent event) {
+		
+		event.registerServerCommand(new CommandsRFC());
 	}
 }
