@@ -6,6 +6,7 @@ import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.api.ISubModel;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
@@ -132,12 +133,6 @@ public class ItemDyedFolder extends ItemAbstractFolder implements ISubModel, IFo
 	public Object extractFromFolder(ItemStack folder, long amount, boolean simulate, boolean creative) {
 
 		CapabilityFolder cap = FolderUtils.get(folder).getCap();
-		ItemStack items = cap.getItemStack().copy();
-		items.setCount((int)Math.min(cap.getCount(), amount));
-		
-		if (!simulate && !creative)
-			cap.setCount(cap.getCount() - items.getCount());
-
-		return items;	
+		return FolderType.NORMAL.extract(cap, amount, simulate, creative);
 	}
 }

@@ -43,13 +43,13 @@ public enum FolderType {
 		@Override
 		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
-			ItemStack items = cap.getItemStack();
+			ItemStack items = cap.getItemStack().copy();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
-			if (!sim && !creative)
+			if (!sim && !creative) {
 				cap.setCount(cap.getCount() - items.getCount());
-
-			return items.copy();	
+			}
+			return items;
 		}
 		
 		@Override
@@ -99,13 +99,13 @@ public enum FolderType {
 		@Override
 		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
-			ItemStack items = cap.getItemStack();
+			ItemStack items = cap.getItemStack().copy();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
 			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
-			return items.copy();	
+			return items;
 		}
 		
 		@Override
@@ -167,13 +167,13 @@ public enum FolderType {
 		@Override
 		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
-			ItemStack items = cap.getItemStack();
+			ItemStack items = cap.getItemStack().copy();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
 			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
-			return items.copy();	
+			return items;	
 		}
 	},
 	MOB {
@@ -262,13 +262,13 @@ public enum FolderType {
 		@Override
 		public ItemStack extract(CapabilityFolder cap, long amount, boolean sim, boolean creative) {
 
-			ItemStack items = cap.getItemStack();
+			ItemStack items = cap.getItemStack().copy();
 			items.setCount((int)Math.min(cap.getCount(), amount));
 			
 			if (!sim && !creative)
 				cap.setCount(cap.getCount() - items.getCount());
 
-			return items.copy();	
+			return items;	
 		}
 	};
 	
