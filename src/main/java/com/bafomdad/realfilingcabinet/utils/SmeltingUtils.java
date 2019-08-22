@@ -92,6 +92,16 @@ public class SmeltingUtils {
 		tile.fuelTime = tag.getInteger(StringLibs.TAG_FUELTIME);
 	}
 	
+	public static void removeSmeltingJob(TileFilingCabinet tile, int slot) {
+		
+		for (int[] job : tile.smeltingJobs) {
+			if (job[1] == slot || job[2] == slot) {
+				tile.smeltingJobs.remove(job);
+				break;
+			}
+		}
+	}
+	
 	private static void addSmeltingJob(TileFilingCabinet tile, int toSmelt, int smeltResult) {
 		
 		if (tile.getWorld().isRemote) return;

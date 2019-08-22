@@ -1,5 +1,7 @@
 package com.bafomdad.realfilingcabinet.inventory;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -15,6 +17,7 @@ import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.network.VanillaPacketDispatcher;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.OreDictUtils;
+import com.bafomdad.realfilingcabinet.utils.SmeltingUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 public class InventoryRFC extends ItemStackHandler {
@@ -131,6 +134,19 @@ public class InventoryRFC extends ItemStackHandler {
 		}
 		return copystack;
 	}
+	
+    @Override
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    	
+        validateSlotIndex(slot);
+        this.stacks.set(slot, stack);
+        if (stack.isEmpty()) {
+            if (tile instanceof TileFilingCabinet && !tile.getWorld().isRemote && SmeltingUtils.isSmelting((TileFilingCabinet)tile)) {
+            	SmeltingUtils.removeSmeltingJob((TileFilingCabinet)tile, slot);
+            }
+        }
+        onContentsChanged(slot);
+    }
 	
 	public ItemStack getStackFromFolder(int slot) {
 		 
