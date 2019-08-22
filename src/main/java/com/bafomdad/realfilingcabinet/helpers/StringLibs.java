@@ -30,6 +30,7 @@ public class StringLibs {
 	public static final String TAG_FUELTIME = "RFC_fuelTime";
 	
 	// MISC
+	public static final String RFC_PLACEMODE = "RFC_placeMode";
 	public static final String RFC_CRAFTABLE = "RFC_isCraftable";
 	public static final String TAG_FOLDERS = "InvFolders";
 	

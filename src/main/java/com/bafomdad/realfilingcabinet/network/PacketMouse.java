@@ -3,6 +3,7 @@ package com.bafomdad.realfilingcabinet.network;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.ItemSuitcase;
+import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.StorageUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -56,8 +57,13 @@ public class PacketMouse implements IMessage {
 			
 			EntityPlayerMP player = ctx.getServerHandler().player;
 			ItemStack stack = player.getHeldItemMainhand();
-			if (!stack.isEmpty() && (stack.getItem() == RFCItems.SUITCASE || (stack.getItem() == RFCItems.FOLDER && stack.getItemDamage() == FolderType.ENDER.ordinal()))) {
-				StorageUtils.cycleIndex(stack, message.wheel);
+			if (!stack.isEmpty()) {
+				if (stack.getItem() == RFCItems.SUITCASE)
+					StorageUtils.cycleIndex(stack, message.wheel);
+				if (stack.getItem() == RFCItems.FOLDER && stack.getItemDamage() == FolderType.ENDER.ordinal())
+					StorageUtils.cycleIndex(stack, message.wheel);
+				if (stack.getItem() == RFCItems.FOLDER && stack.getItemDamage() == FolderType.FLUID.ordinal())
+					FluidUtils.togglePlace(stack);
 			}
 		}
 	}

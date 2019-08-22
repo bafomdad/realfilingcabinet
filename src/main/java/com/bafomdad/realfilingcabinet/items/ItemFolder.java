@@ -42,6 +42,7 @@ import com.bafomdad.realfilingcabinet.utils.EnderUtils;
 import com.bafomdad.realfilingcabinet.utils.FluidUtils;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.MobUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder {
 	
@@ -95,6 +96,23 @@ public class ItemFolder extends ItemAbstractFolder implements ISubModel, IFolder
 			}
 		}
 		return ear;
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		
+		ItemStack stack = player.getHeldItem(hand);
+		if (stack.getItemDamage() == FolderType.FLUID.ordinal()) {
+			boolean flag = NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false);
+			if (!flag) {
+				RayTraceResult rtr = rayTrace(world, player, true);
+				if (rtr != null && rtr.typeOfHit == RayTraceResult.Type.BLOCK) {
+					if (FluidUtils.doDrain(world, player, stack, rtr.getBlockPos(), rtr.sideHit))
+						return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+				}
+			}
+		}
+		return ActionResult.newResult(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

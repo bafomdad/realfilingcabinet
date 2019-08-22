@@ -71,8 +71,8 @@ public class RFCEventHandlerClient {
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			if (!player.isSneaking()) return;
 			
-			ItemStack suitcase = player.getHeldItemMainhand();
-			if (!suitcase.isEmpty() && (suitcase.getItem() == RFCItems.SUITCASE || (suitcase.getItem() == RFCItems.FOLDER && suitcase.getItemDamage() == FolderType.ENDER.ordinal()))) {
+			ItemStack heldItem = player.getHeldItemMainhand();
+			if (!heldItem.isEmpty() && (heldItem.getItem() == RFCItems.SUITCASE || (heldItem.getItem() == RFCItems.FOLDER && heldItem.getItemDamage() == FolderType.ENDER.ordinal())) || (heldItem.getItem() == RFCItems.FOLDER && heldItem.getItemDamage() == FolderType.FLUID.ordinal())) {
 				RFCPacketHandler.INSTANCE.sendToServer(new PacketMouse(event.getDwheel()));
 				event.setCanceled(true);
 				return;
