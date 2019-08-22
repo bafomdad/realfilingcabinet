@@ -31,8 +31,8 @@ public class FluidUtils {
 
 	public static boolean doPlace(World world, EntityPlayer player, ItemStack stack, BlockPos pos, EnumFacing facing) {
 		
-//		if (!NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false))
-//			return false;
+		if (!NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false))
+			return false;
 		
 		if (!MobUtils.canPlayerChangeStuffHere(world, player, stack, pos, facing))
 			return false;
@@ -54,7 +54,7 @@ public class FluidUtils {
 				if (!player.world.isRemote && !player.capabilities.isCreativeMode)
 					cap.setCount(count - Fluid.BUCKET_VOLUME);
 				
-				world.setBlockState(pos, fluid.getBlock().getDefaultState(), 3);
+				world.setBlockState(pos, fluid.getBlock().getDefaultState(), 11);
 				return true;
 			}
 		}
@@ -63,8 +63,8 @@ public class FluidUtils {
 	
 	public static boolean doDrain(World world, EntityPlayer player, ItemStack stack, BlockPos pos, EnumFacing facing) {
 		
-//		if (NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false))
-//			return false;
+		if (NBTUtils.getBoolean(stack, StringLibs.RFC_PLACEMODE, false))
+			return false;
 		
 		if (!MobUtils.canPlayerChangeStuffHere(world, player, stack, pos, facing))
 			return false;
@@ -77,7 +77,7 @@ public class FluidUtils {
 		if (block instanceof BlockLiquid && l == 0) {
 			if (cap.isFluidStack() && cap.getFluidStack().getFluid().getBlock() == block) {
 				if (!world.isRemote) {
-					cap.setCount(cap.getCount() + 1000);
+					cap.setCount(cap.getCount() + Fluid.BUCKET_VOLUME);
 					world.setBlockToAir(pos);
 				}
 				return true;
@@ -87,7 +87,7 @@ public class FluidUtils {
 			Fluid fluid = ((IFluidBlock)block).getFluid();
 			if (cap.isFluidStack() && cap.getFluidStack().getFluid() == fluid) {
 				if (!world.isRemote) {
-					cap.setCount(cap.getCount() + 1000);
+					cap.setCount(cap.getCount() + Fluid.BUCKET_VOLUME);
 					world.setBlockToAir(pos);
 				}
 				return true;
@@ -107,5 +107,10 @@ public class FluidUtils {
 			return fluid;
 		}
 		return null;
+	}
+	
+	public static void togglePlace(ItemStack folder) {
+		
+		NBTUtils.setBoolean(folder, StringLibs.RFC_PLACEMODE, !NBTUtils.getBoolean(folder, StringLibs.RFC_PLACEMODE, false));
 	}
 }

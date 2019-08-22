@@ -12,6 +12,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.Fluid;
@@ -19,9 +21,12 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
+import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
+import com.bafomdad.realfilingcabinet.helpers.StringLibs;
 import com.bafomdad.realfilingcabinet.helpers.TextHelper;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 	
@@ -47,10 +52,15 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 				list.add(TextHelper.format(count) + " " + item.getDisplayName() + " [" + remSize + " / " + item.getMaxDamage() + "]");
 			else
 				list.add(TextHelper.format(count) + " " + item.getDisplayName());
+			if (rootStack.hasTagCompound() && rootStack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX)) {
+				list.add(TextFormatting.GOLD + "Current slot: " + rootStack.getTagCompound().getInteger(StringLibs.RFC_SLOTINDEX));
+			}
 		}
 		if (isFluidStack()) {
 			FluidStack fluid = getFluidStack();
 			list.add(count + "mb " + fluid.getLocalizedName());
+			boolean flag = NBTUtils.getBoolean(rootStack, StringLibs.RFC_PLACEMODE, false);
+            list.add("Place Mode: " + ((flag) ? TextFormatting.GREEN + "" + flag : TextFormatting.RED + "" + flag));
 		}
 		if (isEntity()) {
 			list.add(TextHelper.format(count) + " " + displayName);

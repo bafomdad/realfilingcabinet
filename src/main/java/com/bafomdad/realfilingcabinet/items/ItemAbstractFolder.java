@@ -26,9 +26,6 @@ public abstract class ItemAbstractFolder extends Item {
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag whatisthis) {
 		
 		FolderUtils.get(stack).addTooltips(list);
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX)) {
-			list.add(TextFormatting.GOLD + "Current slot: " + stack.getTagCompound().getInteger(StringLibs.RFC_SLOTINDEX));
-		}
 	}
 
 	@Override
