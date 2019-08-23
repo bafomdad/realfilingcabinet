@@ -1,0 +1,128 @@
+# CREATIVE TAB
+itemGroup.realfilingcabinet.tabRFC.name=Real Filing Cabinet
+itemGroup.realfilingcabinet=Real Filing Cabinet
+realfilingcabinet.desc=(Exactly what it says on the tin)
+
+# ITEMS
+item.realfilingcabinet.folder_normal.name=Dosya Klasörü
+item.realfilingcabinet.folder_ender.name=Ender Klasörü
+item.realfilingcabinet.folder_dura.name=Dayanıklılık Klasörü
+item.realfilingcabinet.folder_mob.name=Canlı Klasörü
+item.realfilingcabinet.folder_fluid.name=Sıvı Klasörü
+item.realfilingcabinet.folder_nbt.name=NBT Veri Klasörü
+item.realfilingcabinet.autofolder.name=Oto-Eşya Klasörü
+item.realfilingcabinet.folder_mana.name=Mana Klasörü
+item.realfilingcabinet.emptyfolder_normal.name=Dosya Klasörü (Boş)
+item.realfilingcabinet.emptyfolder_dura.name=Dayanıklılık Klasörü (Boş)
+item.realfilingcabinet.emptyfolder_mob.name=Canlı Klasörü (Boş)
+item.realfilingcabinet.emptyfolder_fluid.name=Sıvı Klasörü (Boş)
+item.realfilingcabinet.emptyfolder_nbt.name=NBT Veri Klasörü (Boş)
+item.realfilingcabinet.whiteouttape.name=Silici Bant
+item.realfilingcabinet.magnifyingglass.name=Büyüteç
+item.realfilingcabinet.upgrade_creative.name=Yaratıcı Yükseltmesi
+item.realfilingcabinet.upgrade_crafting.name=Üretim Yükseltmesi
+item.realfilingcabinet.upgrade_ender.name=Ender Yükseltmesi
+item.realfilingcabinet.upgrade_oredict.name=OreDict Yükseltmesi
+item.realfilingcabinet.upgrade_durability.name=Dayanıklılık Yükseltmesi
+item.realfilingcabinet.upgrade_mob.name=Canlı Yükseltmesi
+item.realfilingcabinet.upgrade_fluid.name=Sıvı Yükseltmesi
+item.realfilingcabinet.upgrade_life.name=Can Yükseltmesi
+item.realfilingcabinet.upgrade_smelting.name=Isıtma Yükseltmesi
+item.realfilingcabinet.filter.name=Dosya Kabineti Filtresi
+item.realfilingcabinet.key_master.name=Ana Anahtar
+item.realfilingcabinet.key_copy.name=Kopyalanmış Anahtar
+item.realfilingcabinet.debugger.name=Hata Ayıklama Aleti
+item.realfilingcabinet.mysteryfolder.name=Gizemli Klasör
+item.realfilingcabinet.folder_aspect.name=Şişeleme Klasörü
+item.realfilingcabinet.suitcase.name=Valiz
+
+item.realfilingcabinet.dyedfolder.white.name=Boyalı Klasör (Beyaz)
+item.realfilingcabinet.dyedfolder.orange.name=Boyalı Klasör (Turuncu)
+item.realfilingcabinet.dyedfolder.magenta.name=Boyalı Klasör (Eflatun)
+item.realfilingcabinet.dyedfolder.light_blue.name=Boyalı Klasör (Açık Mavi)
+item.realfilingcabinet.dyedfolder.yellow.name=Boyalı Klasör (Sarı)
+item.realfilingcabinet.dyedfolder.lime.name=Boyalı Klasör (Kireç Yeşili)
+item.realfilingcabinet.dyedfolder.pink.name=Boyalı Klasör (Pembe)
+item.realfilingcabinet.dyedfolder.gray.name=Boyalı Klasör (Gri)
+item.realfilingcabinet.dyedfolder.silver.name=Boyalı Klasör (Gümüş)
+item.realfilingcabinet.dyedfolder.cyan.name=Boyalı Klasör (Camgöbeği)
+item.realfilingcabinet.dyedfolder.purple.name=Boyalı Klasör (Mor)
+item.realfilingcabinet.dyedfolder.blue.name=Boyalı Klasör (Lacivert)
+item.realfilingcabinet.dyedfolder.brown.name=Boyalı Klasör (Kahverengi)
+item.realfilingcabinet.dyedfolder.green.name=Boyalı Klasör (Yeşil)
+item.realfilingcabinet.dyedfolder.red.name=Boyalı Klasör (Kırmızı)
+item.realfilingcabinet.dyedfolder.black.name=Boyalı Klasör (Siyah)
+
+item.realfilingcabinet.emptydyedfolder.white.name=Boyalı Klasör (Beyaz)
+item.realfilingcabinet.emptydyedfolder.orange.name=Boyalı Klasör (Turuncu)
+item.realfilingcabinet.emptydyedfolder.magenta.name=Boyalı Klasör (Eflatun)
+item.realfilingcabinet.emptydyedfolder.light_blue.name=Boyalı Klasör (Açık Mavi)
+item.realfilingcabinet.emptydyedfolder.yellow.name=Boyalı Klasör (Sarı)
+item.realfilingcabinet.emptydyedfolder.lime.name=Boyalı Klasör (Kireç Yeşili)
+item.realfilingcabinet.emptydyedfolder.pink.name=Boyalı Klasör (Pembe)
+item.realfilingcabinet.emptydyedfolder.gray.name=Boyalı Klasör (Gri)
+item.realfilingcabinet.emptydyedfolder.silver.name=oyalı Klasör (Gümüş)
+item.realfilingcabinet.emptydyedfolder.cyan.name=Boyalı Klasör (Camgöbeği)
+item.realfilingcabinet.emptydyedfolder.purple.name=Boyalı Klasör (Mor)
+item.realfilingcabinet.emptydyedfolder.blue.name=Boyalı Klasör (Lacivert)
+item.realfilingcabinet.emptydyedfolder.brown.name=Boyalı Klasör (Kahverengi)
+item.realfilingcabinet.emptydyedfolder.green.name=Boyalı Klasör (Yeşil)
+item.realfilingcabinet.emptydyedfolder.red.name=Boyalı Klasör (Kırmızı)
+item.realfilingcabinet.emptydyedfolder.black.name=Boyalı Klasör (Siyah)
+
+# BLOCKS
+tile.realfilingcabinet.modelcabinet.name=Dosya Kabineti
+tile.realfilingcabinet.manacabinet.name=Mana Kabineti
+tile.realfilingcabinet.aspectcabinet.name=Şişeleme Kabineti
+
+# ENTITIES
+entity.realfilingcabinet:entitycabinet.name=Dosya Kabineti
+
+# TOOLTIPS
+tooltip.realfilingcabinet.mystery1=Bu bir sır.
+tooltip.realfilingcabinet.mystery2=Kullanırsan, içinde rastgele bir eşya olan klasör verir
+tooltip.realfilingcabinet.emptyfolder0=Dayanıklılığı olmayan bir eşya/blok ile üret
+tooltip.realfilingcabinet.emptyfolder1=Tamir edilebilen/Hasar alabilen eşyalarla üret
+tooltip.realfilingcabinet.emptyfolder2=Çocuk ve boss olmayan bir canlı ile üret
+tooltip.realfilingcabinet.emptyfolder3=Bununla dünyada bulunan bir sıvıya tıkla
+tooltip.realfilingcabinet.whiteouttape=İçinde 0 eşya/blok olan bir klasör ile üret
+tooltip.realfilingcabinet.extrainfo=<Daha fazla bilgi için SHIFT>
+tooltip.realfilingcabinet.itemfilter=Bu eşya çerçevesine yerleştirilir
+tooltip.realfilingcabinet.placemode.on=Koyma Modu: AÇIK
+tooltip.realfilingcabinet.placemode.off=Koyma Modu: KAPALI
+tooltip.realfilingcabinet.ignorenbt.true=NBT Umursanmaz: Evet
+tooltip.realfilingcabinet.ignorenbt.false=NBT Umursanmaz: Hayır
+tooltip.realfilingcabinet.mobinteract=Sol tık ile canlıyı yakala, sağ tık ile canlıyı doğur
+
+tooltip.realfilingcabinet.mana0=Kullanmak için yeterli mana yok
+tooltip.realfilingcabinet.mana120=Mana Blaster'dan bir patlama yapacak kadar yeterli
+tooltip.realfilingcabinet.mana500=Mana tozu oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana2500=Pasture tohumu oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana3000=Manasteel oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana6000=Mana incisi oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana10000=Mana elması oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana15000=Force Relay oluşturacak kadar yeterli
+tooltip.realfilingcabinet.mana20000=EMana kurabiyesi oluşturacak kadar yeterli 
+tooltip.realfilingcabinet.mana500000=Terrasteel yapmaya yetecek kadar yeterli
+tooltip.realfilingcabinet.mana1000000=En az bir mana havuzu kadar dolu
+tooltip.realfilingcabinet.mana10000000=En az 10 mana havuzu kadar dolu
+tooltip.realfilingcabinet.mana100000000=En az 100 mana havuzu kadar dolu 
+tooltip.realfilingcabinet.mana1000000000=Tamamen dolu, 1000 mana havuzunu dolduracak kadar
+
+# MESSAGES
+message.realfilingcabinet.errorEnder=Yükseltmeyi uygulamadan önce bu kabinette sadece basit klasörler olmalıdır
+message.realfilingcabinet.debugger=Ana eldeki eşya için çevrilmemiş isim
+message.realfilingcabinet.notAir=[Dosya Kabineti]: Kendimi buraya koyamıyorum!
+message.realfilingcabinet.disabled=!!Devre Dışı!!
+
+# COMMANDS
+commands.realfilingcabinet.help=Mevcut komutlar: setcount, setitem
+commands.realfilingcabinet.error.not_a_folder=Klasör Değil
+commands.realfilingcabinet.error.no_item_or_block_found=Klasöre eşya ve blok koyulamadı
+commands.realfilingcabinet.error.not_an_empty_normal_or_dyed_folder=Boş normal veya renkli klasör değil
+
+# ADVANCEMENTS
+advancement.realfilingcabinet:limitReach=Sınır Aşımı!
+advancement.realfilingcabinet:limitReach.desc=Boyalı klasörlerde depolama sınırına ulaş.
+advancement.realfilingcabinet:craftingFolder=Dosyalayın, evlatlar...
+advancement.realfilingcabinet:craftingFolder.desc=Birkaç boş dosya klasörü üret
