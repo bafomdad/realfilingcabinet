@@ -44,14 +44,15 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		this.rootStack = rootStack;
 	}
 	
-	public void addTooltips(List<String> list) {
+	public void addTooltips(List<String> list, boolean crouching) {
 		
 		if (isItemStack()) {
 			ItemStack item = getItemStack();
+			String str = (crouching) ? "" + count : TextHelper.format(count);
 			if (remSize != 0)
-				list.add(TextHelper.format(count) + " " + item.getDisplayName() + " [" + remSize + " / " + item.getMaxDamage() + "]");
+				list.add(str + " " + item.getDisplayName() + " [" + remSize + " / " + item.getMaxDamage() + "]");
 			else
-				list.add(TextHelper.format(count) + " " + item.getDisplayName());
+				list.add(str + " " + item.getDisplayName());
 			if (rootStack.hasTagCompound() && rootStack.getTagCompound().hasKey(StringLibs.RFC_SLOTINDEX)) {
 				list.add(TextFormatting.GOLD + "Current slot: " + rootStack.getTagCompound().getInteger(StringLibs.RFC_SLOTINDEX));
 			}
@@ -59,7 +60,7 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		if (isFluidStack()) {
 			FluidStack fluid = getFluidStack();
 			list.add(count + "mb " + fluid.getLocalizedName());
-			boolean flag = NBTUtils.getBoolean(rootStack, StringLibs.RFC_PLACEMODE, false);
+			boolean flag = NBTUtils.getBoolean(rootStack, StringLibs.RFC_PLACEMODE, false) && crouching;
             list.add("Place Mode: " + ((flag) ? TextFormatting.GREEN + "" + flag : TextFormatting.RED + "" + flag));
 		}
 		if (isEntity()) {

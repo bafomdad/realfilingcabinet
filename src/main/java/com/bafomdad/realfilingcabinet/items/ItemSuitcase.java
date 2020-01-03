@@ -49,7 +49,7 @@ public class ItemSuitcase extends Item {
 					if (folder.isEmpty() || !(folder.getItem() instanceof IFolder))
 						list.add("<Empty>");
 					else
-						FolderUtils.get(suitcaseInv.getStackInSlot(i)).addTooltips(list);
+						FolderUtils.get(suitcaseInv.getStackInSlot(i)).addTooltips(list, false);
 				}
 			}
 		}

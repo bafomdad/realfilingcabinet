@@ -37,9 +37,9 @@ public final class FolderUtils {
 		return (cap.isPresent()) ? cap.get() : null;
 	}
 	
-	public void addTooltips(List<String> list) {
+	public void addTooltips(List<String> list, boolean crouching) {
 		
-		cap.ifPresent(c -> c.addTooltips(list));
+		cap.ifPresent(c -> c.addTooltips(list, crouching));
 	}
 	
 	public long getFileSize() {

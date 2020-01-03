@@ -6,5 +6,5 @@ import net.minecraft.entity.Entity;
 
 public interface IEntityCabinet {
 
-	public List<String> getInfoOverlay(Entity entity);
+	public List<String> getInfoOverlay(Entity entity, boolean crouching);
 }

@@ -2,6 +2,8 @@ package com.bafomdad.realfilingcabinet.items;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -25,7 +27,8 @@ public abstract class ItemAbstractFolder extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag whatisthis) {
 		
-		FolderUtils.get(stack).addTooltips(list);
+		boolean crouching = Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
+		FolderUtils.get(stack).addTooltips(list, crouching);
 	}
 
 	@Override

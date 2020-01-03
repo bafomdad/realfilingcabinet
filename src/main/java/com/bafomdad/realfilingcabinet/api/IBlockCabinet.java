@@ -6,5 +6,5 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface IBlockCabinet {
 	
-	public List<String> getInfoOverlay(TileEntity tile);
+	public List<String> getInfoOverlay(TileEntity tile, boolean crouching);
 }

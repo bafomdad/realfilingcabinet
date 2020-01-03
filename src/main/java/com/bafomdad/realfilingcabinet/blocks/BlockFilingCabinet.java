@@ -178,14 +178,14 @@ public class BlockFilingCabinet extends BlockRFC {
 	}
 
 	@Override
-	public List<String> getInfoOverlay(TileEntity tile) {
+	public List<String> getInfoOverlay(TileEntity tile, boolean crouching) {
 
 		List<String> list = new ArrayList();
 		if (tile instanceof TileFilingCabinet) {
 			TileFilingCabinet tfc = (TileFilingCabinet)tile;
 			for (int i = 0; i < tfc.getInventory().getSlots(); i++) {
 				ItemStack folder = tfc.getInventory().getFolder(i);
-				FolderUtils.get(folder).addTooltips(list);
+				FolderUtils.get(folder).addTooltips(list, crouching);
 			}
 		}
 		if (((TileEntityRFC)tile).isCabinetLocked())

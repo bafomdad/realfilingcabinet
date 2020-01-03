@@ -53,7 +53,7 @@ public class GuiFileList extends Gui {
 				
 				if (flag) {
 					TileEntity tile = mc.world.getTileEntity(mop.getBlockPos());
-					List<String> list = ((IBlockCabinet)block).getInfoOverlay(tile);
+					List<String> list = ((IBlockCabinet)block).getInfoOverlay(tile, player.isSneaking());
 					if (!list.isEmpty()) {
 						for (int i = 0; i < list.size(); i++) {
 							GL11.glDisable(GL11.GL_LIGHTING);

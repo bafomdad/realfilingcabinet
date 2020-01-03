@@ -114,7 +114,7 @@ public class BlockManaCabinet extends BlockRFC {
 	}
 
 	@Override
-	public List<String> getInfoOverlay(TileEntity tile) {
+	public List<String> getInfoOverlay(TileEntity tile, boolean crouching) {
 
 		List<String> list = new ArrayList();
 		if (tile instanceof TileManaCabinet) {

@@ -43,7 +43,7 @@ public class ItemBlockRFC extends ItemBlock {
 			NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
 			ItemStack folder = new ItemStack(itemTag);
 			if (!folder.isEmpty() && folder.getItem() instanceof IFolder) {
-				FolderUtils.get(folder).addTooltips(list);
+				FolderUtils.get(folder).addTooltips(list, false);
 			}
 		}
 	}

@@ -45,7 +45,7 @@ public class ProbeLoader {
 
 					if (state.getBlock() instanceof IBlockCabinet) {
 						TileEntity tile = world.getTileEntity(data.getPos());
-						List<String> strList = ((IBlockCabinet)state.getBlock()).getInfoOverlay(tile);
+						List<String> strList = ((IBlockCabinet)state.getBlock()).getInfoOverlay(tile, player.isSneaking());
 						if (!strList.isEmpty())
 							strList.stream().forEach(s -> info.horizontal().text(s));
 					}
@@ -63,7 +63,7 @@ public class ProbeLoader {
 				public void addProbeEntityInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data) {
 					
 					if (entity instanceof IEntityCabinet) {
-						List<String> strList = ((IEntityCabinet)entity).getInfoOverlay(entity);
+						List<String> strList = ((IEntityCabinet)entity).getInfoOverlay(entity, player.isSneaking());
 						if (!strList.isEmpty())
 							strList.stream().forEach(s -> info.horizontal().text(s));
 					}

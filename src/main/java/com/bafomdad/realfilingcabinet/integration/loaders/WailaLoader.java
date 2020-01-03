@@ -46,7 +46,7 @@ public class WailaLoader {
 			
 			if (accessor.getBlock() instanceof IBlockCabinet) {
 				TileEntity tile = accessor.getTileEntity();
-				List<String> strList = ((IBlockCabinet)accessor.getBlock()).getInfoOverlay(tile);
+				List<String> strList = ((IBlockCabinet)accessor.getBlock()).getInfoOverlay(tile, accessor.getPlayer().isSneaking());
 				if (!strList.isEmpty())
 					strList.stream().forEach(s -> currenttip.add(s));
 			}
@@ -86,7 +86,7 @@ public class WailaLoader {
 		            NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
 		            ItemStack stack = new ItemStack(itemTags);
 		            if (!stack.isEmpty() && stack.getItem() instanceof IFolder) {
-		            	FolderUtils.get(stack).addTooltips(currenttip);
+		            	FolderUtils.get(stack).addTooltips(currenttip, accessor.getPlayer().isSneaking());
 		            }
 		        }
 			}

@@ -325,7 +325,7 @@ public class EntityCabinet extends EntityTameable implements IEntityCabinet {
 	}
 	
 	@Override
-	public List<String> getInfoOverlay(Entity entity) {
+	public List<String> getInfoOverlay(Entity entity, boolean crouching) {
 	
 		List<String> list = new ArrayList();
 		list.add("Currently carrying:");
@@ -333,7 +333,7 @@ public class EntityCabinet extends EntityTameable implements IEntityCabinet {
 			for (int i = 0; i < getInventory().getSlots(); i++) {
 				ItemStack folder = getInventory().getStackInSlot(i);
 				if (!folder.isEmpty() && folder.getItem() instanceof IFolder) {
-					FolderUtils.get(folder).addTooltips(list);
+					FolderUtils.get(folder).addTooltips(list, crouching);
 				}
 			}
 		}

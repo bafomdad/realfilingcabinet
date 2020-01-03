@@ -95,8 +95,9 @@ public class BlockAspectCabinet extends BlockRFC {
 	}
 
 	@Override
-	public List<String> getInfoOverlay(TileEntity tile) {
+	public List<String> getInfoOverlay(TileEntity tile, boolean crouching) {
 
+		// empty list since we'll use the goggles for showing information instead
 		return Lists.newArrayList();
 	}
 }
