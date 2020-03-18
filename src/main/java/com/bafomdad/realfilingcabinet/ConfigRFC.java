@@ -33,7 +33,7 @@ public class ConfigRFC {
 	@Comment({"List of items that will be randomly picked by the mystery folder."})
 	public static String[] mysteryItems = new String[] { 
 		"minecraft:diamond", 
-		"minecraft:cobblestone:0",
+		"minecraft:cobblestone",
 		"minecraft:blaze_rod",
 		"minecraft:slime_ball",
 		"minecraft:clay",
@@ -49,6 +49,12 @@ public class ConfigRFC {
 	public static int guiWidth = 0;
 	@Comment({"Adjust placement of magnifying glass GUI on the y axis."})
 	public static int guiHeight = 5;
+	
+	@Comment({"If enabled, reverses the interaction of pulling items from filing cabinets, so that shiftclick pulls 1 instead of 64 and vice-versa for without shiftclick."})
+	public static boolean invertShift = false;
+	
+	@Comment({"Displays the current Item/Block being contained in the currently held folder/suitcase"})
+	public static boolean folderHud = true;
 	
 	@Config(modid=RealFilingCabinet.MOD_ID, category="recipes")
 	public static class RecipeConfig {
