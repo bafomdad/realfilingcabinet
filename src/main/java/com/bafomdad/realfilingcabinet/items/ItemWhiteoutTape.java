@@ -22,16 +22,20 @@ public class ItemWhiteoutTape extends Item {
 		list.add(new TextComponentTranslation("tooltip." + RealFilingCabinet.MOD_ID + ".whiteouttape").getFormattedText());
 	}
 	
+	@Override
 	public ItemStack getContainerItem(ItemStack stack) {
 		
 		ItemStack copy = stack.copy();
 		copy.setItemDamage(copy.getItemDamage() + 1);
+		if (copy.getItemDamage() >= copy.getMaxDamage())
+			copy = ItemStack.EMPTY;
 		
 		return copy;
 	}
 	
+	@Override
 	public boolean hasContainerItem(ItemStack stack) {
 		
-		return getContainerItem(stack) != null && stack.getItem() == this;
+		return stack.getItem() == this;
 	}
 }
