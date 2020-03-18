@@ -60,8 +60,9 @@ public class CapabilityFolder implements INBTSerializable<NBTTagCompound> {
 		if (isFluidStack()) {
 			FluidStack fluid = getFluidStack();
 			list.add(count + "mb " + fluid.getLocalizedName());
-			boolean flag = NBTUtils.getBoolean(rootStack, StringLibs.RFC_PLACEMODE, false) && crouching;
-            list.add("Place Mode: " + ((flag) ? TextFormatting.GREEN + "" + flag : TextFormatting.RED + "" + flag));
+			boolean flag = NBTUtils.getBoolean(rootStack, StringLibs.RFC_PLACEMODE, false);
+			if (crouching)
+				list.add("Place Mode: " + ((flag) ? TextFormatting.GREEN + "" + flag : TextFormatting.RED + "" + flag));
 		}
 		if (isEntity()) {
 			list.add(TextHelper.format(count) + " " + displayName);

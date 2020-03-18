@@ -17,9 +17,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bafomdad.realfilingcabinet.LogRFC;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
+import com.bafomdad.realfilingcabinet.init.RFCItems;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
+import com.bafomdad.realfilingcabinet.utils.NBTUtils;
 
 public abstract class ItemAbstractFolder extends Item {
 	
@@ -27,7 +30,7 @@ public abstract class ItemAbstractFolder extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag whatisthis) {
 		
-		boolean crouching = Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
+		boolean crouching = (stack.getItem() == RFCItems.FOLDER && stack.getItemDamage() == FolderType.FLUID.ordinal()) || (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
 		FolderUtils.get(stack).addTooltips(list, crouching);
 	}
 
@@ -58,8 +61,9 @@ public abstract class ItemAbstractFolder extends Item {
 	
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldstack, ItemStack newstack, boolean slotchanged) {
-		
-		return oldstack.getItem() != newstack.getItem();
+
+		boolean tagChanged = (oldstack.hasTagCompound() && oldstack.getTagCompound().hasKey(StringLibs.RFC_PLACEMODE)) ? NBTUtils.getBoolean(oldstack, StringLibs.RFC_PLACEMODE, false) != NBTUtils.getBoolean(newstack, StringLibs.RFC_PLACEMODE, false) : false;
+		return tagChanged || (oldstack.getItem() != newstack.getItem()) || (oldstack.getItem() == newstack.getItem() && oldstack.getItemDamage() != newstack.getItemDamage());
 	}
 	
 	@Override
