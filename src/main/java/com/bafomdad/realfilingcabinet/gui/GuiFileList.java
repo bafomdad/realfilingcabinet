@@ -1,11 +1,14 @@
 package com.bafomdad.realfilingcabinet.gui;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
@@ -19,7 +22,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.bafomdad.realfilingcabinet.ConfigRFC;
 import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
+import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
+import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 
 public class GuiFileList extends Gui {
 
@@ -45,24 +51,40 @@ public class GuiFileList extends Gui {
 			EntityPlayer player = mc.player;
 			RayTraceResult mop = mc.objectMouseOver;
 			
+			ItemStack mainhand = player.getHeldItemMainhand();
+			ItemStack offhand = player.getHeldItemOffhand();
+			
 			if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
 				Block block = mc.world.getBlockState(mop.getBlockPos()).getBlock();
-				ItemStack mainhand = player.getHeldItemMainhand();
-				ItemStack offhand = player.getHeldItemOffhand();
-				boolean flag = (block instanceof IBlockCabinet && ((!mainhand.isEmpty() && mainhand.getItem() == RFCItems.MAGNIFYINGGLASS) || (!offhand.isEmpty() && offhand.getItem() == RFCItems.MAGNIFYINGGLASS)));
+
+				boolean flag = (block instanceof IBlockCabinet && (mainhand.getItem() == RFCItems.MAGNIFYINGGLASS || offhand.getItem() == RFCItems.MAGNIFYINGGLASS));
 				
 				if (flag) {
 					TileEntity tile = mc.world.getTileEntity(mop.getBlockPos());
 					List<String> list = ((IBlockCabinet)block).getInfoOverlay(tile, player.isSneaking());
 					if (!list.isEmpty()) {
 						for (int i = 0; i < list.size(); i++) {
-							GL11.glDisable(GL11.GL_LIGHTING);
 							this.drawCenteredString(mc.fontRenderer, list.get(i), width, 5 + (i * 10), Integer.parseInt("FFFFFF", 16));
 						}
 					}
 				}
 			}
 			profiler.endSection();
+			if (ConfigRFC.folderHud) {
+				profiler.startSection("RFC-folderHUD");
+				
+				final int w = scaled.getScaledWidth();
+				final int h = scaled.getScaledHeight();
+				
+				Stream.of(mainhand, offhand).filter(f -> FolderUtils.get(f).getCap() != null).map(f -> FolderUtils.get(f).getCap()).findFirst().ifPresent(folder -> {
+					if (folder.isItemStack()) {
+						RenderHelper.enableGUIStandardItemLighting();
+						mc.getRenderItem().renderItemAndEffectIntoGUI(folder.getItemStack(), (w - w) + 20, h - 20);
+						this.drawString(mc.fontRenderer, "" + folder.getCount(), (w - w) + 40, h - 15, Integer.parseInt("FFFFFF", 16));
+					}
+				});
+				profiler.endSection();
+			}
 		}
 	}
 }
