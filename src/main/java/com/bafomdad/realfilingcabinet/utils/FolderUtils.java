@@ -3,19 +3,20 @@ package com.bafomdad.realfilingcabinet.utils;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
+
 import com.bafomdad.realfilingcabinet.api.IBlockCabinet;
 import com.bafomdad.realfilingcabinet.api.IEmptyFolder;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.helpers.enums.FolderType;
 import com.bafomdad.realfilingcabinet.init.RFCItems;
+import com.bafomdad.realfilingcabinet.items.ItemSuitcase;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityFolder;
 import com.bafomdad.realfilingcabinet.items.capabilities.CapabilityProviderFolder;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 
 public final class FolderUtils {
 	
@@ -29,7 +30,19 @@ public final class FolderUtils {
 	
 	public static FolderUtils get(ItemStack stack) {
 		
+		if (stack.getItem() == RFCItems.SUITCASE) return getSuitcase(stack);
+		
 		return new FolderUtils(stack);
+	}
+	
+	public static FolderUtils getSuitcase(ItemStack suitcase) {
+		
+		ItemStack folder = ItemStack.EMPTY;
+		IItemHandlerModifiable suitcaseInv = ItemSuitcase.getSuitcaseInv(suitcase);
+		if (suitcaseInv != null)
+			folder = suitcaseInv.getStackInSlot(StorageUtils.getIndex(suitcase));
+		
+		return new FolderUtils(folder);
 	}
 	
 	public CapabilityFolder getCap() {

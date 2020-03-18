@@ -109,13 +109,14 @@ public class StorageUtils {
 						else return;
 					}
 					if (cap.isItemStack()) {
+						boolean sneak = player.isSneaking() != ConfigRFC.invertShift;
 						if (oreDict) {
 							OreDictUtils.recreateOreDictionary(stack);
 							if (!cap.getItemStack().isEmpty() && OreDictUtils.areItemsEqual(stack, cap.getItemStack())) {
 								long count = cap.getCount();
 								if (count == 0) continue;
 								
-								long extract = (player.isSneaking()) ? Math.min(stack.getMaxStackSize(), count) : 1;
+								long extract = (sneak) ? Math.min(stack.getMaxStackSize(), count) : 1;
 								ItemStack stackExtract = new ItemStack(stack.getItem(), (int)extract, stack.getItemDamage());
 								ItemHandlerHelper.giveItemToPlayer(player, stackExtract);
 								if (!UpgradeHelper.isCreative((TileFilingCabinet)tile))
@@ -127,7 +128,7 @@ public class StorageUtils {
 						if (ItemStack.areItemsEqual(cap.getItemStack(), stack) && cap.getCount() > 0) {
 							if (folder.getItemDamage() == FolderType.NBT.ordinal() && !ItemStack.areItemStackTagsEqual(cap.getItemStack(), stack))
 								return;
-							ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((player.isSneaking()) ? stack.getMaxStackSize() : 1, false, creative));
+							ItemHandlerHelper.giveItemToPlayer(player, (ItemStack)cap.extract((sneak) ? stack.getMaxStackSize() : 1, false, creative));
 							tile.markBlockForUpdate();
 							return;
 						}

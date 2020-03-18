@@ -9,7 +9,10 @@ import org.lwjgl.input.Keyboard;
 import com.bafomdad.realfilingcabinet.RealFilingCabinet;
 import com.bafomdad.realfilingcabinet.api.IFolder;
 import com.bafomdad.realfilingcabinet.blocks.tiles.TileEntityRFC;
+import com.bafomdad.realfilingcabinet.blocks.tiles.TileFilingCabinet;
 import com.bafomdad.realfilingcabinet.helpers.StringLibs;
+import com.bafomdad.realfilingcabinet.helpers.UpgradeHelper;
+import com.bafomdad.realfilingcabinet.helpers.enums.UpgradeType;
 import com.bafomdad.realfilingcabinet.inventory.InventorySuitcase;
 import com.bafomdad.realfilingcabinet.utils.FolderUtils;
 import com.bafomdad.realfilingcabinet.utils.NBTUtils;
@@ -52,12 +55,14 @@ public class ItemSuitcase extends Item {
 						FolderUtils.get(suitcaseInv.getStackInSlot(i)).addTooltips(list, false);
 				}
 			}
-		}
-		if (!list.isEmpty()) {
-			for (int j = 1; j < list.size(); j++) {
-				if (StorageUtils.getIndex(stack) + 1 == j)
-					list.set(j, TextFormatting.GOLD + list.get(j));
+			if (!list.isEmpty()) {
+				for (int j = 1; j < list.size(); j++) {
+					if (StorageUtils.getIndex(stack) + 1 == j)
+						list.set(j, TextFormatting.GOLD + list.get(j));
+				}
 			}
+		} else {
+			FolderUtils.getSuitcase(stack).addTooltips(list, false);
 		}
 	}
 	
@@ -95,7 +100,7 @@ public class ItemSuitcase extends Item {
 		if (tile instanceof TileEntityRFC) {
 			if (!world.isRemote) {
 				TileEntityRFC tfc = (TileEntityRFC)tile;
-				if (!tfc.isOpen)
+				if (!tfc.isOpen || !UpgradeHelper.getUpgrade((TileFilingCabinet)tile, StringLibs.TAG_ENDER).isEmpty())
 					return EnumActionResult.FAIL;
 				
 				boolean flag = ItemHandlerHelper.calcRedstoneFromInventory(suitcaseInv) > 0;
